@@ -65,9 +65,10 @@ app.options("*", cors());
 // ======================
 // 🔥 RATE LIMIT (RELAXED)
 // ======================
+// Global rate limiter — generous enough for normal use, blocks mass scraping
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 1000, // 🔥 increased from 100
+  max: 300,
   standardHeaders: true,
   legacyHeaders: false
 });
