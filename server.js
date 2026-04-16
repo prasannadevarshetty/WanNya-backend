@@ -39,7 +39,7 @@ app.use(helmet({
 const allowedOrigins = [
   "http://localhost:3000",
   "https://wanya-frontend-kqqk1g4co-prasannadevarshettys-projects.vercel.app",  
-  "https://wanya-backend-hyyydpat2-prasannadevarshettys-projects.vercel.app"
+  "https://wannya-backend-ztgs.onrender.com"
 ];
 
 app.use(cors({
