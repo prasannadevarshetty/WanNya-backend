@@ -38,7 +38,7 @@ app.use(helmet({
 // ======================
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://your-frontend-url.vercel.app",  // Add your frontend URL here
+  "https://wanya-frontend-kqqk1g4co-prasannadevarshettys-projects.vercel.app",  
   "https://wanya-backend-hyyydpat2-prasannadevarshettys-projects.vercel.app"
 ];
 
