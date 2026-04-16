@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const User = require('../models/User');
+const Pet = require('../models/Pet');
 const Address = require('../models/Address');
 const Payment = require('../models/Payment');
 const { authenticate } = require('../middleware/auth');
@@ -265,4 +266,28 @@ router.delete('/payments/:id', async (req, res) => {
   }
 });
 
+// @route   DELETE /api/users/delete-account
+// @desc    Delete current user and their pets
+// @access  Private
+router.delete('/delete-account', async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    // Delete pets of this user
+    await Pet.deleteMany({ userId: userId });
+
+    // Delete user
+    await User.findByIdAndDelete(userId);
+
+    res.json({
+      message: 'User and their pets deleted successfully'
+    });
+
+  } catch (error) {
+    console.error('Delete user error:', error);
+    res.status(500).json({
+      message: 'Server error while deleting user'
+    });
+  }
+});
 module.exports = router;
