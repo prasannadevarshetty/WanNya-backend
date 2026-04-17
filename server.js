@@ -18,7 +18,7 @@ const petRoutes = require('./routes/pets');
 const serviceRoutes = require('./routes/services');
 const cartRoutes = require('./routes/cart');
 const wishlistRoutes = require('./routes/wishlist');
-
+const notificationRoutes = require('./routes/notifications');
 const app = express();
 
 // Connect DB
@@ -106,7 +106,7 @@ app.use('/api/pets', petRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
-
+app.use('/api/notifications', notificationRoutes);
 
 // ======================
 // 🔥 HEALTH CHECK

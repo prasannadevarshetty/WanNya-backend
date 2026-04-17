@@ -1,0 +1,21 @@
+{
+    "notifications": {
+        "title": "通知",
+        "read": "既読にする",
+        "delete": "すべて削除",
+        "empty": "まだ通知はありません！",
+        "emptyDesc": "現在新しいお知らせはありません。更新があり次第お知らせします。",
+
+        "bookingConfirmed": {
+            "title": "予約確定",
+            "desc": "グルーミングの予約が完了しました。",
+            "expires": "有効期限"
+        },
+        "system": {
+            "error": "エラー",
+            "otpSent": "認証コードを送信しました",
+            "addedToCart": "カートに追加しました",
+            "sessionExpired": "セッションの有効期限が切れました"
+        }
+    }
+}   

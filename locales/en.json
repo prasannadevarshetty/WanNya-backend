@@ -1,0 +1,21 @@
+{
+  "notifications": {
+    "title": "Notifications",
+    "read": "Mark as Read",
+    "empty": "No notifications yet!",
+    "delete": "Delete all",
+    "emptyDesc": "You are all caught up. We will notify you when something arrives.",
+ 
+    "bookingConfirmed": {
+      "title": "Booking Confirmed",
+      "desc": "Your grooming session is booked successfully.",
+      "expires": "Expires on"
+    },
+    "system": {
+    "error": "Error",
+    "otpSent": "OTP sent",
+    "addedToCart": "Added to cart",
+    "sessionExpired": "Session expired"
+    }
+}
+}
