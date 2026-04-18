@@ -134,7 +134,8 @@ app.use(globalErrorHandler);
 // ======================
 const PORT = process.env.PORT || 5001;
 
-if (process.env.NODE_ENV !== 'production') {
+// Vercel serverless functions do not need app.listen, but Render (your personal repo) does.
+if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🚀 WanNya Backend Server running on port ${PORT}`);
   });
