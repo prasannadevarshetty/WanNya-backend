@@ -134,6 +134,10 @@ app.use(globalErrorHandler);
 // ======================
 const PORT = process.env.PORT || 5001;
 
-app.listen(PORT, () => {
-  console.log(`🚀 WanNya Backend Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 WanNya Backend Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
