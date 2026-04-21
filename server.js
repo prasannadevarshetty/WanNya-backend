@@ -38,7 +38,7 @@ app.use(helmet({
 // ======================
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://wannya-liz2gjv8m-wannya2k25s-projects.vercel.app",  
+  "https://wannya.onrender.com",  
   "https://wannya-b.onrender.com"
 ];
 
