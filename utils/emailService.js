@@ -1,15 +1,22 @@
-const { Resend } = require("resend");
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  secure: process.env.EMAIL_PORT == 465,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  tls: {
+    rejectUnauthorized: false // Fixes local self-signed cert errors
+  }
+});
 
 const sendOtpEmail = async (email, otp) => {
   try {
-    if (!process.env.RESEND_API_KEY) {
-      throw new Error("Missing RESEND_API_KEY");
-    }
-
-    const resend = new Resend(process.env.RESEND_API_KEY);
-
-    const { data, error } = await resend.emails.send({
-      from: process.env.RESEND_FROM || "WanNya <onboarding@resend.dev>",
+    const mailOptions = {
+      from: `"${process.env.FROM_NAME}" <${process.env.FROM_EMAIL}>`,
       to: email,
       subject: "Your WanNya OTP",
       html: `
@@ -18,15 +25,11 @@ const sendOtpEmail = async (email, otp) => {
           <h1 style="letter-spacing:4px;">${otp}</h1>
           <p>This OTP is valid for 5 minutes.</p>
         </div>
-      `
-    });
+      `,
+    };
 
-    if (error) {
-      console.error("❌ Resend API error:", error);
-      return false;
-    }
-
-    console.log("✅ OTP sent:", email, data);
+    await transporter.sendMail(mailOptions);
+    console.log("✅ OTP sent:", email);
     return true;
 
   } catch (err) {
