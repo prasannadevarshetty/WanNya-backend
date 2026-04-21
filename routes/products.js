@@ -25,18 +25,19 @@ router.get('/', optionalAuth, async (req, res) => {
     } = req.query;
 
     // Build filter
-    const filter = { isActive: true };
+    const filter = { isActive: { $ne: false } };
 
     if (category) {
-      filter.category = category;
+      const categoryBase = category.toLowerCase().replace(/s$/, '');
+      filter.category = { $regex: new RegExp(`^${categoryBase}s?$`, 'i') };
     }
 
     if (petType) {
-      filter.petType = { $in: [petType, 'both'] };
+      filter.petType = { $in: [new RegExp(`^${petType}$`, 'i'), 'both'] };
     }
 
     if (gender) {
-      filter.gender = { $in: [gender, 'both', null] };
+      filter.gender = { $in: [new RegExp(`^${gender}$`, 'i'), 'both', null] };
     }
 
     if (featured === 'true') {
@@ -44,7 +45,7 @@ router.get('/', optionalAuth, async (req, res) => {
     }
 
     if (inStock === 'true') {
-      filter.inStock = true;
+      filter.inStock = { $ne: false };
     }
 
     // Price range
@@ -110,11 +111,10 @@ router.get('/featured', async (req, res) => {
     const { limit = 10 } = req.query;
 
     const products = await Product.find({ 
-      isActive: true, 
-      featured: true,
-      inStock: true 
+      isActive: { $ne: false }, 
+      inStock: { $ne: false } 
     })
-    .sort({ rating: -1, createdAt: -1 })
+    .sort({ featured: -1, rating: -1, createdAt: -1 })
     .limit(parseInt(limit));
 
     const mapped = products.map(p => {
@@ -138,7 +138,7 @@ router.get('/featured', async (req, res) => {
 // @access  Public
 router.get('/categories', async (req, res) => {
   try {
-    const categories = await Product.distinct('category', { isActive: true });
+    const categories = await Product.distinct('category', { isActive: { $ne: false } });
     res.json({ categories });
   } catch (error) {
     console.error('Get categories error:', error);
@@ -163,13 +163,18 @@ router.get('/search', async (req, res) => {
 
     const searchFilter = {
       $and: [
-        { isActive: true },
+        { isActive: { $ne: false } },
         {
           $or: [
+            { nameEn: { $regex: q, $options: 'i' } },
+            { nameJa: { $regex: q, $options: 'i' } },
             { name: { $regex: q, $options: 'i' } },
+            { descriptionEn: { $regex: q, $options: 'i' } },
+            { descriptionJa: { $regex: q, $options: 'i' } },
             { description: { $regex: q, $options: 'i' } },
             { tags: { $in: [new RegExp(q, 'i')] } },
-            { brand: { $regex: q, $options: 'i' } }
+            { brand: { $regex: q, $options: 'i' } },
+            { category: { $regex: q, $options: 'i' } }
           ]
         }
       ]
@@ -206,7 +211,7 @@ router.get('/:id', async (req, res) => {
   try {
     const product = await Product.findOne({ 
       _id: req.params.id, 
-      isActive: true 
+      isActive: { $ne: false } 
     });
 
     if (!product) {
@@ -249,11 +254,11 @@ router.get('/recommendations/:petType', async (req, res) => {
 
     const recFilter = {
       $or: [
-        { petType: petType },
+        { petType: new RegExp(`^${petType}$`, 'i') },
         { petType: 'both' }
       ],
-      isActive: true,
-      inStock: true
+      isActive: { $ne: false },
+      inStock: { $ne: false }
     };
     
     if (gender) {
@@ -303,7 +308,7 @@ router.get('/compare', async (req, res) => {
 
     const products = await Product.find({
       _id: { $in: productIds },
-      isActive: true
+      isActive: { $ne: false }
     });
 
     if (products.length !== productIds.length) {
