@@ -38,7 +38,7 @@ app.use(helmet({
 // ======================
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://wannya.onrender.com",  
+  "https://wannya-f.netlify.app/",  
   "https://wannya-b.onrender.com"
 ];
 
