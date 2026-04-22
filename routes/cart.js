@@ -34,7 +34,8 @@ const mapCartItemsForClient = async (cart) => {
         quantity: item.quantity,
         image: Array.isArray(p.images) ? (p.images[0] || '') : '',
         category: p.category,
-        rating: p.rating
+        rating: p.rating,
+        isOutOfStock: p.price === null || p.price === undefined || p.price === 0
       };
     })
     .filter(Boolean);
@@ -82,6 +83,10 @@ router.post('/', async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
+    if (product.price === null || product.price === undefined || product.price === 0) {
+      return res.status(400).json({ message: '在庫がありません。' });
+    }
+
     let cart = await Cart.findOne({ userId: req.user._id, isActive: true });
     if (!cart) {
       cart = await Cart.create({ userId: req.user._id, items: [] });
@@ -114,6 +119,15 @@ router.put('/:productId', async (req, res) => {
     }
     if (!Number.isFinite(quantity) || quantity < 1) {
       return res.status(400).json({ message: 'Quantity must be >= 1' });
+    }
+
+    const product = await Product.findOne({ _id: productId, isActive: true });
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    if (product.price === null || product.price === undefined || product.price === 0) {
+      return res.status(400).json({ message: '在庫がありません。' });
     }
 
     const cart = await Cart.findOne({ userId: req.user._id, isActive: true });

@@ -38,8 +38,7 @@ app.use(helmet({
 // ======================
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://wannya.onrender.com",  
-  "https://wannya-b.onrender.com"
+  "https://wannya-f.netlify.app"
 ];
 
 app.use(cors({
@@ -50,17 +49,10 @@ app.use(cors({
       return callback(null, true);
     }
 
-    if (origin.includes("vercel.app")) {
-      return callback(null, true);
-    }
-
     return callback(new Error("Not allowed by CORS"));
   },
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   credentials: true
 }));
-
-app.options("*", cors());
 
 // ======================
 // 🔥 RATE LIMIT (RELAXED)
