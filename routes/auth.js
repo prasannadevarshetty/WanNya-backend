@@ -138,15 +138,25 @@ router.post('/forgot-password', forgotPasswordLimiter, validateOtpRequest, catch
   user.otpExpires = new Date(Date.now() + 5 * 60 * 1000);
   await user.save();
 
-  // 🔥 ASYNC EMAIL (NO WAIT)
-  sendOtpEmail(email, otp).catch(err => {
-    console.error('Email failed:', err);
+  // Send email without blocking API response
+  sendOtpEmail(email, otp).catch(async (err) => {
+    console.error('OTP email failed:', err);
+
+    try {
+      await User.findByIdAndUpdate(user._id, {
+        $unset: {
+          otp: '',
+          otpExpires: ''
+        }
+      });
+    } catch (cleanupErr) {
+      console.error('Failed to clear OTP after email failure:', cleanupErr);
+    }
   });
 
   logAuth('forgot_password', user._id, true, { email });
 
-  // instant response
-  res.json({
+  return res.json({
     message: 'If an account with that email exists, an OTP has been sent.'
   });
 }));

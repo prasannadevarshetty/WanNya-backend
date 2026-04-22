@@ -9,7 +9,6 @@ const formatPrice = (price) => {
   if (price === null || price === undefined || price === 0) {
     return '在庫がありません。';
   }
-
   return `¥${price.toLocaleString()}(税込)`;
 };
 
@@ -25,15 +24,14 @@ const mapProduct = (p) => {
   }
 
   prod.priceValue = prod.price;
-  prod.isOutOfStock = prod.price === 0 || prod.price === null || prod.price === undefined;
+  prod.isOutOfStock =
+    prod.price === 0 || prod.price === null || prod.price === undefined;
   prod.price = formatPrice(prod.price);
 
   return prod;
 };
 
 // @route   GET /api/products
-// @desc    Get all products with filtering and pagination
-// @access  Public
 router.get('/', optionalAuth, async (req, res) => {
   try {
     const {
@@ -51,17 +49,13 @@ router.get('/', optionalAuth, async (req, res) => {
 
     const filter = { isActive: true };
 
-    if (category) {
-      filter.category = category;
-    }
+    if (category) filter.category = category;
 
     if (petType) {
       filter.petType = { $in: [petType, 'both'] };
     }
 
-    if (featured === 'true') {
-      filter.featured = true;
-    }
+    if (featured === 'true') filter.featured = true;
 
     if (minPrice || maxPrice) {
       filter.price = {};
@@ -114,8 +108,6 @@ router.get('/', optionalAuth, async (req, res) => {
 });
 
 // @route   GET /api/products/featured
-// @desc    Get featured products
-// @access  Public
 router.get('/featured', async (req, res) => {
   try {
     const { limit = 10 } = req.query;
@@ -137,8 +129,6 @@ router.get('/featured', async (req, res) => {
 });
 
 // @route   GET /api/products/categories
-// @desc    Get all product categories
-// @access  Public
 router.get('/categories', async (req, res) => {
   try {
     const categories = await Product.distinct('category', { isActive: true });
@@ -151,12 +141,10 @@ router.get('/categories', async (req, res) => {
   }
 });
 
-// @route   GET /api/products/search
-// @desc    Search products
-// @access  Public
+// ✅ FIXED SEARCH ROUTE
 router.get('/search', async (req, res) => {
   try {
-    const { q, limit = 20 } = req.query;
+    const { q, petType, limit = 20 } = req.query;
 
     if (!q) {
       return res.status(400).json({
@@ -174,6 +162,11 @@ router.get('/search', async (req, res) => {
       ]
     };
 
+    // 🔥 THIS FIXES YOUR ISSUE
+    if (petType) {
+      searchFilter.petType = { $in: [petType, 'both'] };
+    }
+
     const products = await Product.find(searchFilter)
       .sort({ createdAt: -1 })
       .limit(parseInt(limit, 10));
@@ -188,8 +181,6 @@ router.get('/search', async (req, res) => {
 });
 
 // @route   GET /api/products/:id
-// @desc    Get specific product
-// @access  Public
 router.get('/:id', async (req, res) => {
   try {
     const product = await Product.findOne({
@@ -218,8 +209,6 @@ router.get('/:id', async (req, res) => {
 });
 
 // @route   GET /api/products/recommendations/:petType
-// @desc    Get product recommendations based on pet type
-// @access  Public
 router.get('/recommendations/:petType', async (req, res) => {
   try {
     const { petType } = req.params;
@@ -253,8 +242,6 @@ router.get('/recommendations/:petType', async (req, res) => {
 });
 
 // @route   GET /api/products/compare
-// @desc    Compare multiple products
-// @access  Public
 router.get('/compare', async (req, res) => {
   try {
     const { ids } = req.query;
