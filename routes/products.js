@@ -2,7 +2,33 @@ const express = require('express');
 const Product = require('../models/Product');
 const { getFileUrl } = require('../utils/fileUpload');
 const { optionalAuth } = require('../middleware/auth');
+
 const router = express.Router();
+
+const formatPrice = (price) => {
+  if (price === null || price === undefined) {
+    return '在庫がありません。';
+  }
+
+  return `¥${price.toLocaleString()}(税込)`;
+};
+
+const mapProduct = (p) => {
+  const prod = p && p.toObject ? p.toObject() : p;
+
+  if (prod.images && Array.isArray(prod.images)) {
+    prod.images = prod.images.map(img => getFileUrl(img, 'images') || img);
+  }
+
+  if (prod.image) {
+    prod.image = getFileUrl(prod.image, 'images') || prod.image;
+  }
+
+  prod.priceValue = prod.price; // optional: keep numeric value too
+  prod.price = formatPrice(prod.price);
+
+  return prod;
+};
 
 // @route   GET /api/products
 // @desc    Get all products with filtering and pagination
@@ -19,12 +45,9 @@ router.get('/', optionalAuth, async (req, res) => {
       search,
       sort = 'createdAt',
       order = 'desc',
-      featured,
-      inStock,
-      gender
+      featured
     } = req.query;
 
-    // Build filter
     const filter = { isActive: true };
 
     if (category) {
@@ -35,69 +58,56 @@ router.get('/', optionalAuth, async (req, res) => {
       filter.petType = { $in: [petType, 'both'] };
     }
 
-    if (gender) {
-      filter.gender = { $in: [gender, 'both', null] };
-    }
-
     if (featured === 'true') {
       filter.featured = true;
     }
 
-    if (inStock === 'true') {
-      filter.inStock = true;
-    }
-
-    // Price range
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = parseFloat(minPrice);
       if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
     }
 
-    // Search
     if (search) {
-      filter.$text = { $search: search };
+      filter.$or = [
+        { nameJa: { $regex: search, $options: 'i' } },
+        { nameEn: { $regex: search, $options: 'i' } },
+        { descriptionJa: { $regex: search, $options: 'i' } },
+        { descriptionEn: { $regex: search, $options: 'i' } }
+      ];
     }
 
-    // Sort options
-    const sortOptions = {};
-    sortOptions[sort] = order === 'desc' ? -1 : 1;
+    const allowedSortFields = ['createdAt', 'price', 'nameJa', 'category'];
+    const safeSort = allowedSortFields.includes(sort) ? sort : 'createdAt';
 
-    // Execute query in parallel
+    const sortOptions = {};
+    sortOptions[safeSort] = order === 'asc' ? 1 : -1;
+
+    const pageNum = parseInt(page, 10);
+    const limitNum = parseInt(limit, 10);
+
     const [products, total] = await Promise.all([
       Product.find(filter)
         .sort(sortOptions)
-        .limit(limit * 1)
-        .skip((page - 1) * limit)
+        .limit(limitNum)
+        .skip((pageNum - 1) * limitNum)
         .exec(),
       Product.countDocuments(filter)
     ]);
 
-    // Convert stored filenames to full URLs when applicable
-    const mapProduct = (p) => {
-      const prod = p && p.toObject ? p.toObject() : p;
-      if (prod.images && Array.isArray(prod.images)) {
-        prod.images = prod.images.map(img => getFileUrl(img, 'images') || img);
-      }
-      if (prod.image) {
-        prod.image = getFileUrl(prod.image, 'images') || prod.image;
-      }
-      return prod;
-    };
-
     res.json({
       products: products.map(mapProduct),
       pagination: {
-        current: parseInt(page),
-        pages: Math.ceil(total / limit),
+        current: pageNum,
+        pages: Math.ceil(total / limitNum),
         total,
-        limit: parseInt(limit)
+        limit: limitNum
       }
     });
   } catch (error) {
     console.error('Get products error:', error);
-    res.status(500).json({ 
-      message: 'Server error while fetching products' 
+    res.status(500).json({
+      message: 'Server error while fetching products'
     });
   }
 });
@@ -109,26 +119,18 @@ router.get('/featured', async (req, res) => {
   try {
     const { limit = 10 } = req.query;
 
-    const products = await Product.find({ 
-      isActive: true, 
-      featured: true,
-      inStock: true 
+    const products = await Product.find({
+      isActive: true,
+      featured: true
     })
-    .sort({ rating: -1, createdAt: -1 })
-    .limit(parseInt(limit));
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit, 10));
 
-    const mapped = products.map(p => {
-      const prod = p && p.toObject ? p.toObject() : p;
-      if (prod.images && Array.isArray(prod.images)) prod.images = prod.images.map(img => getFileUrl(img, 'images') || img);
-      if (prod.image) prod.image = getFileUrl(prod.image, 'images') || prod.image;
-      return prod;
-    });
-
-    res.json({ products: mapped });
+    res.json({ products: products.map(mapProduct) });
   } catch (error) {
     console.error('Get featured products error:', error);
-    res.status(500).json({ 
-      message: 'Server error while fetching featured products' 
+    res.status(500).json({
+      message: 'Server error while fetching featured products'
     });
   }
 });
@@ -142,8 +144,8 @@ router.get('/categories', async (req, res) => {
     res.json({ categories });
   } catch (error) {
     console.error('Get categories error:', error);
-    res.status(500).json({ 
-      message: 'Server error while fetching categories' 
+    res.status(500).json({
+      message: 'Server error while fetching categories'
     });
   }
 });
@@ -153,48 +155,33 @@ router.get('/categories', async (req, res) => {
 // @access  Public
 router.get('/search', async (req, res) => {
   try {
-    const { q, limit = 20, gender } = req.query;
+    const { q, limit = 20 } = req.query;
 
     if (!q) {
-      return res.status(400).json({ 
-        message: 'Search query is required' 
+      return res.status(400).json({
+        message: 'Search query is required'
       });
     }
 
     const searchFilter = {
-      $and: [
-        { isActive: true },
-        {
-          $or: [
-            { name: { $regex: q, $options: 'i' } },
-            { description: { $regex: q, $options: 'i' } },
-            { tags: { $in: [new RegExp(q, 'i')] } },
-            { brand: { $regex: q, $options: 'i' } }
-          ]
-        }
+      isActive: true,
+      $or: [
+        { nameJa: { $regex: q, $options: 'i' } },
+        { nameEn: { $regex: q, $options: 'i' } },
+        { descriptionJa: { $regex: q, $options: 'i' } },
+        { descriptionEn: { $regex: q, $options: 'i' } }
       ]
     };
 
-    if (gender) {
-      searchFilter.$and.push({ gender: { $in: [gender, 'both', null] } });
-    }
-
     const products = await Product.find(searchFilter)
-      .sort({ rating: -1 })
-      .limit(parseInt(limit));
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit, 10));
 
-    const mapped = products.map(p => {
-      const prod = p && p.toObject ? p.toObject() : p;
-      if (prod.images && Array.isArray(prod.images)) prod.images = prod.images.map(img => getFileUrl(img, 'images') || img);
-      if (prod.image) prod.image = getFileUrl(prod.image, 'images') || prod.image;
-      return prod;
-    });
-
-    res.json({ products: mapped });
+    res.json({ products: products.map(mapProduct) });
   } catch (error) {
     console.error('Search products error:', error);
-    res.status(500).json({ 
-      message: 'Server error while searching products' 
+    res.status(500).json({
+      message: 'Server error while searching products'
     });
   }
 });
@@ -204,31 +191,27 @@ router.get('/search', async (req, res) => {
 // @access  Public
 router.get('/:id', async (req, res) => {
   try {
-    const product = await Product.findOne({ 
-      _id: req.params.id, 
-      isActive: true 
+    const product = await Product.findOne({
+      _id: req.params.id,
+      isActive: true
     });
 
     if (!product) {
-      return res.status(404).json({ 
-        message: 'Product not found' 
+      return res.status(404).json({
+        message: 'Product not found'
       });
     }
 
-    const prod = product && product.toObject ? product.toObject() : product;
-    if (prod.images && Array.isArray(prod.images)) prod.images = prod.images.map(img => getFileUrl(img, 'images') || img);
-    if (prod.image) prod.image = getFileUrl(prod.image, 'images') || prod.image;
-
-    res.json({ product: prod });
+    res.json({ product: mapProduct(product) });
   } catch (error) {
     console.error('Get product error:', error);
     if (error.name === 'CastError') {
-      return res.status(400).json({ 
-        message: 'Invalid product ID' 
+      return res.status(400).json({
+        message: 'Invalid product ID'
       });
     }
-    res.status(500).json({ 
-      message: 'Server error while fetching product' 
+    res.status(500).json({
+      message: 'Server error while fetching product'
     });
   }
 });
@@ -239,11 +222,11 @@ router.get('/:id', async (req, res) => {
 router.get('/recommendations/:petType', async (req, res) => {
   try {
     const { petType } = req.params;
-    const { limit = 12, gender } = req.query;
+    const { limit = 12 } = req.query;
 
     if (!['dog', 'cat'].includes(petType)) {
-      return res.status(400).json({ 
-        message: 'Pet type must be dog or cat' 
+      return res.status(400).json({
+        message: 'Pet type must be dog or cat'
       });
     }
 
@@ -252,30 +235,18 @@ router.get('/recommendations/:petType', async (req, res) => {
         { petType: petType },
         { petType: 'both' }
       ],
-      isActive: true,
-      inStock: true
+      isActive: true
     };
-    
-    if (gender) {
-      recFilter.gender = { $in: [gender, 'both', null] };
-    }
 
     const products = await Product.find(recFilter)
-    .sort({ rating: -1, featured: -1 })
-    .limit(parseInt(limit));
+      .sort({ featured: -1, createdAt: -1 })
+      .limit(parseInt(limit, 10));
 
-    const mapped = products.map(p => {
-      const prod = p && p.toObject ? p.toObject() : p;
-      if (prod.images && Array.isArray(prod.images)) prod.images = prod.images.map(img => getFileUrl(img, 'images') || img);
-      if (prod.image) prod.image = getFileUrl(prod.image, 'images') || prod.image;
-      return prod;
-    });
-
-    res.json({ products: mapped });
+    res.json({ products: products.map(mapProduct) });
   } catch (error) {
     console.error('Get recommendations error:', error);
-    res.status(500).json({ 
-      message: 'Server error while fetching recommendations' 
+    res.status(500).json({
+      message: 'Server error while fetching recommendations'
     });
   }
 });
@@ -288,16 +259,16 @@ router.get('/compare', async (req, res) => {
     const { ids } = req.query;
 
     if (!ids) {
-      return res.status(400).json({ 
-        message: 'Product IDs are required' 
+      return res.status(400).json({
+        message: 'Product IDs are required'
       });
     }
 
     const productIds = ids.split(',').map(id => id.trim());
-    
+
     if (productIds.length > 5) {
-      return res.status(400).json({ 
-        message: 'Cannot compare more than 5 products at once' 
+      return res.status(400).json({
+        message: 'Cannot compare more than 5 products at once'
       });
     }
 
@@ -307,23 +278,16 @@ router.get('/compare', async (req, res) => {
     });
 
     if (products.length !== productIds.length) {
-      return res.status(404).json({ 
-        message: 'One or more products not found' 
+      return res.status(404).json({
+        message: 'One or more products not found'
       });
     }
 
-    const mapped = products.map(p => {
-      const prod = p && p.toObject ? p.toObject() : p;
-      if (prod.images && Array.isArray(prod.images)) prod.images = prod.images.map(img => getFileUrl(img, 'images') || img);
-      if (prod.image) prod.image = getFileUrl(prod.image, 'images') || prod.image;
-      return prod;
-    });
-
-    res.json({ products: mapped });
+    res.json({ products: products.map(mapProduct) });
   } catch (error) {
     console.error('Compare products error:', error);
-    res.status(500).json({ 
-      message: 'Server error while comparing products' 
+    res.status(500).json({
+      message: 'Server error while comparing products'
     });
   }
 });

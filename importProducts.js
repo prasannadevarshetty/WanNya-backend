@@ -22,6 +22,7 @@ async function importProducts() {
                     console.log('First row keys:', Object.keys(row));
                     console.log('First row category value:', row.category);
                 }
+
                 products.push({
                     category: row.category || row['\ufeffcategory'],
                     subCategory: row.subCategory || '',

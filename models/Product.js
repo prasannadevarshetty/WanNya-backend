@@ -13,7 +13,8 @@ const productSchema = new mongoose.Schema({
   petType: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    enum: ['dog', 'cat', 'both']
   },
   nameJa: {
     type: String,
