@@ -1,84 +1,140 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
-  // ─── Bilingual names (scraped data) ───────────────────────────────────────
-  nameEn: { type: String, trim: true },
-  nameJa: { type: String, trim: true },
-
-  // ─── Legacy / fallback name field ─────────────────────────────────────────
-  name: { type: String, trim: true },
-
-  // ─── Bilingual descriptions ───────────────────────────────────────────────
-  descriptionEn: { type: String, trim: true },
-  descriptionJa: { type: String, trim: true },
-  description:   { type: String, trim: true },
-
-  // ─── Pet & category info ──────────────────────────────────────────────────
+  // Basic fields
+  category: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  subCategory: {
+    type: String,
+    trim: true
+  },
   petType: {
     type: String,
-    // Allow both old enum values ('dog','cat','both') and scraped values ('Dog','Cat')
+    required: true,
     trim: true,
-    default: 'both'
+    enum: ['dog', 'cat', 'both']
   },
-  gender: {
+  
+  // Bilingual names
+  nameJa: {
     type: String,
-    default: 'both'
+    required: true,
+    trim: true
   },
-  category:    { type: String, trim: true },
-  subCategory: { type: String, trim: true },
+  nameEn: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  name: { type: String, trim: true }, // Legacy fallback
 
-  // ─── Pricing ──────────────────────────────────────────────────────────────
+  // Bilingual descriptions
+  descriptionJa: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  descriptionEn: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  description: { type: String, trim: true }, // Legacy fallback
+
+  // Pricing
   price: {
     type: Number,
-    min: [0, 'Price cannot be negative'],
-    default: null   // null = not set from scraper; frontend should handle gracefully
+    default: null,
+    min: [0, 'Price cannot be negative']
   },
   originalPrice: { type: Number, min: 0 },
 
-  // ─── Images ───────────────────────────────────────────────────────────────
-  image:  { type: String },          // single image field (scraped data)
-  images: [{ type: String }],        // array field (legacy/manual data)
+  // Images
+  image: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  images: [{ type: String }],
 
-  // ─── Ratings ──────────────────────────────────────────────────────────────
-  rating:     { type: Number, default: null, min: 0, max: 5 },
+  // Product links
+  productLink: {
+    type: String,
+    default: '',
+    trim: true
+  },
+
+  // Ratings
+  rating: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 5
+  },
   numReviews: { type: Number, default: 0 },
 
-  // ─── Stock & availability ─────────────────────────────────────────────────
-  inStock: { type: Boolean, default: true },
-  stock:   { type: Number, default: 0 },
+  // Stock & availability
+  isActive: {
+    type: Boolean,
+    default: true
+  },
+  featured: {
+    type: Boolean,
+    default: false
+  },
+  inStock: {
+    type: Boolean,
+    default: true
+  },
+  stock: {
+    type: Number,
+    default: 0
+  },
 
-  // ─── Extra meta ───────────────────────────────────────────────────────────
-  brand:       { type: String, trim: true },
-  productLink: { type: String, trim: true },   // original product URL from scrape
-  tags:        [{ type: String, trim: true }],
-  features:    [{ type: String, trim: true }],
+  // Additional fields
+  gender: {
+    type: String,
+    enum: ['male', 'female', 'both', null],
+    default: null
+  },
+  brand: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  tags: [{ type: String, trim: true }],
+  features: [{ type: String, trim: true }],
   ingredients: [{ type: String, trim: true }],
 
+  // Nutritional information
   nutritionalInfo: {
-    protein:  String,
-    fat:      String,
-    fiber:    String,
+    protein: String,
+    fat: String,
+    fiber: String,
     moisture: String
   },
+  
+  // Age and size ranges
   ageRange: { min: Number, max: Number },
   sizeRange: { values: [String] },
+  
+  // Allergy information
   allergyInfo: {
-    isGrainFree:      Boolean,
+    isGrainFree: Boolean,
     isHypoallergenic: Boolean,
-    commonAllergens:  [String]
-  },
-
-  isActive: { type: Boolean, default: true },
-  featured: { type: Boolean, default: false }
+    commonAllergens: [String]
+  }
 }, {
   timestamps: true,
-  // Allow fields not in schema (e.g. future scraper additions) to pass through
-  strict: false
+  strict: false // Allow fields not in schema
 });
 
-// ─── Indexes ─────────────────────────────────────────────────────────────────
+// Indexes for performance
 productSchema.index({ petType: 1, category: 1, isActive: 1 });
-productSchema.index({ nameEn: 'text', nameJa: 'text', name: 'text', descriptionEn: 'text', descriptionJa: 'text', description: 'text' });
+productSchema.index({ nameJa: 'text', nameEn: 'text', name: 'text', descriptionJa: 'text', descriptionEn: 'text', description: 'text' });
 productSchema.index({ price: 1 });
 productSchema.index({ rating: -1 });
 
