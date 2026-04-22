@@ -37,7 +37,9 @@ async function importProducts() {
                             : Number(row.price.replace(/[^\d]/g, '')))
                         : null,
                     productLink: row.productLink || '',
-                    image: row.image || ''
+                    image: row.image || '',
+                    isActive: true,
+                    featured: false
                 });
             })
             .on('end', async () => {
