@@ -19,6 +19,7 @@ const serviceRoutes = require('./routes/services');
 const cartRoutes = require('./routes/cart');
 const wishlistRoutes = require('./routes/wishlist');
 const notificationRoutes = require('./routes/notifications');
+const adminUsersRoutes = require('./routes/adminUsers');
 const app = express();
 
 // Connect DB
@@ -99,6 +100,7 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/admin', adminUsersRoutes);
 
 // ======================
 // 🔥 HEALTH CHECK
