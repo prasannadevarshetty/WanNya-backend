@@ -6,7 +6,7 @@ const { optionalAuth } = require('../middleware/auth');
 const router = express.Router();
 
 const formatPrice = (price) => {
-  if (price === null || price === undefined) {
+  if (price === null || price === undefined || price === 0) {
     return '在庫がありません。';
   }
 
@@ -24,7 +24,8 @@ const mapProduct = (p) => {
     prod.image = getFileUrl(prod.image, 'images') || prod.image;
   }
 
-  prod.priceValue = prod.price; // optional: keep numeric value too
+  prod.priceValue = prod.price;
+  prod.isOutOfStock = prod.price === 0 || prod.price === null || prod.price === undefined;
   prod.price = formatPrice(prod.price);
 
   return prod;
