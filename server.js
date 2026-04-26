@@ -39,7 +39,7 @@ app.use(helmet({
 // ======================
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://wannya-f.netlify.app"
+  "https://wannya-fe.netlify.app"
 ];
 
 app.use(cors({
