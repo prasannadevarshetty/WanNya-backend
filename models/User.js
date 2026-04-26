@@ -48,7 +48,29 @@ const userSchema = new mongoose.Schema({
   // One-time password (OTP) for password reset flows
   otp: String,
   otpExpires: Date,
-  lastLogin: Date
+  lastLogin: Date,
+  role: {
+  type: String,
+  enum: ['user', 'admin'],
+  default: 'user'
+},
+isDeleted: {
+  type: Boolean,
+  default: false
+},
+deletedAt: {
+  type: Date,
+  default: null
+},
+deletedBy: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'User',
+  default: null
+},
+deleteReason: {
+  type: String,
+  default: ''
+}
 }, {
   timestamps: true
 });
