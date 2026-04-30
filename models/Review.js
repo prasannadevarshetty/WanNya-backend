@@ -21,7 +21,7 @@ const reviewSchema = new mongoose.Schema({
   orderId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Order',
-    required: true
+    required: false
   },
   rating: {
     type: Number,
@@ -31,7 +31,7 @@ const reviewSchema = new mongoose.Schema({
   },
   title: {
     type: String,
-    required: true,
+    default: 'Product Review',
     trim: true,
     maxlength: 100
   },
@@ -87,22 +87,40 @@ reviewSchema.index({ providerId: 1, isActive: 1 });
 reviewSchema.index({ orderId: 1 });
 reviewSchema.index({ rating: 1 });
 reviewSchema.index({ createdAt: -1 });
-
-// Compound index for product reviews
 reviewSchema.index({ productId: 1, isActive: 1, rating: -1 });
 
 // Ensure at least one of productId or serviceId is provided
 reviewSchema.pre('validate', function(next) {
   if (!this.productId && !this.serviceId) {
-    next(new Error('Either productId or serviceId must be provided'));
-  } else {
-    next();
+    return next(new Error('Either productId or serviceId must be provided'));
   }
+  next();
 });
 
-// Prevent duplicate reviews for the same order and item
-reviewSchema.index({ orderId: 1, productId: 1 }, { unique: true, sparse: true });
-reviewSchema.index({ orderId: 1, serviceId: 1 }, { unique: true, sparse: true });
+// Prevent duplicate reviews only when orderId exists
+reviewSchema.index(
+  { orderId: 1, productId: 1 },
+  {
+    unique: true,
+    sparse: true,
+    partialFilterExpression: {
+      orderId: { $exists: true },
+      productId: { $exists: true }
+    }
+  }
+);
+
+reviewSchema.index(
+  { orderId: 1, serviceId: 1 },
+  {
+    unique: true,
+    sparse: true,
+    partialFilterExpression: {
+      orderId: { $exists: true },
+      serviceId: { $exists: true }
+    }
+  }
+);
 
 // Pre-save middleware to update edited timestamp
 reviewSchema.pre('save', function(next) {
@@ -116,11 +134,11 @@ reviewSchema.pre('save', function(next) {
 // Static method to get average rating
 reviewSchema.statics.getAverageRating = function(itemId, itemType = 'product') {
   const matchField = itemType === 'product' ? 'productId' : 'serviceId';
-  
+
   return this.aggregate([
     {
       $match: {
-        [matchField]: mongoose.Types.ObjectId(itemId),
+        [matchField]: new mongoose.Types.ObjectId(itemId),
         isActive: true
       }
     },
@@ -140,11 +158,11 @@ reviewSchema.statics.getAverageRating = function(itemId, itemType = 'product') {
 // Static method to get rating distribution
 reviewSchema.statics.getRatingDistribution = function(itemId, itemType = 'product') {
   const matchField = itemType === 'product' ? 'productId' : 'serviceId';
-  
+
   return this.aggregate([
     {
       $match: {
-        [matchField]: mongoose.Types.ObjectId(itemId),
+        [matchField]: new mongoose.Types.ObjectId(itemId),
         isActive: true
       }
     },
