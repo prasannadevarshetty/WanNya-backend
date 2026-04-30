@@ -12,7 +12,8 @@ const { authenticate } = require('../middleware/auth');
 // @access  Private
 router.post('/create', authenticate, async (req, res) => {
   try {
-    const { items, totalAmount, shippingAddress } = req.body;
+    const { items, shippingAddress } = req.body;
+    const totalAmount = Number(req.body.totalAmount || req.body.totalPrice || req.body.total);
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return res.status(400).json({ 
@@ -20,7 +21,7 @@ router.post('/create', authenticate, async (req, res) => {
       });
     }
 
-    if (!totalAmount || totalAmount <= 0) {
+    if (!Number.isFinite(totalAmount) || totalAmount <= 0) {
       return res.status(400).json({ 
         message: 'Valid total amount is required' 
       });
