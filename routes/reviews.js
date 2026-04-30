@@ -43,7 +43,8 @@ router.get('/product/:productId', async (req, res) => {
 // @access  Private
 router.post('/create', authenticate, validateReview, async (req, res) => {
   try {
-    const { productId, orderId, rating, comment, title } = req.body;
+    const { productId, rating, comment, title } = req.body;
+    let { orderId } = req.body;
 
     // Verify order belongs to user and contains the product
     const order = await Order.findOne({ 
@@ -52,12 +53,29 @@ router.post('/create', authenticate, validateReview, async (req, res) => {
       'items.product': productId
     });
 
+    let order = null;
+
+    if (orderId) {
+      order = await Order.findOne({ 
+        _id: orderId, 
+        userId: req.user._id,
+        'items.product': productId
+      });
+    } else {
+      order = await Order.findOne({
+        userId: req.user._id,
+        'items.product': productId
+      }).sort({ createdAt: -1 });
+    }
+
     if (!order) {
       return res.status(403).json({ 
         success: false, 
         message: 'You can only review products you have purchased' 
       });
     }
+
+    orderId = order._id;
 
     const review = new Review({
       userId: req.user._id,
