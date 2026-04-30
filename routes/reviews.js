@@ -4,7 +4,6 @@ const Review = require('../models/Review');
 const Order = require('../models/Order');
 const Product = require('../models/Product');
 const { authenticate } = require('../middleware/auth');
-const { validateReview } = require('../middleware/validation');
 const mongoose = require('mongoose');
 
 // @route   GET /api/reviews/product/:productId
@@ -41,14 +40,22 @@ router.get('/product/:productId', async (req, res) => {
 // @route   POST /api/reviews/create
 // @desc    Create a new review
 // @access  Private
-router.post('/create', authenticate, validateReview, async (req, res) => {
+router.post('/create', authenticate, async (req, res) => {
   try {
     const { productId, rating, comment, title } = req.body;
     let { orderId } = req.body;
 
+    // Basic validation (replacing validateReview middleware)
+    if (!productId || !rating || !comment) {
+      return res.status(400).json({
+        success: false,
+        message: 'Product, rating and comment are required'
+      });
+    }
+
     let order = null;
 
-    // Check order (with or without orderId)
+    // Find order (with or without orderId)
     if (orderId) {
       order = await Order.findOne({ 
         _id: orderId, 
