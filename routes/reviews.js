@@ -46,15 +46,9 @@ router.post('/create', authenticate, validateReview, async (req, res) => {
     const { productId, rating, comment, title } = req.body;
     let { orderId } = req.body;
 
-    // Verify order belongs to user and contains the product
-    const order = await Order.findOne({ 
-      _id: orderId, 
-      userId: req.user._id,
-      'items.product': productId
-    });
-
     let order = null;
 
+    // Check order (with or without orderId)
     if (orderId) {
       order = await Order.findOne({ 
         _id: orderId, 
@@ -81,7 +75,7 @@ router.post('/create', authenticate, validateReview, async (req, res) => {
       userId: req.user._id,
       productId,
       orderId,
-      rating,
+      rating: Number(rating),
       comment,
       title: title || 'Product Review',
       isVerified: order.status === 'delivered'
@@ -89,10 +83,21 @@ router.post('/create', authenticate, validateReview, async (req, res) => {
 
     await review.save();
 
-    // Update product average rating (optional but recommended)
+    // Update product rating
     const stats = await Review.aggregate([
-      { $match: { productId: new mongoose.Types.ObjectId(productId), isActive: true } },
-      { $group: { _id: null, avg: { $avg: '$rating' }, count: { $sum: 1 } } }
+      { 
+        $match: { 
+          productId: new mongoose.Types.ObjectId(productId), 
+          isActive: true 
+        } 
+      },
+      { 
+        $group: { 
+          _id: null, 
+          avg: { $avg: '$rating' }, 
+          count: { $sum: 1 } 
+        } 
+      }
     ]);
 
     if (stats.length > 0) {
@@ -107,12 +112,21 @@ router.post('/create', authenticate, validateReview, async (req, res) => {
       message: 'Review submitted successfully',
       review
     });
+
   } catch (error) {
     console.error('Create review error:', error);
+
     if (error.code === 11000) {
-      return res.status(400).json({ success: false, message: 'You have already reviewed this item for this order' });
+      return res.status(400).json({ 
+        success: false, 
+        message: 'You have already reviewed this item for this order' 
+      });
     }
-    res.status(500).json({ success: false, message: 'Server error' });
+
+    res.status(500).json({ 
+      success: false, 
+      message: 'Server error' 
+    });
   }
 });
 
