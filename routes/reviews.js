@@ -7,8 +7,6 @@ const { authenticate } = require('../middleware/auth');
 const mongoose = require('mongoose');
 
 // @route   GET /api/reviews/product/:productId
-// @desc    Get all reviews for a product
-// @access  Public
 router.get('/product/:productId', async (req, res) => {
   try {
     const reviews = await Review.find({ 
@@ -38,14 +36,12 @@ router.get('/product/:productId', async (req, res) => {
 });
 
 // @route   POST /api/reviews/create
-// @desc    Create a new review
-// @access  Private
 router.post('/create', authenticate, async (req, res) => {
   try {
     const { productId, rating, comment, title } = req.body;
     let { orderId } = req.body;
 
-    // Basic validation (replacing validateReview middleware)
+    // Basic validation
     if (!productId || !rating || !comment) {
       return res.status(400).json({
         success: false,
@@ -55,7 +51,7 @@ router.post('/create', authenticate, async (req, res) => {
 
     let order = null;
 
-    // Find order (with or without orderId)
+    // Try to find order (optional now)
     if (orderId) {
       order = await Order.findOne({ 
         _id: orderId, 
@@ -69,14 +65,10 @@ router.post('/create', authenticate, async (req, res) => {
       }).sort({ createdAt: -1 });
     }
 
-    if (!order) {
-      return res.status(403).json({ 
-        success: false, 
-        message: 'You can only review products you have purchased' 
-      });
+    // If order exists, attach it
+    if (order) {
+      orderId = order._id;
     }
-
-    orderId = order._id;
 
     const review = new Review({
       userId: req.user._id,
@@ -85,7 +77,7 @@ router.post('/create', authenticate, async (req, res) => {
       rating: Number(rating),
       comment,
       title: title || 'Product Review',
-      isVerified: order.status === 'delivered'
+      isVerified: order?.status === 'delivered'
     });
 
     await review.save();
