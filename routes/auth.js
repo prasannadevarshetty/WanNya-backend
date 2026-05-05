@@ -17,6 +17,7 @@ const { generateOTP } = require('../utils/otpGenerator');
 
 const router = express.Router();
 
+// RATE LIMITERS
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 50,
@@ -53,12 +54,14 @@ const registerLimiter = rateLimit({
   legacyHeaders: false
 });
 
+// TOKEN
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE || '7d'
   });
 };
 
+// REGISTER
 router.post('/register', registerLimiter, validateUserRegistration, catchAsync(async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -79,6 +82,7 @@ router.post('/register', registerLimiter, validateUserRegistration, catchAsync(a
   });
 }));
 
+// LOGIN
 router.post('/login', loginLimiter, validateUserLogin, catchAsync(async (req, res) => {
   const { email, password } = req.body;
 
@@ -102,6 +106,7 @@ router.post('/login', loginLimiter, validateUserLogin, catchAsync(async (req, re
   });
 }));
 
+// FORGOT PASSWORD (FAST OTP)
 router.post('/forgot-password', forgotPasswordLimiter, validateOtpRequest, catchAsync(async (req, res) => {
   const { email } = req.body;
 
@@ -114,13 +119,13 @@ router.post('/forgot-password', forgotPasswordLimiter, validateOtpRequest, catch
     });
   }
 
+  // allow resend after 60 sec
   if (user.otpExpires && user.otpExpires > Date.now()) {
     const otpCreatedAt = user.otpExpires.getTime() - 5 * 60 * 1000;
     const resendAllowedAt = otpCreatedAt + 60 * 1000;
 
     if (Date.now() < resendAllowedAt) {
       const remainingSecs = Math.ceil((resendAllowedAt - Date.now()) / 1000);
-
       return res.status(429).json({
         message: `Please wait ${remainingSecs} seconds before requesting a new OTP.`
       });
@@ -133,25 +138,20 @@ router.post('/forgot-password', forgotPasswordLimiter, validateOtpRequest, catch
   user.otpExpires = new Date(Date.now() + 5 * 60 * 1000);
   await user.save();
 
-  const sent = await sendOtpEmail(email, otp);
-
-  if (!sent) {
-    user.otp = undefined;
-    user.otpExpires = undefined;
-    await user.save();
-
-    return res.status(500).json({
-      message: 'Failed to send OTP email. Please try again.'
-    });
-  }
+  // 🔥 ASYNC EMAIL (NO WAIT)
+  sendOtpEmail(email, otp).catch(err => {
+    console.error('Email failed:', err);
+  });
 
   logAuth('forgot_password', user._id, true, { email });
 
+  // instant response
   res.json({
     message: 'If an account with that email exists, an OTP has been sent.'
   });
 }));
 
+// VERIFY OTP
 router.post('/verify-otp', otpLimiter, validateOtpVerify, catchAsync(async (req, res) => {
   const { email, otp } = req.body;
 
@@ -175,6 +175,7 @@ router.post('/verify-otp', otpLimiter, validateOtpVerify, catchAsync(async (req,
   res.json({ message: 'OTP verified' });
 }));
 
+// RESET PASSWORD
 router.post('/reset-password', otpLimiter, validateResetPassword, catchAsync(async (req, res) => {
   const { email, otp, newPassword } = req.body;
 
@@ -204,6 +205,7 @@ router.post('/reset-password', otpLimiter, validateResetPassword, catchAsync(asy
   res.json({ message: 'Password reset successful' });
 }));
 
+// CURRENT USER
 router.get('/me', authenticate, (req, res) => {
   res.json({ user: req.user.toPublicJSON() });
 });
