@@ -1,25 +1,30 @@
-const nodemailer = require("nodemailer");
+const SibApiV3Sdk = require('sib-api-v3-sdk');
 
-const transporter = nodemailer.createTransport({
-  host: "smtp-relay.brevo.com",
-  port: 587,
-  secure: false,
+const client = SibApiV3Sdk.ApiClient.instance;
 
-  auth: {
-    user: process.env.BREVO_SMTP_USER,
-    pass: process.env.BREVO_SMTP_KEY,
-  },
-});
+const apiKey = client.authentications['api-key'];
+apiKey.apiKey = process.env.BREVO_API_KEY;
+
+const tranEmailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
 const sendOtpEmail = async (email, otp) => {
   try {
 
-    const mailOptions = {
-      from: `"WanNya" <${process.env.BREVO_SENDER_EMAIL}>`,
-      to: email,
-      subject: "Your WanNya OTP",
+    await tranEmailApi.sendTransacEmail({
+      sender: {
+        email: process.env.BREVO_SENDER_EMAIL,
+        name: 'WanNya',
+      },
 
-      html: `
+      to: [
+        {
+          email,
+        },
+      ],
+
+      subject: 'Your WanNya OTP',
+
+      htmlContent: `
         <div style="font-family: Arial; text-align:center;">
           <h2>Your OTP Code</h2>
 
@@ -30,9 +35,7 @@ const sendOtpEmail = async (email, otp) => {
           <p>This OTP is valid for 5 minutes.</p>
         </div>
       `,
-    };
-
-    await transporter.sendMail(mailOptions);
+    });
 
     console.log("✅ OTP sent:", email);
 
