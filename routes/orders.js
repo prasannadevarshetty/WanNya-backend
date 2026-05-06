@@ -5,6 +5,8 @@ const Order = require('../models/Order');
 const User = require('../models/User');
 const CancelledProduct = require('../models/CancelledProduct');
 const Service = require('../models/Service');
+const Notification = require('../models/Notification');
+
 const { authenticate } = require('../middleware/auth');
 
 // Helper to parse price safely
@@ -66,6 +68,19 @@ router.post('/create', authenticate, async (req, res) => {
       { $inc: { points: order.pointsEarned } }
     );
 
+    // 🔔 CREATE ORDER NOTIFICATION
+    await Notification.create({
+      userId: req.user._id,
+      key: 'orderPlaced',
+      data: {
+        orderId: order._id,
+        orderNumber: order.orderNumber,
+        totalAmount: order.totalAmount,
+        totalItems: items.length
+      },
+      isRead: false
+    });
+
     res.status(201).json({
       message: 'Order created successfully',
       order: {
@@ -93,9 +108,9 @@ router.post('/cancel/:orderId', authenticate, async (req, res) => {
       return res.status(400).json({ message: 'Cancellation reason is required' });
     }
 
-    const order = await Order.findOne({ 
-      _id: orderId, 
-      userId: req.user._id 
+    const order = await Order.findOne({
+      _id: orderId,
+      userId: req.user._id
     });
 
     if (!order) {
@@ -130,9 +145,14 @@ router.post('/cancel/:orderId', authenticate, async (req, res) => {
     order.status = 'cancelled';
     order.cancelledAt = new Date();
     order.cancellationReason = cancellationReason.trim();
+
     await order.save();
 
-    const totalPointsDeducted = cancelledProducts.reduce((sum, item) => sum + item.pointsDeducted, 0);
+    const totalPointsDeducted = cancelledProducts.reduce(
+      (sum, item) => sum + item.pointsDeducted,
+      0
+    );
+
     if (totalPointsDeducted > 0) {
       await User.findByIdAndUpdate(
         req.user._id,
@@ -163,15 +183,17 @@ router.get('/user', authenticate, async (req, res) => {
     const enhancedOrders = orders.map((o) => {
       const firstItem = o.items[0];
 
-      const itemName = firstItem?.customization?.name || 
-                      firstItem?.product?.name || 
-                      firstItem?.service?.name || 
-                      'Order Item';
+      const itemName =
+        firstItem?.customization?.name ||
+        firstItem?.product?.name ||
+        firstItem?.service?.name ||
+        'Order Item';
 
-      const itemImage = firstItem?.customization?.image || 
-                        firstItem?.product?.image || 
-                        firstItem?.service?.image || 
-                        '/placeholder-product.jpg';
+      const itemImage =
+        firstItem?.customization?.image ||
+        firstItem?.product?.image ||
+        firstItem?.service?.image ||
+        '/placeholder-product.jpg';
 
       return {
         id: o._id.toString(),
@@ -179,15 +201,29 @@ router.get('/user', authenticate, async (req, res) => {
         title: itemName,
         category: o.type,
         price: o.totalAmount,
-        date: o.createdAt ? o.createdAt.toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-        status: o.status === 'delivered' ? 'completed' : (o.status === 'cancelled' ? 'cancelled' : 'ongoing'),
+        date: o.createdAt
+          ? o.createdAt.toISOString().split('T')[0]
+          : new Date().toISOString().split('T')[0],
+        status:
+          o.status === 'delivered'
+            ? 'completed'
+            : (o.status === 'cancelled' ? 'cancelled' : 'ongoing'),
         items: o.items.map(item => ({
           id: item._id,
-          name: item.customization?.name || item.product?.name || item.service?.name,
-          image: item.customization?.image || item.product?.image || item.service?.image,
+          name:
+            item.customization?.name ||
+            item.product?.name ||
+            item.service?.name,
+          image:
+            item.customization?.image ||
+            item.product?.image ||
+            item.service?.image,
           quantity: item.quantity,
           price: item.price,
-          category: item.customization?.category || item.product?.category || item.service?.category
+          category:
+            item.customization?.category ||
+            item.product?.category ||
+            item.service?.category
         })),
         totalItems: o.items.reduce((sum, item) => sum + item.quantity, 0),
         pointsEarned: o.pointsEarned || 0,
@@ -204,14 +240,19 @@ router.get('/user', authenticate, async (req, res) => {
 
   } catch (error) {
     console.error('Get orders error:', error);
-    res.status(500).json({ success: false, message: 'Server error while fetching orders' });
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching orders'
+    });
   }
 });
 
 // @route   GET /api/orders/cancelled
 router.get('/cancelled', authenticate, async (req, res) => {
   try {
-    const cancelledProducts = await CancelledProduct.find({ userId: req.user._id })
+    const cancelledProducts = await CancelledProduct.find({
+      userId: req.user._id
+    })
       .populate('product', 'name image')
       .populate('service', 'name image')
       .sort({ cancelledAt: -1 });
@@ -235,7 +276,9 @@ router.get('/cancelled', authenticate, async (req, res) => {
 
   } catch (error) {
     console.error('Get cancelled products error:', error);
-    res.status(500).json({ message: 'Server error while fetching cancelled products' });
+    res.status(500).json({
+      message: 'Server error while fetching cancelled products'
+    });
   }
 });
 

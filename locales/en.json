@@ -5,6 +5,7 @@
     "empty": "No notifications yet!",
     "delete": "Delete all",
     "emptyDesc": "You are all caught up. We will notify you when something arrives.",
+    "orderPlaced": "Your order has been placed successfully.",
  
     "bookingConfirmed": {
       "title": "Booking Confirmed",

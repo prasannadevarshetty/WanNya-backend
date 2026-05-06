@@ -5,6 +5,7 @@
         "delete": "すべて削除",
         "empty": "まだ通知はありません！",
         "emptyDesc": "現在新しいお知らせはありません。更新があり次第お知らせします。",
+        "orderPlaced": "ご注文が正常に完了しました。",
 
         "bookingConfirmed": {
             "title": "予約確定",
