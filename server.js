@@ -20,45 +20,54 @@ const cartRoutes = require('./routes/cart');
 const wishlistRoutes = require('./routes/wishlist');
 const notificationRoutes = require('./routes/notifications');
 const adminUsersRoutes = require('./routes/adminUsers');
+
 const app = express();
 
-// Connect DB
-connectDB();
+// ======================
+// 🔥 TRUST PROXY (RENDER FIX)
+// ======================
+app.set('trust proxy', 1);
 
+// ======================
+// 🔥 CONNECT DB
+// ======================
+connectDB();
 
 // ======================
 // 🔥 SECURITY
 // ======================
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
-}));
-
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' }
+  })
+);
 
 // ======================
-// 🔥 CORS (MUST BE FIRST)
+// 🔥 CORS
 // ======================
 const allowedOrigins = [
-  "http://localhost:3000",
-  "https://wannya.onrender.com"
+  'http://localhost:3000',
+  'https://wannya.onrender.com'
 ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
 
-    return callback(new Error("Not allowed by CORS"));
-  },
-  credentials: true
-}));
+      return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true
+  })
+);
 
 // ======================
-// 🔥 RATE LIMIT (RELAXED)
+// 🔥 RATE LIMIT
 // ======================
-// Global rate limiter — generous enough for normal use, blocks mass scraping
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 300,
@@ -68,7 +77,6 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-
 // ======================
 // 🔥 MIDDLEWARE
 // ======================
@@ -76,20 +84,21 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
 
-
 // ======================
-// 🔥 STATIC
+// 🔥 STATIC FILES
 // ======================
 app.use('/uploads', express.static('uploads'));
 
-
 // ======================
-// 🔥 ROUTES
+// 🔥 ROOT ROUTE
 // ======================
 app.get('/', (req, res) => {
   res.send('🚀 WanNya API is running...');
 });
 
+// ======================
+// 🔥 API ROUTES
+// ======================
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
@@ -115,20 +124,17 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-
 // ======================
 // 🔥 ERROR HANDLING
 // ======================
 app.use('*', notFound);
 app.use(globalErrorHandler);
 
-
 // ======================
 // 🔥 SERVER START
 // ======================
 const PORT = process.env.PORT || 5001;
 
-// Vercel serverless functions do not need app.listen, but Render (your personal repo) does.
 if (!process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`🚀 WanNya Backend Server running on port ${PORT}`);
