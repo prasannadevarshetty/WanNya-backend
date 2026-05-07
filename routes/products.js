@@ -52,7 +52,7 @@ router.get('/', optionalAuth, async (req, res) => {
     if (category) filter.category = category;
 
     if (petType) {
-      filter.petType = { $in: [petType, 'both'] };
+      filter.petType = { $in: [new RegExp(`^${petType}$`, 'i'), 'both'] };
     }
 
     if (featured === 'true') filter.featured = true;
@@ -222,7 +222,7 @@ router.get('/recommendations/:petType', async (req, res) => {
 
     const recFilter = {
       $or: [
-        { petType: petType },
+        { petType: new RegExp(`^${petType}$`, 'i') },
         { petType: 'both' }
       ],
       isActive: true

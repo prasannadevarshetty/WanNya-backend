@@ -38,13 +38,10 @@ const sendOtpEmail = async (email, otp) => {
     });
 
     console.log("✅ OTP sent:", email);
-
     return true;
 
   } catch (err) {
-
     console.error("❌ Email error:", err);
-
     return false;
   }
 };

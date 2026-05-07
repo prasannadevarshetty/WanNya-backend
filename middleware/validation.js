@@ -207,8 +207,7 @@ const validateReview = [
     .withMessage('Invalid product ID'),
 
   body('orderId')
-    .notEmpty()
-    .withMessage('Order ID is required')
+    .optional()
     .isMongoId()
     .withMessage('Invalid order ID'),
 
