@@ -166,7 +166,7 @@ router.post('/create', authenticate, validateReview, async (req, res) => {
       message: 'Review submitted successfully',
       review
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Create review error:', error);
     if (error.code === 11000) {
       return res.status(400).json({ 
