@@ -112,32 +112,41 @@ router.post('/create', authenticate, validateReview, async (req, res) => {
       });
     }
 
-    // Check if already reviewed for THIS order
-    const existingReview = await Review.findOne({
+    // Check if any review (active or inactive) exists for THIS order
+    let review = await Review.findOne({
       userId: req.user._id,
-      productId,
-      orderId: order._id,
-      isActive: true
+      productId: new mongoose.Types.ObjectId(productId),
+      orderId: order._id
     });
 
-    if (existingReview) {
-      return res.status(400).json({
-        success: false,
-        message: 'You have already reviewed this item. Please edit your existing review instead.'
+    if (review) {
+      if (review.isActive) {
+        return res.status(400).json({
+          success: false,
+          message: 'You have already reviewed this item. Please edit your existing review instead.'
+        });
+      }
+      
+      // Reactivate and update the deleted review
+      review.rating = rating;
+      review.comment = comment;
+      review.title = title || 'Product Review';
+      review.isActive = true;
+      review.isVerified = order.status === 'delivered';
+      await review.save();
+    } else {
+      // Create new review
+      review = new Review({
+        userId: req.user._id,
+        productId,
+        orderId: order._id,
+        rating,
+        comment,
+        title: title || 'Product Review',
+        isVerified: order.status === 'delivered'
       });
+      await review.save();
     }
-
-    const review = new Review({
-      userId: req.user._id,
-      productId,
-      orderId: order._id,
-      rating,
-      comment,
-      title: title || 'Product Review',
-      isVerified: order.status === 'delivered'
-    });
-
-    await review.save();
 
     // Update product average rating (optional but recommended)
     const stats = await Review.aggregate([
@@ -157,12 +166,15 @@ router.post('/create', authenticate, validateReview, async (req, res) => {
       message: 'Review submitted successfully',
       review
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Create review error:', error);
     if (error.code === 11000) {
-      return res.status(400).json({ success: false, message: 'You have already reviewed this item for this order' });
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Database conflict: A review for this order and product already exists in our records.' 
+      });
     }
-    res.status(500).json({ success: false, message: 'Server error' });
+    res.status(500).json({ success: false, message: 'Server error: ' + (error.message || 'Unknown error') });
   }
 });
 
