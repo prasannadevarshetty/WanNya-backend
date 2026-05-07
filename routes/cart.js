@@ -13,16 +13,20 @@ const mapCartItemsForClient = async (cart) => {
     .filter((i) => i.productId)
     .map((i) => i.productId);
 
-  const products = await Product.find({ _id: { $in: productIds }, isActive: true }).select(
-    '_id name price images category rating'
-  );
+  const products = await Product.find({
+    _id: { $in: productIds },
+    isActive: true
+  }).select('_id name price images category rating');
 
-  const productMap = new Map(products.map((p) => [p._id.toString(), p]));
+  const productMap = new Map(
+    products.map((p) => [p._id.toString(), p])
+  );
 
   const items = cart.items
     .map((item) => {
       const pid = item.productId?.toString();
       if (!pid) return null;
+
       const p = productMap.get(pid);
       if (!p) return null;
 
@@ -32,10 +36,15 @@ const mapCartItemsForClient = async (cart) => {
         title: p.name,
         price: item.price ?? p.price,
         quantity: item.quantity,
-        image: Array.isArray(p.images) ? (p.images[0] || '') : '',
+        image: Array.isArray(p.images)
+          ? (p.images[0] || '')
+          : '',
         category: p.category,
         rating: p.rating,
-        isOutOfStock: p.price === null || p.price === undefined || p.price === 0
+        isOutOfStock:
+          p.price === null ||
+          p.price === undefined ||
+          p.price === 0
       };
     })
     .filter(Boolean);
@@ -46,21 +55,37 @@ const mapCartItemsForClient = async (cart) => {
 // GET /api/cart
 router.get('/', async (req, res) => {
   try {
-    let cart = await Cart.findOne({ userId: req.user._id, isActive: true });
+    let cart = await Cart.findOne({
+      userId: req.user._id,
+      isActive: true
+    });
+
+    console.log("GET CART USER:", req.user._id);
+    console.log("GET CART DB:", cart);
+
     if (!cart) {
-      cart = await Cart.create({ userId: req.user._id, items: [] });
+      cart = await Cart.create({
+        userId: req.user._id,
+        items: []
+      });
     }
 
     const items = await mapCartItemsForClient(cart);
+
+    console.log("GET CART RESPONSE ITEMS:", items);
 
     res.json({
       items,
       totalAmount: cart.totalAmount,
       finalAmount: cart.finalAmount
     });
+
   } catch (error) {
     console.error('Get cart error:', error);
-    res.status(500).json({ message: 'Server error while fetching cart' });
+
+    res.status(500).json({
+      message: 'Server error while fetching cart'
+    });
   }
 });
 
@@ -72,24 +97,48 @@ router.post('/', async (req, res) => {
     const price = Number(req.body.price || 0);
 
     if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: 'Valid productId is required' });
+      return res.status(400).json({
+        message: 'Valid productId is required'
+      });
     }
+
     if (!Number.isFinite(quantity) || quantity < 1) {
-      return res.status(400).json({ message: 'Quantity must be >= 1' });
+      return res.status(400).json({
+        message: 'Quantity must be >= 1'
+      });
     }
 
-    const product = await Product.findOne({ _id: productId, isActive: true });
+    const product = await Product.findOne({
+      _id: productId,
+      isActive: true
+    });
+
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({
+        message: 'Product not found'
+      });
     }
 
-    if (product.price === null || product.price === undefined || product.price === 0) {
-      return res.status(400).json({ message: '在庫がありません。' });
+    if (
+      product.price === null ||
+      product.price === undefined ||
+      product.price === 0
+    ) {
+      return res.status(400).json({
+        message: '在庫がありません。'
+      });
     }
 
-    let cart = await Cart.findOne({ userId: req.user._id, isActive: true });
+    let cart = await Cart.findOne({
+      userId: req.user._id,
+      isActive: true
+    });
+
     if (!cart) {
-      cart = await Cart.create({ userId: req.user._id, items: [] });
+      cart = await Cart.create({
+        userId: req.user._id,
+        items: []
+      });
     }
 
     await cart.addItem({
@@ -98,13 +147,31 @@ router.post('/', async (req, res) => {
       price: price || product.price
     });
 
-    const updated = await Cart.findOne({ userId: req.user._id, isActive: true });
+    console.log("ADD CART USER:", req.user._id);
+    console.log("ADDED PRODUCT:", product._id);
+
+    const updated = await Cart.findOne({
+      userId: req.user._id,
+      isActive: true
+    });
+
+    console.log("UPDATED CART:", updated);
+
     const items = await mapCartItemsForClient(updated);
 
-    res.status(201).json({ message: 'Item added to cart', items });
+    res.status(201).json({
+      message: 'Item added to cart',
+      items,
+      totalAmount: updated.totalAmount,
+      finalAmount: updated.finalAmount
+    });
+
   } catch (error) {
     console.error('Add cart item error:', error);
-    res.status(500).json({ message: 'Server error while adding item to cart' });
+
+    res.status(500).json({
+      message: 'Server error while adding item to cart'
+    });
   }
 });
 
@@ -115,35 +182,76 @@ router.put('/:productId', async (req, res) => {
     const quantity = Number(req.body.quantity);
 
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: 'Invalid product ID' });
+      return res.status(400).json({
+        message: 'Invalid product ID'
+      });
     }
+
     if (!Number.isFinite(quantity) || quantity < 1) {
-      return res.status(400).json({ message: 'Quantity must be >= 1' });
+      return res.status(400).json({
+        message: 'Quantity must be >= 1'
+      });
     }
 
-    const product = await Product.findOne({ _id: productId, isActive: true });
+    const product = await Product.findOne({
+      _id: productId,
+      isActive: true
+    });
+
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({
+        message: 'Product not found'
+      });
     }
 
-    if (product.price === null || product.price === undefined || product.price === 0) {
-      return res.status(400).json({ message: '在庫がありません。' });
+    if (
+      product.price === null ||
+      product.price === undefined ||
+      product.price === 0
+    ) {
+      return res.status(400).json({
+        message: '在庫がありません。'
+      });
     }
 
-    const cart = await Cart.findOne({ userId: req.user._id, isActive: true });
-    if (!cart) return res.status(404).json({ message: 'Cart not found' });
+    const cart = await Cart.findOne({
+      userId: req.user._id,
+      isActive: true
+    });
 
-    const item = cart.items.find((i) => i.productId?.toString() === productId);
-    if (!item) return res.status(404).json({ message: 'Cart item not found' });
+    if (!cart) {
+      return res.status(404).json({
+        message: 'Cart not found'
+      });
+    }
+
+    const item = cart.items.find(
+      (i) => i.productId?.toString() === productId
+    );
+
+    if (!item) {
+      return res.status(404).json({
+        message: 'Cart item not found'
+      });
+    }
 
     item.quantity = quantity;
+
     await cart.save();
 
     const items = await mapCartItemsForClient(cart);
-    res.json({ message: 'Quantity updated', items });
+
+    res.json({
+      message: 'Quantity updated',
+      items
+    });
+
   } catch (error) {
     console.error('Update cart item error:', error);
-    res.status(500).json({ message: 'Server error while updating cart item' });
+
+    res.status(500).json({
+      message: 'Server error while updating cart item'
+    });
   }
 });
 
@@ -151,37 +259,74 @@ router.put('/:productId', async (req, res) => {
 router.delete('/:productId', async (req, res) => {
   try {
     const { productId } = req.params;
+
     if (!mongoose.Types.ObjectId.isValid(productId)) {
-      return res.status(400).json({ message: 'Invalid product ID' });
+      return res.status(400).json({
+        message: 'Invalid product ID'
+      });
     }
 
-    const cart = await Cart.findOne({ userId: req.user._id, isActive: true });
-    if (!cart) return res.status(404).json({ message: 'Cart not found' });
+    const cart = await Cart.findOne({
+      userId: req.user._id,
+      isActive: true
+    });
 
-    cart.items = cart.items.filter((i) => i.productId?.toString() !== productId);
+    if (!cart) {
+      return res.status(404).json({
+        message: 'Cart not found'
+      });
+    }
+
+    cart.items = cart.items.filter(
+      (i) => i.productId?.toString() !== productId
+    );
+
     await cart.save();
 
     const items = await mapCartItemsForClient(cart);
-    res.json({ message: 'Item removed', items });
+
+    res.json({
+      message: 'Item removed',
+      items
+    });
+
   } catch (error) {
     console.error('Remove cart item error:', error);
-    res.status(500).json({ message: 'Server error while removing cart item' });
+
+    res.status(500).json({
+      message: 'Server error while removing cart item'
+    });
   }
 });
 
 // DELETE /api/cart
 router.delete('/', async (req, res) => {
   try {
-    let cart = await Cart.findOne({ userId: req.user._id, isActive: true });
+    let cart = await Cart.findOne({
+      userId: req.user._id,
+      isActive: true
+    });
+
     if (!cart) {
-      cart = await Cart.create({ userId: req.user._id, items: [] });
+      cart = await Cart.create({
+        userId: req.user._id,
+        items: []
+      });
     }
 
     await cart.clearCart();
-    res.json({ message: 'Cart cleared', items: [] });
+
+    res.json({
+      message: 'Cart cleared',
+      items: []
+    });
+
   } catch (error) {
     console.error('Clear cart error:', error);
-    res.status(500).json({ message: 'Server error while clearing cart' });
+
+    res.status(500).json({
+      message: 'Server error while clearing cart'
+    });
   }
 });
 
