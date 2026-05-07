@@ -5,7 +5,7 @@ const Order = require('../models/Order');
 const User = require('../models/User');
 const CancelledProduct = require('../models/CancelledProduct');
 const Service = require('../models/Service');
-const Notification = require('../models/Notification');
+const Notification = require('../models/Notifications');
 
 const { authenticate } = require('../middleware/auth');
 
