@@ -25,9 +25,11 @@ const mapCartItemsForClient = async (cart) => {
   const items = cart.items
     .map((item) => {
       const pid = item.productId?.toString();
+
       if (!pid) return null;
 
       const p = productMap.get(pid);
+
       if (!p) return null;
 
       return {
@@ -55,6 +57,7 @@ const mapCartItemsForClient = async (cart) => {
 // GET /api/cart
 router.get('/', async (req, res) => {
   try {
+
     let cart = await Cart.findOne({
       userId: req.user._id,
       isActive: true
@@ -62,12 +65,16 @@ router.get('/', async (req, res) => {
 
     console.log("GET CART USER:", req.user._id);
     console.log("GET CART DB:", cart);
+    console.log("GET CART ITEMS:", cart?.items);
 
     if (!cart) {
+
       cart = await Cart.create({
         userId: req.user._id,
         items: []
       });
+
+      console.log("NEW EMPTY CART CREATED");
     }
 
     const items = await mapCartItemsForClient(cart);
@@ -81,6 +88,7 @@ router.get('/', async (req, res) => {
     });
 
   } catch (error) {
+
     console.error('Get cart error:', error);
 
     res.status(500).json({
@@ -92,17 +100,28 @@ router.get('/', async (req, res) => {
 // POST /api/cart
 router.post('/', async (req, res) => {
   try {
+
     const productId = req.body.productId || req.body.id;
     const quantity = Number(req.body.quantity || 1);
     const price = Number(req.body.price || 0);
 
-    if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+    console.log("ADD CART REQ BODY:", req.body);
+    console.log("PRODUCT ID FROM FRONTEND:", productId);
+    console.log("ADD CART USER:", req.user._id);
+
+    if (
+      !productId ||
+      !mongoose.Types.ObjectId.isValid(productId)
+    ) {
       return res.status(400).json({
         message: 'Valid productId is required'
       });
     }
 
-    if (!Number.isFinite(quantity) || quantity < 1) {
+    if (
+      !Number.isFinite(quantity) ||
+      quantity < 1
+    ) {
       return res.status(400).json({
         message: 'Quantity must be >= 1'
       });
@@ -112,6 +131,8 @@ router.post('/', async (req, res) => {
       _id: productId,
       isActive: true
     });
+
+    console.log("PRODUCT FOUND IN DB:", product);
 
     if (!product) {
       return res.status(404).json({
@@ -134,11 +155,16 @@ router.post('/', async (req, res) => {
       isActive: true
     });
 
+    console.log("CART BEFORE ADD:", cart);
+
     if (!cart) {
+
       cart = await Cart.create({
         userId: req.user._id,
         items: []
       });
+
+      console.log("NEW CART CREATED");
     }
 
     await cart.addItem({
@@ -147,7 +173,6 @@ router.post('/', async (req, res) => {
       price: price || product.price
     });
 
-    console.log("ADD CART USER:", req.user._id);
     console.log("ADDED PRODUCT:", product._id);
 
     const updated = await Cart.findOne({
@@ -156,8 +181,11 @@ router.post('/', async (req, res) => {
     });
 
     console.log("UPDATED CART:", updated);
+    console.log("UPDATED CART ITEMS:", updated?.items);
 
     const items = await mapCartItemsForClient(updated);
+
+    console.log("POST CART RESPONSE ITEMS:", items);
 
     res.status(201).json({
       message: 'Item added to cart',
@@ -167,6 +195,7 @@ router.post('/', async (req, res) => {
     });
 
   } catch (error) {
+
     console.error('Add cart item error:', error);
 
     res.status(500).json({
@@ -178,16 +207,22 @@ router.post('/', async (req, res) => {
 // PUT /api/cart/:productId
 router.put('/:productId', async (req, res) => {
   try {
+
     const { productId } = req.params;
     const quantity = Number(req.body.quantity);
 
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
+    if (
+      !mongoose.Types.ObjectId.isValid(productId)
+    ) {
       return res.status(400).json({
         message: 'Invalid product ID'
       });
     }
 
-    if (!Number.isFinite(quantity) || quantity < 1) {
+    if (
+      !Number.isFinite(quantity) ||
+      quantity < 1
+    ) {
       return res.status(400).json({
         message: 'Quantity must be >= 1'
       });
@@ -247,6 +282,7 @@ router.put('/:productId', async (req, res) => {
     });
 
   } catch (error) {
+
     console.error('Update cart item error:', error);
 
     res.status(500).json({
@@ -258,9 +294,12 @@ router.put('/:productId', async (req, res) => {
 // DELETE /api/cart/:productId
 router.delete('/:productId', async (req, res) => {
   try {
+
     const { productId } = req.params;
 
-    if (!mongoose.Types.ObjectId.isValid(productId)) {
+    if (
+      !mongoose.Types.ObjectId.isValid(productId)
+    ) {
       return res.status(400).json({
         message: 'Invalid product ID'
       });
@@ -291,6 +330,7 @@ router.delete('/:productId', async (req, res) => {
     });
 
   } catch (error) {
+
     console.error('Remove cart item error:', error);
 
     res.status(500).json({
@@ -302,12 +342,14 @@ router.delete('/:productId', async (req, res) => {
 // DELETE /api/cart
 router.delete('/', async (req, res) => {
   try {
+
     let cart = await Cart.findOne({
       userId: req.user._id,
       isActive: true
     });
 
     if (!cart) {
+
       cart = await Cart.create({
         userId: req.user._id,
         items: []
@@ -322,6 +364,7 @@ router.delete('/', async (req, res) => {
     });
 
   } catch (error) {
+
     console.error('Clear cart error:', error);
 
     res.status(500).json({
