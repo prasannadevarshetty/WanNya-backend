@@ -22,8 +22,8 @@ router.get('/product/:productId', async (req, res) => {
     res.json({
       success: true,
       reviews: reviews.map(r => ({
-        id: r._id,
-        userId: r.userId?._id,
+        id: r._id.toString(),
+        userId: r.userId?._id?.toString(),
         userName: r.userId?.name || 'Anonymous',
         userAvatar: r.userId?.avatar,
         rating: r.rating,
