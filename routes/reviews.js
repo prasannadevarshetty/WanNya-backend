@@ -55,19 +55,53 @@ router.post('/create', authenticate, validateReview, async (req, res) => {
         'items.product': productId
       });
     } else {
-      // Find the most recent delivered order for this product
-      order = await Order.findOne({
+      // Find all orders for this product by this user
+      const orders = await Order.find({
         userId: req.user._id,
         'items.product': productId,
         status: 'delivered'
       }).sort({ createdAt: -1 });
 
-      if (!order) {
-        // Try any order if no delivered ones found (maybe it's still ongoing but they want to review)
-        order = await Order.findOne({
+      if (orders.length === 0) {
+        // Fallback to any order if no delivered ones found
+        const allOrders = await Order.find({
           userId: req.user._id,
           'items.product': productId
         }).sort({ createdAt: -1 });
+        
+        // Find the first one that hasn't been reviewed yet
+        for (const o of allOrders) {
+          const reviewed = await Review.findOne({
+            userId: req.user._id,
+            productId,
+            orderId: o._id,
+            isActive: true
+          });
+          if (!reviewed) {
+            order = o;
+            break;
+          }
+        }
+        
+        // If all are reviewed, just take the first one (will fail later with duplicate error)
+        if (!order && allOrders.length > 0) order = allOrders[0];
+      } else {
+        // Find the first delivered order that hasn't been reviewed yet
+        for (const o of orders) {
+          const reviewed = await Review.findOne({
+            userId: req.user._id,
+            productId,
+            orderId: o._id,
+            isActive: true
+          });
+          if (!reviewed) {
+            order = o;
+            break;
+          }
+        }
+        
+        // If all delivered orders are reviewed, just take the first one
+        if (!order && orders.length > 0) order = orders[0];
       }
     }
 
