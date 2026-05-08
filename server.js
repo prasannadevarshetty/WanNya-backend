@@ -33,6 +33,11 @@ app.set('trust proxy', 1);
 // ======================
 connectDB();
 
+mongoose.connection.once('open', () => {
+  console.log("CONNECTED DB:", mongoose.connection.name);
+  console.log("CONNECTED HOST:", mongoose.connection.host);
+});
+
 // ======================
 // 🔥 SECURITY
 // ======================
