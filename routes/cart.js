@@ -169,7 +169,7 @@ router.post('/', async (req, res) => {
           "items.productId": product._id
         },
         {
-          $inc: {
+          $set: {
             "items.$.quantity": quantity
           }
         }
@@ -194,8 +194,6 @@ router.post('/', async (req, res) => {
     }
 
     const updated = await recalculateCartTotals(req.user._id);
-
-    console.log("UPDATED CART:", updated);
 
     const items = await mapCartItemsForClient(updated);
 
