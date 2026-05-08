@@ -16,7 +16,7 @@ const mapProduct = (p) => {
   const prod = p && p.toObject ? p.toObject() : p;
 
   if (prod.images && Array.isArray(prod.images)) {
-    prod.images = prod.images.map(img => getFileUrl(img, 'images') || img);
+    prod.images = prod.images.map((img) => getFileUrl(img, 'images') || img);
   }
 
   if (prod.image) {
@@ -31,7 +31,7 @@ const mapProduct = (p) => {
   return prod;
 };
 
-// @route   GET /api/products
+// GET /api/products
 router.get('/', optionalAuth, async (req, res) => {
   try {
     const {
@@ -49,13 +49,26 @@ router.get('/', optionalAuth, async (req, res) => {
 
     const filter = { isActive: true };
 
-    if (category) filter.category = category;
+    // If searching, search all products irrespective of category/petType
+    if (search && search.trim()) {
+      filter.$or = [
+        { nameJa: { $regex: search, $options: 'i' } },
+        { nameEn: { $regex: search, $options: 'i' } },
+        { descriptionJa: { $regex: search, $options: 'i' } },
+        { descriptionEn: { $regex: search, $options: 'i' } },
+        { category: { $regex: search, $options: 'i' } }
+      ];
+    } else {
+      if (category) filter.category = category;
 
-    if (petType) {
-      filter.petType = { $in: [new RegExp(`^${petType}$`, 'i'), 'both'] };
+      if (petType) {
+        filter.petType = {
+          $in: [new RegExp(`^${petType}$`, 'i'), 'both']
+        };
+      }
+
+      if (featured === 'true') filter.featured = true;
     }
-
-    if (featured === 'true') filter.featured = true;
 
     if (minPrice || maxPrice) {
       filter.price = {};
@@ -63,16 +76,7 @@ router.get('/', optionalAuth, async (req, res) => {
       if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
     }
 
-    if (search) {
-      filter.$or = [
-        { nameJa: { $regex: search, $options: 'i' } },
-        { nameEn: { $regex: search, $options: 'i' } },
-        { descriptionJa: { $regex: search, $options: 'i' } },
-        { descriptionEn: { $regex: search, $options: 'i' } }
-      ];
-    }
-
-    const allowedSortFields = ['createdAt', 'price', 'nameJa', 'category'];
+    const allowedSortFields = ['createdAt', 'price', 'nameJa', 'nameEn', 'category'];
     const safeSort = allowedSortFields.includes(sort) ? sort : 'createdAt';
 
     const sortOptions = {};
@@ -85,8 +89,7 @@ router.get('/', optionalAuth, async (req, res) => {
       Product.find(filter)
         .sort(sortOptions)
         .limit(limitNum)
-        .skip((pageNum - 1) * limitNum)
-        .exec(),
+        .skip((pageNum - 1) * limitNum),
       Product.countDocuments(filter)
     ]);
 
@@ -107,7 +110,42 @@ router.get('/', optionalAuth, async (req, res) => {
   }
 });
 
-// @route   GET /api/products/featured
+// GET /api/products/search?q=keyword
+router.get('/search', async (req, res) => {
+  try {
+    const { q, limit = 20 } = req.query;
+
+    if (!q || !q.trim()) {
+      return res.status(400).json({
+        message: 'Search query is required'
+      });
+    }
+
+    const searchFilter = {
+      isActive: true,
+      $or: [
+        { nameJa: { $regex: q, $options: 'i' } },
+        { nameEn: { $regex: q, $options: 'i' } },
+        { descriptionJa: { $regex: q, $options: 'i' } },
+        { descriptionEn: { $regex: q, $options: 'i' } },
+        { category: { $regex: q, $options: 'i' } }
+      ]
+    };
+
+    const products = await Product.find(searchFilter)
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit, 10));
+
+    res.json({ products: products.map(mapProduct) });
+  } catch (error) {
+    console.error('Search products error:', error);
+    res.status(500).json({
+      message: 'Server error while searching products'
+    });
+  }
+});
+
+// GET /api/products/featured
 router.get('/featured', async (req, res) => {
   try {
     const { limit = 10 } = req.query;
@@ -128,7 +166,7 @@ router.get('/featured', async (req, res) => {
   }
 });
 
-// @route   GET /api/products/categories
+// GET /api/products/categories
 router.get('/categories', async (req, res) => {
   try {
     const categories = await Product.distinct('category', { isActive: true });
@@ -141,74 +179,7 @@ router.get('/categories', async (req, res) => {
   }
 });
 
-// ✅ FIXED SEARCH ROUTE
-router.get('/search', async (req, res) => {
-  try {
-    const { q, petType, limit = 20 } = req.query;
-
-    if (!q) {
-      return res.status(400).json({
-        message: 'Search query is required'
-      });
-    }
-
-    const searchFilter = {
-      isActive: true,
-      $or: [
-        { nameJa: { $regex: q, $options: 'i' } },
-        { nameEn: { $regex: q, $options: 'i' } },
-        { descriptionJa: { $regex: q, $options: 'i' } },
-        { descriptionEn: { $regex: q, $options: 'i' } }
-      ]
-    };
-
-    // 🔥 THIS FIXES YOUR ISSUE
-    if (petType) {
-      searchFilter.petType = { $in: [petType, 'both'] };
-    }
-
-    const products = await Product.find(searchFilter)
-      .sort({ createdAt: -1 })
-      .limit(parseInt(limit, 10));
-
-    res.json({ products: products.map(mapProduct) });
-  } catch (error) {
-    console.error('Search products error:', error);
-    res.status(500).json({
-      message: 'Server error while searching products'
-    });
-  }
-});
-
-// @route   GET /api/products/:id
-router.get('/:id', async (req, res) => {
-  try {
-    const product = await Product.findOne({
-      _id: req.params.id,
-      isActive: true
-    });
-
-    if (!product) {
-      return res.status(404).json({
-        message: 'Product not found'
-      });
-    }
-
-    res.json({ product: mapProduct(product) });
-  } catch (error) {
-    console.error('Get product error:', error);
-    if (error.name === 'CastError') {
-      return res.status(400).json({
-        message: 'Invalid product ID'
-      });
-    }
-    res.status(500).json({
-      message: 'Server error while fetching product'
-    });
-  }
-});
-
-// @route   GET /api/products/recommendations/:petType
+// GET /api/products/recommendations/:petType
 router.get('/recommendations/:petType', async (req, res) => {
   try {
     const { petType } = req.params;
@@ -220,15 +191,13 @@ router.get('/recommendations/:petType', async (req, res) => {
       });
     }
 
-    const recFilter = {
+    const products = await Product.find({
       $or: [
         { petType: new RegExp(`^${petType}$`, 'i') },
         { petType: 'both' }
       ],
       isActive: true
-    };
-
-    const products = await Product.find(recFilter)
+    })
       .sort({ featured: -1, createdAt: -1 })
       .limit(parseInt(limit, 10));
 
@@ -241,7 +210,7 @@ router.get('/recommendations/:petType', async (req, res) => {
   }
 });
 
-// @route   GET /api/products/compare
+// GET /api/products/compare?ids=id1,id2
 router.get('/compare', async (req, res) => {
   try {
     const { ids } = req.query;
@@ -252,7 +221,7 @@ router.get('/compare', async (req, res) => {
       });
     }
 
-    const productIds = ids.split(',').map(id => id.trim());
+    const productIds = ids.split(',').map((id) => id.trim());
 
     if (productIds.length > 5) {
       return res.status(400).json({
@@ -276,6 +245,36 @@ router.get('/compare', async (req, res) => {
     console.error('Compare products error:', error);
     res.status(500).json({
       message: 'Server error while comparing products'
+    });
+  }
+});
+
+// GET /api/products/:id
+router.get('/:id', async (req, res) => {
+  try {
+    const product = await Product.findOne({
+      _id: req.params.id,
+      isActive: true
+    });
+
+    if (!product) {
+      return res.status(404).json({
+        message: 'Product not found'
+      });
+    }
+
+    res.json({ product: mapProduct(product) });
+  } catch (error) {
+    console.error('Get product error:', error);
+
+    if (error.name === 'CastError') {
+      return res.status(400).json({
+        message: 'Invalid product ID'
+      });
+    }
+
+    res.status(500).json({
+      message: 'Server error while fetching product'
     });
   }
 });
