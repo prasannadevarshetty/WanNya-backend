@@ -13,6 +13,9 @@ const getUserCart = async (userId) => {
 };
 
 const mapCartItemsForClient = async (cart) => {
+
+  if (!cart || !cart.items) return [];
+
   const productIds = cart.items
     .filter((i) => i.productId)
     .map((i) => i.productId);
@@ -28,6 +31,7 @@ const mapCartItemsForClient = async (cart) => {
 
   return cart.items
     .map((item) => {
+
       const pid = item.productId?.toString();
 
       if (!pid) return null;
@@ -62,8 +66,8 @@ router.get('/', async (req, res) => {
 
     let cart = await getUserCart(req.user._id);
 
-    console.log('GET CART USER:', req.user._id);
-    console.log('GET CART DB:', cart);
+    console.log("GET CART USER:", req.user._id);
+    console.log("GET CART:", cart);
 
     if (!cart) {
 
@@ -77,8 +81,8 @@ router.get('/', async (req, res) => {
 
     res.json({
       items,
-      totalAmount: cart.totalAmount,
-      finalAmount: cart.finalAmount
+      totalAmount: cart.totalAmount || 0,
+      finalAmount: cart.finalAmount || 0
     });
 
   } catch (error) {
@@ -99,9 +103,7 @@ router.post('/', async (req, res) => {
     const quantity = Number(req.body.quantity || 1);
     const price = Number(req.body.price || 0);
 
-    console.log('ADD CART REQ BODY:', req.body);
-    console.log('PRODUCT ID FROM FRONTEND:', productId);
-    console.log('ADD CART USER:', req.user._id);
+    console.log("ADD CART BODY:", req.body);
 
     if (
       !productId ||
@@ -109,15 +111,6 @@ router.post('/', async (req, res) => {
     ) {
       return res.status(400).json({
         message: 'Valid productId is required'
-      });
-    }
-
-    if (
-      !Number.isFinite(quantity) ||
-      quantity < 1
-    ) {
-      return res.status(400).json({
-        message: 'Quantity must be >= 1'
       });
     }
 
@@ -132,25 +125,21 @@ router.post('/', async (req, res) => {
       });
     }
 
-    if (
-      product.price === null ||
-      product.price === undefined ||
-      product.price === 0
-    ) {
-      return res.status(400).json({
-        message: '在庫がありません。'
-      });
-    }
-
-    let cart = await getUserCart(req.user._id);
-
-    if (!cart) {
-
-      cart = await Cart.create({
-        userId: req.user._id,
-        items: []
-      });
-    }
+    let cart = await Cart.findOneAndUpdate(
+      { userId: req.user._id },
+      {
+        $setOnInsert: {
+          userId: req.user._id,
+          items: [],
+          totalAmount: 0,
+          finalAmount: 0
+        }
+      },
+      {
+        new: true,
+        upsert: true
+      }
+    );
 
     const existingItem = cart.items.find(
       (item) =>
@@ -160,36 +149,47 @@ router.post('/', async (req, res) => {
 
     if (existingItem) {
 
-      existingItem.quantity += quantity;
+      await Cart.updateOne(
+        {
+          userId: req.user._id,
+          "items.productId": product._id
+        },
+        {
+          $inc: {
+            "items.$.quantity": quantity
+          }
+        }
+      );
 
     } else {
 
-      cart.items.push({
-        productId: product._id,
-        quantity,
-        price: price || product.price
-      });
+      await Cart.updateOne(
+        {
+          userId: req.user._id
+        },
+        {
+          $push: {
+            items: {
+              productId: product._id,
+              quantity,
+              price: price || product.price
+            }
+          }
+        }
+      );
     }
 
-    await cart.save();
-    console.log("SAVE COMPLETED CART ID:", cart._id);
-
-    const checkCart = await Cart.findById(cart._id);
-    console.log("CHECK CART DIRECTLY AFTER SAVE:", checkCart);
-
-    const savedCart = await Cart.findById(cart._id);
-
-    console.log("SAVED CART FROM DB:", savedCart);
-
     const updated = await getUserCart(req.user._id);
+
+    console.log("UPDATED CART:", updated);
 
     const items = await mapCartItemsForClient(updated);
 
     res.status(201).json({
       message: 'Item added to cart',
       items,
-      totalAmount: updated.totalAmount,
-      finalAmount: updated.finalAmount
+      totalAmount: updated.totalAmount || 0,
+      finalAmount: updated.finalAmount || 0
     });
 
   } catch (error) {
@@ -209,65 +209,17 @@ router.put('/:productId', async (req, res) => {
     const { productId } = req.params;
     const quantity = Number(req.body.quantity);
 
-    if (
-      !mongoose.Types.ObjectId.isValid(productId)
-    ) {
-      return res.status(400).json({
-        message: 'Invalid product ID'
-      });
-    }
-
-    if (
-      !Number.isFinite(quantity) ||
-      quantity < 1
-    ) {
-      return res.status(400).json({
-        message: 'Quantity must be >= 1'
-      });
-    }
-
-    const product = await Product.findOne({
-      _id: productId,
-      isActive: true
-    });
-
-    if (!product) {
-      return res.status(404).json({
-        message: 'Product not found'
-      });
-    }
-
-    if (
-      product.price === null ||
-      product.price === undefined ||
-      product.price === 0
-    ) {
-      return res.status(400).json({
-        message: '在庫がありません。'
-      });
-    }
-
-    const cart = await getUserCart(req.user._id);
-
-    if (!cart) {
-      return res.status(404).json({
-        message: 'Cart not found'
-      });
-    }
-
-    const item = cart.items.find(
-      (i) => String(i.productId) === String(productId)
+    await Cart.updateOne(
+      {
+        userId: req.user._id,
+        "items.productId": productId
+      },
+      {
+        $set: {
+          "items.$.quantity": quantity
+        }
+      }
     );
-
-    if (!item) {
-      return res.status(404).json({
-        message: 'Cart item not found'
-      });
-    }
-
-    item.quantity = quantity;
-
-    await cart.save();
 
     const updated = await getUserCart(req.user._id);
 
@@ -276,8 +228,8 @@ router.put('/:productId', async (req, res) => {
     res.json({
       message: 'Quantity updated',
       items,
-      totalAmount: updated.totalAmount,
-      finalAmount: updated.finalAmount
+      totalAmount: updated.totalAmount || 0,
+      finalAmount: updated.finalAmount || 0
     });
 
   } catch (error) {
@@ -296,46 +248,30 @@ router.delete('/:productId', async (req, res) => {
 
     const { productId } = req.params;
 
-    if (
-      !mongoose.Types.ObjectId.isValid(productId)
-    ) {
-      return res.status(400).json({
-        message: 'Invalid product ID'
-      });
-    }
-
-    const cart = await getUserCart(req.user._id);
-
-    if (!cart) {
-      return res.status(404).json({
-        message: 'Cart not found'
-      });
-    }
-
-    console.log("CART BEFORE DELETE:", cart.items);
-
-    cart.items = cart.items.filter(
-      (i) =>
-        String(i.productId) !== String(productId)
+    await Cart.updateOne(
+      {
+        userId: req.user._id
+      },
+      {
+        $pull: {
+          items: {
+            productId: new mongoose.Types.ObjectId(productId)
+          }
+        }
+      }
     );
 
-    console.log("CART AFTER FILTER:", cart.items);
-
-    await cart.save();
-
-    const savedCart = await Cart.findById(cart._id);
-
-    console.log("CART AFTER DELETE SAVE:", savedCart);
-
     const updated = await getUserCart(req.user._id);
+
+    console.log("UPDATED AFTER DELETE:", updated);
 
     const items = await mapCartItemsForClient(updated);
 
     res.json({
       message: 'Item removed',
       items,
-      totalAmount: updated.totalAmount,
-      finalAmount: updated.finalAmount
+      totalAmount: updated?.totalAmount || 0,
+      finalAmount: updated?.finalAmount || 0
     });
 
   } catch (error) {
@@ -352,17 +288,16 @@ router.delete('/:productId', async (req, res) => {
 router.delete('/', async (req, res) => {
   try {
 
-    let cart = await getUserCart(req.user._id);
-
-    if (!cart) {
-
-      cart = await Cart.create({
-        userId: req.user._id,
-        items: []
-      });
-    }
-
-    await cart.clearCart();
+    await Cart.updateOne(
+      { userId: req.user._id },
+      {
+        $set: {
+          items: [],
+          totalAmount: 0,
+          finalAmount: 0
+        }
+      }
+    );
 
     res.json({
       message: 'Cart cleared',
