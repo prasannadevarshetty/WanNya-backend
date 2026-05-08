@@ -172,6 +172,10 @@ router.post('/', async (req, res) => {
     }
 
     await cart.save();
+    console.log("SAVE COMPLETED CART ID:", cart._id);
+
+    const checkCart = await Cart.findById(cart._id);
+    console.log("CHECK CART DIRECTLY AFTER SAVE:", checkCart);
 
     const savedCart = await Cart.findById(cart._id);
 
