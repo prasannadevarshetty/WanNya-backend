@@ -154,8 +154,8 @@ router.post('/', async (req, res) => {
 
     const existingItem = cart.items.find(
       (item) =>
-        item.productId.toString() ===
-        product._id.toString()
+        String(item.productId) ===
+        String(product._id)
     );
 
     if (existingItem) {
@@ -252,7 +252,7 @@ router.put('/:productId', async (req, res) => {
     }
 
     const item = cart.items.find(
-      (i) => i.productId?.toString() === productId
+      (i) => String(i.productId) === String(productId)
     );
 
     if (!item) {
@@ -308,11 +308,20 @@ router.delete('/:productId', async (req, res) => {
       });
     }
 
+    console.log("CART BEFORE DELETE:", cart.items);
+
     cart.items = cart.items.filter(
-      (i) => i.productId?.toString() !== productId
+      (i) =>
+        String(i.productId) !== String(productId)
     );
 
+    console.log("CART AFTER FILTER:", cart.items);
+
     await cart.save();
+
+    const savedCart = await Cart.findById(cart._id);
+
+    console.log("CART AFTER DELETE SAVE:", savedCart);
 
     const updated = await getUserCart(req.user._id);
 
