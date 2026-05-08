@@ -229,6 +229,16 @@ router.post('/', async (req, res) => {
 
     if (existingItem) {
 
+      const newQuantity =
+        existingItem.quantity + quantity;
+
+      if (newQuantity > 3) {
+        return res.status(400).json({
+          message:
+            'Maximum quantity allowed is 3'
+        });
+      }
+
       await Cart.updateOne(
         {
           userId: req.user._id,
@@ -236,7 +246,7 @@ router.post('/', async (req, res) => {
         },
         {
           $set: {
-            'items.$.quantity': quantity,
+            'items.$.quantity': newQuantity,
             'items.$.price':
               price || product.price
           }
