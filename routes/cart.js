@@ -12,6 +12,25 @@ const getUserCart = async (userId) => {
   return Cart.findOne({ userId }).sort({ updatedAt: -1 });
 };
 
+const recalculateCartTotals = async (userId) => {
+
+  const cart = await getUserCart(userId);
+
+  if (!cart) return null;
+
+  const totalAmount = cart.items.reduce((total, item) => {
+    return total + (item.price * item.quantity);
+  }, 0);
+
+  cart.totalAmount = totalAmount;
+  cart.discountAmount = 0;
+  cart.finalAmount = totalAmount;
+
+  await cart.save();
+
+  return cart;
+};
+
 const mapCartItemsForClient = async (cart) => {
 
   if (!cart || !cart.items) return [];
@@ -66,9 +85,6 @@ router.get('/', async (req, res) => {
 
     let cart = await getUserCart(req.user._id);
 
-    console.log("GET CART USER:", req.user._id);
-    console.log("GET CART:", cart);
-
     if (!cart) {
 
       cart = await Cart.create({
@@ -102,8 +118,6 @@ router.post('/', async (req, res) => {
     const productId = req.body.productId || req.body.id;
     const quantity = Number(req.body.quantity || 1);
     const price = Number(req.body.price || 0);
-
-    console.log("ADD CART BODY:", req.body);
 
     if (
       !productId ||
@@ -179,7 +193,7 @@ router.post('/', async (req, res) => {
       );
     }
 
-    const updated = await getUserCart(req.user._id);
+    const updated = await recalculateCartTotals(req.user._id);
 
     console.log("UPDATED CART:", updated);
 
@@ -221,7 +235,7 @@ router.put('/:productId', async (req, res) => {
       }
     );
 
-    const updated = await getUserCart(req.user._id);
+    const updated = await recalculateCartTotals(req.user._id);
 
     const items = await mapCartItemsForClient(updated);
 
@@ -261,9 +275,7 @@ router.delete('/:productId', async (req, res) => {
       }
     );
 
-    const updated = await getUserCart(req.user._id);
-
-    console.log("UPDATED AFTER DELETE:", updated);
+    const updated = await recalculateCartTotals(req.user._id);
 
     const items = await mapCartItemsForClient(updated);
 
