@@ -31,6 +31,14 @@ const mapProduct = (p) => {
   return prod;
 };
 
+const getProductImage = (product) => {
+  if (Array.isArray(product.images) && product.images.length > 0) {
+    return getFileUrl(product.images[0], 'images') || product.images[0];
+  }
+
+  return getFileUrl(product.image, 'images') || product.image || product.imageUrl || '';
+};
+
 // GET /api/products
 router.get('/', optionalAuth, async (req, res) => {
   try {
@@ -49,7 +57,6 @@ router.get('/', optionalAuth, async (req, res) => {
 
     const filter = { isActive: true };
 
-    // If searching, search all products irrespective of category/petType
     if (search && search.trim()) {
       filter.$or = [
         { nameJa: { $regex: search, $options: 'i' } },
@@ -106,6 +113,48 @@ router.get('/', optionalAuth, async (req, res) => {
     console.error('Get products error:', error);
     res.status(500).json({
       message: 'Server error while fetching products'
+    });
+  }
+});
+
+// GET /api/products/suggestions?q=keyword
+router.get('/suggestions', async (req, res) => {
+  try {
+    const { q, limit = 8 } = req.query;
+
+    if (!q || !q.trim()) {
+      return res.json({ suggestions: [] });
+    }
+
+    const regex = new RegExp(q.trim(), 'i');
+
+    const products = await Product.find({
+      isActive: true,
+      $or: [
+        { nameJa: regex },
+        { nameEn: regex },
+        { category: regex }
+      ]
+    })
+      .select('_id nameJa nameEn category images image imageUrl price')
+      .limit(parseInt(limit, 10));
+
+    res.json({
+      suggestions: products.map((p) => ({
+        id: p._id.toString(),
+        nameJa: p.nameJa || '',
+        nameEn: p.nameEn || '',
+        name: p.nameJa || p.nameEn || '',
+        category: p.category,
+        image: getProductImage(p),
+        price: p.price,
+        priceText: formatPrice(p.price)
+      }))
+    });
+  } catch (error) {
+    console.error('Get product suggestions error:', error);
+    res.status(500).json({
+      message: 'Server error while fetching suggestions'
     });
   }
 });
