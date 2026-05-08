@@ -4,12 +4,10 @@ const router = express.Router();
 const Order = require('../models/Order');
 const User = require('../models/User');
 const CancelledProduct = require('../models/CancelledProduct');
-const Service = require('../models/Service');
 const Notification = require('../models/Notifications');
 
 const { authenticate } = require('../middleware/auth');
 
-// Helper to parse price safely
 const parseNumber = (value) => {
   if (typeof value === 'string') {
     return Number(value.replace(/[^\d.]/g, ''));
@@ -17,7 +15,7 @@ const parseNumber = (value) => {
   return Number(value);
 };
 
-// @route   POST /api/orders/create
+// @route POST /api/orders/create
 router.post('/create', authenticate, async (req, res) => {
   try {
     const { items, shippingAddress } = req.body;
@@ -33,9 +31,8 @@ router.post('/create', authenticate, async (req, res) => {
       return res.status(400).json({ message: 'Valid total amount is required' });
     }
 
-    // Create order items
-    const orderItems = items.map(item => ({
-      product: item.id,
+    const orderItems = items.map((item) => ({
+      product: item.id || item.productId,
       quantity: item.quantity,
       price: parseNumber(item.price),
       customization: {
@@ -58,28 +55,29 @@ router.post('/create', authenticate, async (req, res) => {
         country: 'Default Country',
         zip: '00000'
       },
-      pointsEarned: Math.floor(totalAmount * 0.01),
+      pointsEarned: Math.floor(totalAmount * 0.01)
     });
 
     await order.save();
 
-    await User.findByIdAndUpdate(
-      req.user._id,
-      { $inc: { points: order.pointsEarned } }
-    );
-
-    // 🔔 CREATE ORDER NOTIFICATION
     await Notification.create({
       userId: req.user._id,
-      key: 'orderPlaced',
+      type: 'orderPlaced',
+      title: 'Order Placed',
+      message: 'Your order has been placed successfully.',
+      isRead: false,
       data: {
         orderId: order._id,
         orderNumber: order.orderNumber,
         totalAmount: order.totalAmount,
         totalItems: items.length
-      },
-      isRead: false
+      }
     });
+
+    await User.findByIdAndUpdate(
+      req.user._id,
+      { $inc: { points: order.pointsEarned } }
+    );
 
     res.status(201).json({
       message: 'Order created successfully',
@@ -91,14 +89,13 @@ router.post('/create', authenticate, async (req, res) => {
         pointsEarned: order.pointsEarned
       }
     });
-
   } catch (error) {
     console.error('Create order error:', error);
     res.status(500).json({ message: 'Server error while creating order' });
   }
 });
 
-// @route   POST /api/orders/cancel/:orderId
+// @route POST /api/orders/cancel/:orderId
 router.post('/cancel/:orderId', authenticate, async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -125,7 +122,7 @@ router.post('/cancel/:orderId', authenticate, async (req, res) => {
       return res.status(400).json({ message: 'Cannot cancel delivered order' });
     }
 
-    const cancelledProducts = order.items.map(item => ({
+    const cancelledProducts = order.items.map((item) => ({
       orderId: order._id,
       orderNumber: order.orderNumber,
       userId: order.userId,
@@ -165,33 +162,39 @@ router.post('/cancel/:orderId', authenticate, async (req, res) => {
       cancelledProducts: cancelledProducts.length,
       pointsDeducted: totalPointsDeducted
     });
-
   } catch (error) {
     console.error('Cancel order error:', error);
     res.status(500).json({ message: 'Server error while cancelling order' });
   }
 });
 
-// @route   GET /api/orders/user
+// @route GET /api/orders/user
 router.get('/user', authenticate, async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.user._id })
-      .populate('items.product', 'name image price category')
+      .populate('items.product', 'name nameEn nameJa image imageUrl images price category')
       .populate('items.service', 'name image price category')
       .sort({ createdAt: -1 });
 
     const enhancedOrders = orders.map((o) => {
       const firstItem = o.items[0];
 
+      const firstProductImage =
+        Array.isArray(firstItem?.product?.images) && firstItem.product.images.length > 0
+          ? firstItem.product.images[0]
+          : firstItem?.product?.image || firstItem?.product?.imageUrl;
+
       const itemName =
         firstItem?.customization?.name ||
+        firstItem?.product?.nameJa ||
+        firstItem?.product?.nameEn ||
         firstItem?.product?.name ||
         firstItem?.service?.name ||
         'Order Item';
 
       const itemImage =
         firstItem?.customization?.image ||
-        firstItem?.product?.image ||
+        firstProductImage ||
         firstItem?.service?.image ||
         '/placeholder-product.jpg';
 
@@ -207,24 +210,35 @@ router.get('/user', authenticate, async (req, res) => {
         status:
           o.status === 'delivered'
             ? 'completed'
-            : (o.status === 'cancelled' ? 'cancelled' : 'ongoing'),
-        items: o.items.map(item => ({
-          id: item._id,
-          name:
-            item.customization?.name ||
-            item.product?.name ||
-            item.service?.name,
-          image:
-            item.customization?.image ||
-            item.product?.image ||
-            item.service?.image,
-          quantity: item.quantity,
-          price: item.price,
-          category:
-            item.customization?.category ||
-            item.product?.category ||
-            item.service?.category
-        })),
+            : o.status === 'cancelled'
+              ? 'cancelled'
+              : 'ongoing',
+        items: o.items.map((item) => {
+          const productImage =
+            Array.isArray(item.product?.images) && item.product.images.length > 0
+              ? item.product.images[0]
+              : item.product?.image || item.product?.imageUrl;
+
+          return {
+            id: item._id,
+            name:
+              item.customization?.name ||
+              item.product?.nameJa ||
+              item.product?.nameEn ||
+              item.product?.name ||
+              item.service?.name,
+            image:
+              item.customization?.image ||
+              productImage ||
+              item.service?.image,
+            quantity: item.quantity,
+            price: item.price,
+            category:
+              item.customization?.category ||
+              item.product?.category ||
+              item.service?.category
+          };
+        }),
         totalItems: o.items.reduce((sum, item) => sum + item.quantity, 0),
         pointsEarned: o.pointsEarned || 0,
         createdAt: o.createdAt,
@@ -237,7 +251,6 @@ router.get('/user', authenticate, async (req, res) => {
       orders: enhancedOrders,
       totalOrders: enhancedOrders.length
     });
-
   } catch (error) {
     console.error('Get orders error:', error);
     res.status(500).json({
@@ -247,13 +260,13 @@ router.get('/user', authenticate, async (req, res) => {
   }
 });
 
-// @route   GET /api/orders/cancelled
+// @route GET /api/orders/cancelled
 router.get('/cancelled', authenticate, async (req, res) => {
   try {
     const cancelledProducts = await CancelledProduct.find({
       userId: req.user._id
     })
-      .populate('product', 'name image')
+      .populate('product', 'name nameEn nameJa image imageUrl images')
       .populate('service', 'name image')
       .sort({ cancelledAt: -1 });
 
@@ -273,7 +286,6 @@ router.get('/cancelled', authenticate, async (req, res) => {
         processedBy: cp.processedBy
       }))
     });
-
   } catch (error) {
     console.error('Get cancelled products error:', error);
     res.status(500).json({
