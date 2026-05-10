@@ -71,6 +71,11 @@ router.post(
 
     try {
 
+      console.log(
+        'Create order API called at:',
+        new Date().toISOString()
+      );
+
       const {
         items,
         shippingAddress
