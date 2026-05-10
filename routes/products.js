@@ -82,11 +82,13 @@ router.get('/', optionalAuth, async (req, res) => {
         .replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
       const searchRegex = new RegExp(
-        `^${escapedSearch}`,
+        escapedSearch,
         'i'
       );
 
       filter.$or = [
+        { name: searchRegex },
+        { title: searchRegex },
         { nameJa: searchRegex },
         { nameEn: searchRegex }
       ];
@@ -202,9 +204,9 @@ router.get('/suggestions', async (req, res) => {
         '\\$&'
       );
 
-    // only starts-with matching
+    // search only by product names
     const regex = new RegExp(
-      `^${escapedKeyword}`,
+      escapedKeyword,
       'i'
     );
 
@@ -212,12 +214,14 @@ router.get('/suggestions', async (req, res) => {
       isActive: true,
 
       $or: [
+        { name: regex },
+        { title: regex },
         { nameJa: regex },
         { nameEn: regex }
       ]
     })
       .select(
-        '_id nameJa nameEn category petType images image imageUrl price'
+        '_id name title nameJa nameEn category petType images image imageUrl price'
       )
       .sort({
         featured: -1,
@@ -229,18 +233,19 @@ router.get('/suggestions', async (req, res) => {
       suggestions: products.map((p) => {
         const productName =
           p.nameEn ||
+          p.name ||
+          p.title ||
           p.nameJa ||
           '';
 
         return {
           id: p._id.toString(),
 
-          // default display name
+          // display product name only
           name: productName,
           label: productName,
           value: productName,
 
-          // original names
           nameEn: p.nameEn || '',
           nameJa: p.nameJa || '',
 
@@ -290,7 +295,7 @@ router.get('/search', async (req, res) => {
       .replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
     const searchRegex = new RegExp(
-      `^${escapedQ}`,
+      escapedQ,
       'i'
     );
 
@@ -298,6 +303,8 @@ router.get('/search', async (req, res) => {
       isActive: true,
 
       $or: [
+        { name: searchRegex },
+        { title: searchRegex },
         { nameJa: searchRegex },
         { nameEn: searchRegex }
       ]
