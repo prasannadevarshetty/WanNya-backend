@@ -9,6 +9,7 @@ const formatPrice = (price) => {
   if (price === null || price === undefined || price === 0) {
     return '在庫がありません。';
   }
+
   return `¥${price.toLocaleString()}(税込)`;
 };
 
@@ -16,7 +17,9 @@ const mapProduct = (p) => {
   const prod = p && p.toObject ? p.toObject() : p;
 
   if (prod.images && Array.isArray(prod.images)) {
-    prod.images = prod.images.map((img) => getFileUrl(img, 'images') || img);
+    prod.images = prod.images.map(
+      (img) => getFileUrl(img, 'images') || img
+    );
   }
 
   if (prod.image) {
@@ -24,19 +27,34 @@ const mapProduct = (p) => {
   }
 
   prod.priceValue = prod.price;
+
   prod.isOutOfStock =
-    prod.price === 0 || prod.price === null || prod.price === undefined;
+    prod.price === 0 ||
+    prod.price === null ||
+    prod.price === undefined;
+
   prod.price = formatPrice(prod.price);
 
   return prod;
 };
 
 const getProductImage = (product) => {
-  if (Array.isArray(product.images) && product.images.length > 0) {
-    return getFileUrl(product.images[0], 'images') || product.images[0];
+  if (
+    Array.isArray(product.images) &&
+    product.images.length > 0
+  ) {
+    return (
+      getFileUrl(product.images[0], 'images') ||
+      product.images[0]
+    );
   }
 
-  return getFileUrl(product.image, 'images') || product.image || product.imageUrl || '';
+  return (
+    getFileUrl(product.image, 'images') ||
+    product.image ||
+    product.imageUrl ||
+    ''
+  );
 };
 
 // GET /api/products
@@ -66,28 +84,52 @@ router.get('/', optionalAuth, async (req, res) => {
         { category: { $regex: search, $options: 'i' } }
       ];
     } else {
-      if (category) filter.category = category;
+      if (category) {
+        filter.category = category;
+      }
 
       if (petType) {
         filter.petType = {
-          $in: [new RegExp(`^${petType}$`, 'i'), 'both']
+          $in: [
+            new RegExp(`^${petType}$`, 'i'),
+            'both'
+          ]
         };
       }
 
-      if (featured === 'true') filter.featured = true;
+      if (featured === 'true') {
+        filter.featured = true;
+      }
     }
 
     if (minPrice || maxPrice) {
       filter.price = {};
-      if (minPrice) filter.price.$gte = parseFloat(minPrice);
-      if (maxPrice) filter.price.$lte = parseFloat(maxPrice);
+
+      if (minPrice) {
+        filter.price.$gte = parseFloat(minPrice);
+      }
+
+      if (maxPrice) {
+        filter.price.$lte = parseFloat(maxPrice);
+      }
     }
 
-    const allowedSortFields = ['createdAt', 'price', 'nameJa', 'nameEn', 'category'];
-    const safeSort = allowedSortFields.includes(sort) ? sort : 'createdAt';
+    const allowedSortFields = [
+      'createdAt',
+      'price',
+      'nameJa',
+      'nameEn',
+      'category'
+    ];
+
+    const safeSort = allowedSortFields.includes(sort)
+      ? sort
+      : 'createdAt';
 
     const sortOptions = {};
-    sortOptions[safeSort] = order === 'asc' ? 1 : -1;
+
+    sortOptions[safeSort] =
+      order === 'asc' ? 1 : -1;
 
     const pageNum = parseInt(page, 10);
     const limitNum = parseInt(limit, 10);
@@ -97,11 +139,13 @@ router.get('/', optionalAuth, async (req, res) => {
         .sort(sortOptions)
         .limit(limitNum)
         .skip((pageNum - 1) * limitNum),
+
       Product.countDocuments(filter)
     ]);
 
     res.json({
       products: products.map(mapProduct),
+
       pagination: {
         current: pageNum,
         pages: Math.ceil(total / limitNum),
@@ -111,6 +155,7 @@ router.get('/', optionalAuth, async (req, res) => {
     });
   } catch (error) {
     console.error('Get products error:', error);
+
     res.status(500).json({
       message: 'Server error while fetching products'
     });
@@ -120,41 +165,71 @@ router.get('/', optionalAuth, async (req, res) => {
 // GET /api/products/suggestions?q=keyword
 router.get('/suggestions', async (req, res) => {
   try {
-    const { q, limit = 8 } = req.query;
+    const { q, search, limit = 8 } = req.query;
 
-    if (!q || !q.trim()) {
-      return res.json({ suggestions: [] });
+    const keyword = q || search;
+
+    if (!keyword || !keyword.trim()) {
+      return res.json({
+        suggestions: []
+      });
     }
 
-    const regex = new RegExp(q.trim(), 'i');
+    const regex = new RegExp(keyword.trim(), 'i');
 
     const products = await Product.find({
       isActive: true,
+
       $or: [
         { nameJa: regex },
         { nameEn: regex },
-        { category: regex }
+        { descriptionJa: regex },
+        { descriptionEn: regex },
+        { category: regex },
+        { petType: regex }
       ]
     })
-      .select('_id nameJa nameEn category images image imageUrl price')
+      .select(
+        '_id nameJa nameEn category petType images image imageUrl price'
+      )
+      .sort({
+        featured: -1,
+        createdAt: -1
+      })
       .limit(parseInt(limit, 10));
 
     res.json({
       suggestions: products.map((p) => ({
         id: p._id.toString(),
+
         nameJa: p.nameJa || '',
         nameEn: p.nameEn || '',
-        name: p.nameJa || p.nameEn || '',
-        category: p.category,
+
+        name:
+          p.nameJa ||
+          p.nameEn ||
+          '',
+
+        category: p.category || '',
+
+        petType: p.petType || '',
+
         image: getProductImage(p),
+
         price: p.price,
+
         priceText: formatPrice(p.price)
       }))
     });
   } catch (error) {
-    console.error('Get product suggestions error:', error);
+    console.error(
+      'Get product suggestions error:',
+      error
+    );
+
     res.status(500).json({
-      message: 'Server error while fetching suggestions'
+      message:
+        'Server error while fetching suggestions'
     });
   }
 });
@@ -172,12 +247,42 @@ router.get('/search', async (req, res) => {
 
     const searchFilter = {
       isActive: true,
+
       $or: [
-        { nameJa: { $regex: q, $options: 'i' } },
-        { nameEn: { $regex: q, $options: 'i' } },
-        { descriptionJa: { $regex: q, $options: 'i' } },
-        { descriptionEn: { $regex: q, $options: 'i' } },
-        { category: { $regex: q, $options: 'i' } }
+        {
+          nameJa: {
+            $regex: q,
+            $options: 'i'
+          }
+        },
+
+        {
+          nameEn: {
+            $regex: q,
+            $options: 'i'
+          }
+        },
+
+        {
+          descriptionJa: {
+            $regex: q,
+            $options: 'i'
+          }
+        },
+
+        {
+          descriptionEn: {
+            $regex: q,
+            $options: 'i'
+          }
+        },
+
+        {
+          category: {
+            $regex: q,
+            $options: 'i'
+          }
+        }
       ]
     };
 
@@ -185,9 +290,12 @@ router.get('/search', async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(parseInt(limit, 10));
 
-    res.json({ products: products.map(mapProduct) });
+    res.json({
+      products: products.map(mapProduct)
+    });
   } catch (error) {
     console.error('Search products error:', error);
+
     res.status(500).json({
       message: 'Server error while searching products'
     });
@@ -206,11 +314,18 @@ router.get('/featured', async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(parseInt(limit, 10));
 
-    res.json({ products: products.map(mapProduct) });
+    res.json({
+      products: products.map(mapProduct)
+    });
   } catch (error) {
-    console.error('Get featured products error:', error);
+    console.error(
+      'Get featured products error:',
+      error
+    );
+
     res.status(500).json({
-      message: 'Server error while fetching featured products'
+      message:
+        'Server error while fetching featured products'
     });
   }
 });
@@ -218,46 +333,74 @@ router.get('/featured', async (req, res) => {
 // GET /api/products/categories
 router.get('/categories', async (req, res) => {
   try {
-    const categories = await Product.distinct('category', { isActive: true });
+    const categories = await Product.distinct(
+      'category',
+      { isActive: true }
+    );
+
     res.json({ categories });
   } catch (error) {
     console.error('Get categories error:', error);
+
     res.status(500).json({
-      message: 'Server error while fetching categories'
+      message:
+        'Server error while fetching categories'
     });
   }
 });
 
 // GET /api/products/recommendations/:petType
-router.get('/recommendations/:petType', async (req, res) => {
-  try {
-    const { petType } = req.params;
-    const { limit = 12 } = req.query;
+router.get(
+  '/recommendations/:petType',
+  async (req, res) => {
+    try {
+      const { petType } = req.params;
 
-    if (!['dog', 'cat'].includes(petType)) {
-      return res.status(400).json({
-        message: 'Pet type must be dog or cat'
+      const { limit = 12 } = req.query;
+
+      if (!['dog', 'cat'].includes(petType)) {
+        return res.status(400).json({
+          message:
+            'Pet type must be dog or cat'
+        });
+      }
+
+      const products = await Product.find({
+        $or: [
+          {
+            petType: new RegExp(
+              `^${petType}$`,
+              'i'
+            )
+          },
+
+          { petType: 'both' }
+        ],
+
+        isActive: true
+      })
+        .sort({
+          featured: -1,
+          createdAt: -1
+        })
+        .limit(parseInt(limit, 10));
+
+      res.json({
+        products: products.map(mapProduct)
+      });
+    } catch (error) {
+      console.error(
+        'Get recommendations error:',
+        error
+      );
+
+      res.status(500).json({
+        message:
+          'Server error while fetching recommendations'
       });
     }
-
-    const products = await Product.find({
-      $or: [
-        { petType: new RegExp(`^${petType}$`, 'i') },
-        { petType: 'both' }
-      ],
-      isActive: true
-    })
-      .sort({ featured: -1, createdAt: -1 })
-      .limit(parseInt(limit, 10));
-
-    res.json({ products: products.map(mapProduct) });
-  } catch (error) {
-    console.error('Get recommendations error:', error);
-    res.status(500).json({
-      message: 'Server error while fetching recommendations'
-    });
   }
-});
+);
 
 // GET /api/products/compare?ids=id1,id2
 router.get('/compare', async (req, res) => {
@@ -270,11 +413,14 @@ router.get('/compare', async (req, res) => {
       });
     }
 
-    const productIds = ids.split(',').map((id) => id.trim());
+    const productIds = ids
+      .split(',')
+      .map((id) => id.trim());
 
     if (productIds.length > 5) {
       return res.status(400).json({
-        message: 'Cannot compare more than 5 products at once'
+        message:
+          'Cannot compare more than 5 products at once'
       });
     }
 
@@ -285,15 +431,23 @@ router.get('/compare', async (req, res) => {
 
     if (products.length !== productIds.length) {
       return res.status(404).json({
-        message: 'One or more products not found'
+        message:
+          'One or more products not found'
       });
     }
 
-    res.json({ products: products.map(mapProduct) });
+    res.json({
+      products: products.map(mapProduct)
+    });
   } catch (error) {
-    console.error('Compare products error:', error);
+    console.error(
+      'Compare products error:',
+      error
+    );
+
     res.status(500).json({
-      message: 'Server error while comparing products'
+      message:
+        'Server error while comparing products'
     });
   }
 });
@@ -312,7 +466,9 @@ router.get('/:id', async (req, res) => {
       });
     }
 
-    res.json({ product: mapProduct(product) });
+    res.json({
+      product: mapProduct(product)
+    });
   } catch (error) {
     console.error('Get product error:', error);
 
@@ -323,7 +479,8 @@ router.get('/:id', async (req, res) => {
     }
 
     res.status(500).json({
-      message: 'Server error while fetching product'
+      message:
+        'Server error while fetching product'
     });
   }
 });
