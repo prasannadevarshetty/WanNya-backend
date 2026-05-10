@@ -23,7 +23,8 @@ const mapProduct = (p) => {
   }
 
   if (prod.image) {
-    prod.image = getFileUrl(prod.image, 'images') || prod.image;
+    prod.image =
+      getFileUrl(prod.image, 'images') || prod.image;
   }
 
   prod.priceValue = prod.price;
@@ -77,11 +78,40 @@ router.get('/', optionalAuth, async (req, res) => {
 
     if (search && search.trim()) {
       filter.$or = [
-        { nameJa: { $regex: search, $options: 'i' } },
-        { nameEn: { $regex: search, $options: 'i' } },
-        { descriptionJa: { $regex: search, $options: 'i' } },
-        { descriptionEn: { $regex: search, $options: 'i' } },
-        { category: { $regex: search, $options: 'i' } }
+        {
+          nameJa: {
+            $regex: search,
+            $options: 'i'
+          }
+        },
+
+        {
+          nameEn: {
+            $regex: search,
+            $options: 'i'
+          }
+        },
+
+        {
+          descriptionJa: {
+            $regex: search,
+            $options: 'i'
+          }
+        },
+
+        {
+          descriptionEn: {
+            $regex: search,
+            $options: 'i'
+          }
+        },
+
+        {
+          category: {
+            $regex: search,
+            $options: 'i'
+          }
+        }
       ];
     } else {
       if (category) {
@@ -106,11 +136,13 @@ router.get('/', optionalAuth, async (req, res) => {
       filter.price = {};
 
       if (minPrice) {
-        filter.price.$gte = parseFloat(minPrice);
+        filter.price.$gte =
+          parseFloat(minPrice);
       }
 
       if (maxPrice) {
-        filter.price.$lte = parseFloat(maxPrice);
+        filter.price.$lte =
+          parseFloat(maxPrice);
       }
     }
 
@@ -122,9 +154,10 @@ router.get('/', optionalAuth, async (req, res) => {
       'category'
     ];
 
-    const safeSort = allowedSortFields.includes(sort)
-      ? sort
-      : 'createdAt';
+    const safeSort =
+      allowedSortFields.includes(sort)
+        ? sort
+        : 'createdAt';
 
     const sortOptions = {};
 
@@ -132,16 +165,18 @@ router.get('/', optionalAuth, async (req, res) => {
       order === 'asc' ? 1 : -1;
 
     const pageNum = parseInt(page, 10);
+
     const limitNum = parseInt(limit, 10);
 
-    const [products, total] = await Promise.all([
-      Product.find(filter)
-        .sort(sortOptions)
-        .limit(limitNum)
-        .skip((pageNum - 1) * limitNum),
+    const [products, total] =
+      await Promise.all([
+        Product.find(filter)
+          .sort(sortOptions)
+          .limit(limitNum)
+          .skip((pageNum - 1) * limitNum),
 
-      Product.countDocuments(filter)
-    ]);
+        Product.countDocuments(filter)
+      ]);
 
     res.json({
       products: products.map(mapProduct),
@@ -154,10 +189,14 @@ router.get('/', optionalAuth, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get products error:', error);
+    console.error(
+      'Get products error:',
+      error
+    );
 
     res.status(500).json({
-      message: 'Server error while fetching products'
+      message:
+        'Server error while fetching products'
     });
   }
 });
@@ -165,7 +204,11 @@ router.get('/', optionalAuth, async (req, res) => {
 // GET /api/products/suggestions?q=keyword
 router.get('/suggestions', async (req, res) => {
   try {
-    const { q, search, limit = 8 } = req.query;
+    const {
+      q,
+      search,
+      limit = 8
+    } = req.query;
 
     const keyword = q || search;
 
@@ -175,18 +218,26 @@ router.get('/suggestions', async (req, res) => {
       });
     }
 
-    const regex = new RegExp(keyword.trim(), 'i');
+    // escape regex special chars
+    const escapedKeyword = keyword
+      .trim()
+      .replace(
+        /[.*+?^${}()|[\]\\]/g,
+        '\\$&'
+      );
+
+    // starts-with matching only
+    const regex = new RegExp(
+      `^${escapedKeyword}`,
+      'i'
+    );
 
     const products = await Product.find({
       isActive: true,
 
       $or: [
         { nameJa: regex },
-        { nameEn: regex },
-        { descriptionJa: regex },
-        { descriptionEn: regex },
-        { category: regex },
-        { petType: regex }
+        { nameEn: regex }
       ]
     })
       .select(
@@ -203,6 +254,7 @@ router.get('/suggestions', async (req, res) => {
         id: p._id.toString(),
 
         nameJa: p.nameJa || '',
+
         nameEn: p.nameEn || '',
 
         name:
@@ -210,15 +262,19 @@ router.get('/suggestions', async (req, res) => {
           p.nameEn ||
           '',
 
-        category: p.category || '',
+        category:
+          p.category || '',
 
-        petType: p.petType || '',
+        petType:
+          p.petType || '',
 
-        image: getProductImage(p),
+        image:
+          getProductImage(p),
 
         price: p.price,
 
-        priceText: formatPrice(p.price)
+        priceText:
+          formatPrice(p.price)
       }))
     });
   } catch (error) {
@@ -241,7 +297,8 @@ router.get('/search', async (req, res) => {
 
     if (!q || !q.trim()) {
       return res.status(400).json({
-        message: 'Search query is required'
+        message:
+          'Search query is required'
       });
     }
 
@@ -286,18 +343,24 @@ router.get('/search', async (req, res) => {
       ]
     };
 
-    const products = await Product.find(searchFilter)
-      .sort({ createdAt: -1 })
-      .limit(parseInt(limit, 10));
+    const products =
+      await Product.find(searchFilter)
+        .sort({ createdAt: -1 })
+        .limit(parseInt(limit, 10));
 
     res.json({
-      products: products.map(mapProduct)
+      products:
+        products.map(mapProduct)
     });
   } catch (error) {
-    console.error('Search products error:', error);
+    console.error(
+      'Search products error:',
+      error
+    );
 
     res.status(500).json({
-      message: 'Server error while searching products'
+      message:
+        'Server error while searching products'
     });
   }
 });
@@ -307,15 +370,17 @@ router.get('/featured', async (req, res) => {
   try {
     const { limit = 10 } = req.query;
 
-    const products = await Product.find({
-      isActive: true,
-      featured: true
-    })
-      .sort({ createdAt: -1 })
-      .limit(parseInt(limit, 10));
+    const products =
+      await Product.find({
+        isActive: true,
+        featured: true
+      })
+        .sort({ createdAt: -1 })
+        .limit(parseInt(limit, 10));
 
     res.json({
-      products: products.map(mapProduct)
+      products:
+        products.map(mapProduct)
     });
   } catch (error) {
     console.error(
@@ -333,14 +398,18 @@ router.get('/featured', async (req, res) => {
 // GET /api/products/categories
 router.get('/categories', async (req, res) => {
   try {
-    const categories = await Product.distinct(
-      'category',
-      { isActive: true }
-    );
+    const categories =
+      await Product.distinct(
+        'category',
+        { isActive: true }
+      );
 
     res.json({ categories });
   } catch (error) {
-    console.error('Get categories error:', error);
+    console.error(
+      'Get categories error:',
+      error
+    );
 
     res.status(500).json({
       message:
@@ -356,37 +425,50 @@ router.get(
     try {
       const { petType } = req.params;
 
-      const { limit = 12 } = req.query;
+      const {
+        limit = 12
+      } = req.query;
 
-      if (!['dog', 'cat'].includes(petType)) {
+      if (
+        !['dog', 'cat'].includes(
+          petType
+        )
+      ) {
         return res.status(400).json({
           message:
             'Pet type must be dog or cat'
         });
       }
 
-      const products = await Product.find({
-        $or: [
-          {
-            petType: new RegExp(
-              `^${petType}$`,
-              'i'
-            )
-          },
+      const products =
+        await Product.find({
+          $or: [
+            {
+              petType:
+                new RegExp(
+                  `^${petType}$`,
+                  'i'
+                )
+            },
 
-          { petType: 'both' }
-        ],
+            {
+              petType: 'both'
+            }
+          ],
 
-        isActive: true
-      })
-        .sort({
-          featured: -1,
-          createdAt: -1
+          isActive: true
         })
-        .limit(parseInt(limit, 10));
+          .sort({
+            featured: -1,
+            createdAt: -1
+          })
+          .limit(
+            parseInt(limit, 10)
+          );
 
       res.json({
-        products: products.map(mapProduct)
+        products:
+          products.map(mapProduct)
       });
     } catch (error) {
       console.error(
@@ -409,7 +491,8 @@ router.get('/compare', async (req, res) => {
 
     if (!ids) {
       return res.status(400).json({
-        message: 'Product IDs are required'
+        message:
+          'Product IDs are required'
       });
     }
 
@@ -424,12 +507,19 @@ router.get('/compare', async (req, res) => {
       });
     }
 
-    const products = await Product.find({
-      _id: { $in: productIds },
-      isActive: true
-    });
+    const products =
+      await Product.find({
+        _id: {
+          $in: productIds
+        },
 
-    if (products.length !== productIds.length) {
+        isActive: true
+      });
+
+    if (
+      products.length !==
+      productIds.length
+    ) {
       return res.status(404).json({
         message:
           'One or more products not found'
@@ -437,7 +527,8 @@ router.get('/compare', async (req, res) => {
     }
 
     res.json({
-      products: products.map(mapProduct)
+      products:
+        products.map(mapProduct)
     });
   } catch (error) {
     console.error(
@@ -455,26 +546,35 @@ router.get('/compare', async (req, res) => {
 // GET /api/products/:id
 router.get('/:id', async (req, res) => {
   try {
-    const product = await Product.findOne({
-      _id: req.params.id,
-      isActive: true
-    });
+    const product =
+      await Product.findOne({
+        _id: req.params.id,
+        isActive: true
+      });
 
     if (!product) {
       return res.status(404).json({
-        message: 'Product not found'
+        message:
+          'Product not found'
       });
     }
 
     res.json({
-      product: mapProduct(product)
+      product:
+        mapProduct(product)
     });
   } catch (error) {
-    console.error('Get product error:', error);
+    console.error(
+      'Get product error:',
+      error
+    );
 
-    if (error.name === 'CastError') {
+    if (
+      error.name === 'CastError'
+    ) {
       return res.status(400).json({
-        message: 'Invalid product ID'
+        message:
+          'Invalid product ID'
       });
     }
 
