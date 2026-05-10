@@ -202,6 +202,7 @@ router.get('/suggestions', async (req, res) => {
         '\\$&'
       );
 
+    // only starts-with matching
     const regex = new RegExp(
       `^${escapedKeyword}`,
       'i'
@@ -225,32 +226,39 @@ router.get('/suggestions', async (req, res) => {
       .limit(parseInt(limit, 10));
 
     res.json({
-      suggestions: products.map((p) => ({
-        id: p._id.toString(),
-
-        nameJa: p.nameJa || '',
-
-        nameEn: p.nameEn || '',
-
-        name:
-          p.nameJa ||
+      suggestions: products.map((p) => {
+        const productName =
           p.nameEn ||
-          '',
+          p.nameJa ||
+          '';
 
-        category:
-          p.category || '',
+        return {
+          id: p._id.toString(),
 
-        petType:
-          p.petType || '',
+          // default display name
+          name: productName,
+          label: productName,
+          value: productName,
 
-        image:
-          getProductImage(p),
+          // original names
+          nameEn: p.nameEn || '',
+          nameJa: p.nameJa || '',
 
-        price: p.price,
+          category:
+            p.category || '',
 
-        priceText:
-          formatPrice(p.price)
-      }))
+          petType:
+            p.petType || '',
+
+          image:
+            getProductImage(p),
+
+          price: p.price,
+
+          priceText:
+            formatPrice(p.price)
+        };
+      })
     });
   } catch (error) {
     console.error(
@@ -508,7 +516,7 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({
         message:
           'Product not found'
-      });
+        });
     }
 
     res.json({
