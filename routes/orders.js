@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const axios = require('axios');
+
 const Order = require('../models/Order');
 const User = require('../models/User');
 const CancelledProduct = require('../models/CancelledProduct');
@@ -10,138 +12,248 @@ const { authenticate } = require('../middleware/auth');
 
 const parseNumber = (value) => {
   if (typeof value === 'string') {
-    return Number(value.replace(/[^\d.]/g, ''));
+    return Number(
+      value.replace(/[^\d.]/g, '')
+    );
   }
+
   return Number(value);
 };
 
-// @route POST /api/orders/create
-router.post('/create', authenticate, async (req, res) => {
+const validateLocation = async (
+  address
+) => {
   try {
 
-    const { items, shippingAddress } = req.body;
+    const fullAddress = [
+      address.street,
+      address.city,
+      address.state,
+      address.country,
+      address.zip
+    ]
+      .filter(Boolean)
+      .join(', ');
 
-    const rawTotal =
-      req.body.totalAmount ||
-      req.body.totalPrice ||
-      req.body.total;
-
-    const totalAmount = parseNumber(rawTotal);
-
-    if (
-      !items ||
-      !Array.isArray(items) ||
-      items.length === 0
-    ) {
-      return res.status(400).json({
-        message: 'Items are required'
-      });
-    }
-
-    if (
-      !Number.isFinite(totalAmount) ||
-      totalAmount <= 0
-    ) {
-      return res.status(400).json({
-        message: 'Valid total amount is required'
-      });
-    }
-
-    const orderItems = items.map((item) => ({
-      product: item.id || item.productId,
-
-      quantity: item.quantity,
-
-      price: parseNumber(item.price),
-
-      customization: {
-        name: item.name || item.title,
-        image: item.image,
-        category: item.category
-      }
-    }));
-
-    const order = new Order({
-      userId: req.user._id,
-
-      type: 'shop',
-
-      items: orderItems,
-
-      totalAmount,
-
-      status: 'pending',
-
-      shippingAddress:
-        shippingAddress || {
-          street: 'Default Address',
-          city: 'Default City',
-          state: 'Default State',
-          country: 'Default Country',
-          zip: '00000'
-        },
-
-      pointsEarned:
-        Math.floor(totalAmount * 0.01)
-    });
-
-    await order.save();
-
-    // 🔔 CREATE NOTIFICATION
-    await Notification.create({
-      userId: req.user._id,
-
-      key: 'orderPlaced',
-
-      data: {
-        orderId: order._id,
-        orderNumber: order.orderNumber,
-        totalAmount: order.totalAmount,
-        totalItems: items.length
-      },
-
-      isRead: false
-    });
-
-    // ⭐ UPDATE USER POINTS
-    await User.findByIdAndUpdate(
-      req.user._id,
+    const response = await axios.get(
+      'https://maps.googleapis.com/maps/api/geocode/json',
       {
-        $inc: {
-          points: order.pointsEarned
+        params: {
+          address: fullAddress,
+          key:
+            process.env
+              .GOOGLE_MAPS_API_KEY
         }
       }
     );
 
-    res.status(201).json({
-      message: 'Order created successfully',
-
-      order: {
-        id: order._id,
-
-        orderNumber: order.orderNumber,
-
-        totalAmount: order.totalAmount,
-
-        status: order.status,
-
-        pointsEarned: order.pointsEarned
-      }
-    });
+    return (
+      response.data.status === 'OK' &&
+      response.data.results.length > 0
+    );
 
   } catch (error) {
 
     console.error(
-      'Create order error:',
+      'Location validation error:',
       error
     );
 
-    res.status(500).json({
-      message:
-        'Server error while creating order'
-    });
+    return false;
   }
-});
+};
+
+// @route POST /api/orders/create
+router.post(
+  '/create',
+  authenticate,
+  async (req, res) => {
+
+    try {
+
+      const {
+        items,
+        shippingAddress
+      } = req.body;
+
+      const rawTotal =
+        req.body.totalAmount ||
+        req.body.totalPrice ||
+        req.body.total;
+
+      const totalAmount =
+        parseNumber(rawTotal);
+
+      if (
+        !items ||
+        !Array.isArray(items) ||
+        items.length === 0
+      ) {
+        return res.status(400).json({
+          message:
+            'Items are required'
+        });
+      }
+
+      if (
+        !Number.isFinite(
+          totalAmount
+        ) ||
+        totalAmount <= 0
+      ) {
+        return res.status(400).json({
+          message:
+            'Valid total amount is required'
+        });
+      }
+
+      // VALIDATE LOCATION
+      if (shippingAddress) {
+
+        const isValidLocation =
+          await validateLocation(
+            shippingAddress
+          );
+
+        if (!isValidLocation) {
+
+          return res.status(400).json({
+            message:
+              'Please enter a valid shipping location'
+          });
+        }
+      }
+
+      const orderItems = items.map(
+        (item) => ({
+          product:
+            item.id ||
+            item.productId,
+
+          quantity:
+            item.quantity,
+
+          price: parseNumber(
+            item.price
+          ),
+
+          customization: {
+            name:
+              item.name ||
+              item.title,
+
+            image:
+              item.image,
+
+            category:
+              item.category
+          }
+        })
+      );
+
+      const order = new Order({
+        userId: req.user._id,
+
+        type: 'shop',
+
+        items: orderItems,
+
+        totalAmount,
+
+        status: 'pending',
+
+        shippingAddress:
+          shippingAddress || {
+            street:
+              'Default Address',
+
+            city:
+              'Default City',
+
+            state:
+              'Default State',
+
+            country:
+              'Default Country',
+
+            zip: '00000'
+          },
+
+        pointsEarned:
+          Math.floor(
+            totalAmount * 0.01
+          )
+      });
+
+      await order.save();
+
+      // 🔔 CREATE NOTIFICATION
+      await Notification.create({
+        userId: req.user._id,
+
+        key: 'orderPlaced',
+
+        data: {
+          orderId: order._id,
+
+          orderNumber:
+            order.orderNumber,
+
+          totalAmount:
+            order.totalAmount,
+
+          totalItems:
+            items.length
+        },
+
+        isRead: false
+      });
+
+      // ⭐ UPDATE USER POINTS
+      await User.findByIdAndUpdate(
+        req.user._id,
+        {
+          $inc: {
+            points:
+              order.pointsEarned
+          }
+        }
+      );
+
+      res.status(201).json({
+        message:
+          'Order created successfully',
+
+        order: {
+          id: order._id,
+
+          orderNumber:
+            order.orderNumber,
+
+          totalAmount:
+            order.totalAmount,
+
+          status: order.status,
+
+          pointsEarned:
+            order.pointsEarned
+        }
+      });
+
+    } catch (error) {
+
+      console.error(
+        'Create order error:',
+        error
+      );
+
+      res.status(500).json({
+        message:
+          'Server error while creating order'
+      });
+    }
+  }
+);
 
 // @route POST /api/orders/cancel/:orderId
 router.post(
@@ -151,14 +263,17 @@ router.post(
 
     try {
 
-      const { orderId } = req.params;
+      const { orderId } =
+        req.params;
 
-      const { cancellationReason } =
-        req.body;
+      const {
+        cancellationReason
+      } = req.body;
 
       if (
         !cancellationReason ||
-        cancellationReason.trim().length === 0
+        cancellationReason.trim()
+          .length === 0
       ) {
         return res.status(400).json({
           message:
@@ -166,25 +281,33 @@ router.post(
         });
       }
 
-      const order = await Order.findOne({
-        _id: orderId,
-        userId: req.user._id
-      });
+      const order =
+        await Order.findOne({
+          _id: orderId,
+          userId: req.user._id
+        });
 
       if (!order) {
         return res.status(404).json({
-          message: 'Order not found'
+          message:
+            'Order not found'
         });
       }
 
-      if (order.status === 'cancelled') {
+      if (
+        order.status ===
+        'cancelled'
+      ) {
         return res.status(400).json({
           message:
             'Order is already cancelled'
         });
       }
 
-      if (order.status === 'delivered') {
+      if (
+        order.status ===
+        'delivered'
+      ) {
         return res.status(400).json({
           message:
             'Cannot cancel delivered order'
@@ -192,46 +315,60 @@ router.post(
       }
 
       const cancelledProducts =
-        order.items.map((item) => ({
-          orderId: order._id,
+        order.items.map(
+          (item) => ({
+            orderId:
+              order._id,
 
-          orderNumber: order.orderNumber,
+            orderNumber:
+              order.orderNumber,
 
-          userId: order.userId,
+            userId:
+              order.userId,
 
-          product: item.product,
+            product:
+              item.product,
 
-          service: item.service,
+            service:
+              item.service,
 
-          quantity: item.quantity,
+            quantity:
+              item.quantity,
 
-          price: item.price,
+            price:
+              item.price,
 
-          customization:
-            item.customization,
+            customization:
+              item.customization,
 
-          cancellationReason:
-            cancellationReason.trim(),
+            cancellationReason:
+              cancellationReason.trim(),
 
-          refundAmount:
-            item.price * item.quantity,
+            refundAmount:
+              item.price *
+              item.quantity,
 
-          pointsDeducted:
-            Math.floor(
-              (item.price * item.quantity) *
-              0.01
-            ),
+            pointsDeducted:
+              Math.floor(
+                (item.price *
+                  item.quantity) *
+                  0.01
+              ),
 
-          processedBy: 'user'
-        }));
+            processedBy:
+              'user'
+          })
+        );
 
       await CancelledProduct.insertMany(
         cancelledProducts
       );
 
-      order.status = 'cancelled';
+      order.status =
+        'cancelled';
 
-      order.cancelledAt = new Date();
+      order.cancelledAt =
+        new Date();
 
       order.cancellationReason =
         cancellationReason.trim();
@@ -241,11 +378,14 @@ router.post(
       const totalPointsDeducted =
         cancelledProducts.reduce(
           (sum, item) =>
-            sum + item.pointsDeducted,
+            sum +
+            item.pointsDeducted,
           0
         );
 
-      if (totalPointsDeducted > 0) {
+      if (
+        totalPointsDeducted > 0
+      ) {
 
         await User.findByIdAndUpdate(
           req.user._id,
