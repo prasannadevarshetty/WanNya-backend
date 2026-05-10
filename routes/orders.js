@@ -112,7 +112,9 @@ router.post(
         });
       }
 
-      // VALIDATE LOCATION
+      /*
+      // TEMPORARILY DISABLED LOCATION VALIDATION
+
       if (shippingAddress) {
 
         const isValidLocation =
@@ -128,6 +130,7 @@ router.post(
           });
         }
       }
+      */
 
       const orderItems = items.map(
         (item) => ({
