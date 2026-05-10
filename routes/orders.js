@@ -188,26 +188,32 @@ router.post(
       await order.save();
 
       // 🔔 CREATE NOTIFICATION
-      await Notification.create({
-        userId: req.user._id,
+      const notification =
+        await Notification.create({
+          userId: req.user._id,
 
-        key: 'orderPlaced',
+          key: 'orderPlaced',
 
-        data: {
-          orderId: order._id,
+          data: {
+            orderId: order._id,
 
-          orderNumber:
-            order.orderNumber,
+            orderNumber:
+              order.orderNumber,
 
-          totalAmount:
-            order.totalAmount,
+            totalAmount:
+              order.totalAmount,
 
-          totalItems:
-            items.length
-        },
+            totalItems:
+              items.length
+          },
 
-        isRead: false
-      });
+          isRead: false
+        });
+
+      console.log(
+        'Notification created:',
+        notification
+      );
 
       // ⭐ UPDATE USER POINTS
       await User.findByIdAndUpdate(
