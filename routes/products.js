@@ -77,41 +77,18 @@ router.get('/', optionalAuth, async (req, res) => {
     const filter = { isActive: true };
 
     if (search && search.trim()) {
+      const escapedSearch = search
+        .trim()
+        .replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+      const searchRegex = new RegExp(
+        `^${escapedSearch}`,
+        'i'
+      );
+
       filter.$or = [
-        {
-          nameJa: {
-            $regex: search,
-            $options: 'i'
-          }
-        },
-
-        {
-          nameEn: {
-            $regex: search,
-            $options: 'i'
-          }
-        },
-
-        {
-          descriptionJa: {
-            $regex: search,
-            $options: 'i'
-          }
-        },
-
-        {
-          descriptionEn: {
-            $regex: search,
-            $options: 'i'
-          }
-        },
-
-        {
-          category: {
-            $regex: search,
-            $options: 'i'
-          }
-        }
+        { nameJa: searchRegex },
+        { nameEn: searchRegex }
       ];
     } else {
       if (category) {
@@ -218,7 +195,6 @@ router.get('/suggestions', async (req, res) => {
       });
     }
 
-    // escape regex special chars
     const escapedKeyword = keyword
       .trim()
       .replace(
@@ -226,7 +202,6 @@ router.get('/suggestions', async (req, res) => {
         '\\$&'
       );
 
-    // starts-with matching only
     const regex = new RegExp(
       `^${escapedKeyword}`,
       'i'
@@ -302,44 +277,21 @@ router.get('/search', async (req, res) => {
       });
     }
 
+    const escapedQ = q
+      .trim()
+      .replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+    const searchRegex = new RegExp(
+      `^${escapedQ}`,
+      'i'
+    );
+
     const searchFilter = {
       isActive: true,
 
       $or: [
-        {
-          nameJa: {
-            $regex: q,
-            $options: 'i'
-          }
-        },
-
-        {
-          nameEn: {
-            $regex: q,
-            $options: 'i'
-          }
-        },
-
-        {
-          descriptionJa: {
-            $regex: q,
-            $options: 'i'
-          }
-        },
-
-        {
-          descriptionEn: {
-            $regex: q,
-            $options: 'i'
-          }
-        },
-
-        {
-          category: {
-            $regex: q,
-            $options: 'i'
-          }
-        }
+        { nameJa: searchRegex },
+        { nameEn: searchRegex }
       ]
     };
 
