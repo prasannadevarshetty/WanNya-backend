@@ -116,27 +116,6 @@ router.post('/create', authenticate, async (req, res) => {
   }
 });
 
-// @route GET /api/orders
-// @desc Get current user's order history
-// @access Private
-router.get('/', authenticate, async (req, res) => {
-  try {
-    const orders = await Order.find({
-      userId: req.user._id || req.user.id
-    }).sort({ createdAt: -1 });
-
-    // ✅ RETURN DIRECT ARRAY
-    res.status(200).json(orders);
-
-  } catch (error) {
-    console.error('Get orders error:', error);
-
-    res.status(500).json({
-      message: 'Server error while fetching orders'
-    });
-  }
-});
-
 // @route POST /api/orders/cancel/:orderId
 router.post('/cancel/:orderId', authenticate, async (req, res) => {
   try {
@@ -218,6 +197,134 @@ router.post('/cancel/:orderId', authenticate, async (req, res) => {
 
     res.status(500).json({
       message: 'Server error while cancelling order'
+    });
+  }
+});
+
+// @route   GET /api/orders
+// @route   GET /api/orders/user
+const getUserOrdersHandler = async (req, res) => {
+  try {
+    const orders = await Order.find({ userId: req.user._id })
+      .populate('items.product', 'name nameEn nameJa image price category')
+      .populate('items.service', 'name nameEn nameJa image price category')
+      .sort({ createdAt: -1 });
+
+    const enhancedOrders = orders.map((o) => {
+      const firstItem = o.items[0];
+
+      const itemName =
+        firstItem?.customization?.name ||
+        firstItem?.product?.name ||
+        firstItem?.service?.name ||
+        'Order Item';
+
+      const itemImage =
+        firstItem?.customization?.image ||
+        firstItem?.product?.image ||
+        firstItem?.service?.image ||
+        '/placeholder-product.jpg';
+
+      const itemEn =
+        firstItem?.product?.nameEn ||
+        firstItem?.service?.nameEn ||
+        'Order Item';
+
+      const itemJa =
+        firstItem?.product?.nameJa ||
+        firstItem?.service?.nameJa ||
+        '注文アイテム';
+
+      return {
+        id: o._id.toString(),
+        orderNumber: o.orderNumber || `ORD-${o._id.toString().slice(-8)}`,
+        title: itemName,
+        titleEn: itemEn,
+        titleJa: itemJa,
+        category: o.type,
+        price: o.totalAmount,
+        date: o.createdAt
+          ? o.createdAt.toISOString().split('T')[0]
+          : new Date().toISOString().split('T')[0],
+        status:
+          o.status === 'delivered'
+            ? 'completed'
+            : (o.status === 'cancelled' ? 'cancelled' : 'ongoing'),
+        items: o.items.map(item => ({
+          id: item._id,
+          name:
+            item.customization?.name ||
+            item.product?.name ||
+            item.service?.name,
+          nameEn: item.product?.nameEn || item.service?.nameEn,
+          nameJa: item.product?.nameJa || item.service?.nameJa,
+          image:
+            item.customization?.image ||
+            item.product?.image ||
+            item.service?.image,
+          quantity: item.quantity,
+          price: item.price,
+          category:
+            item.customization?.category ||
+            item.product?.category ||
+            item.service?.category
+        })),
+        totalItems: o.items.reduce((sum, item) => sum + item.quantity, 0),
+        pointsEarned: o.pointsEarned || 0,
+        createdAt: o.createdAt,
+        shippingAddress: o.shippingAddress
+      };
+    });
+
+    res.json({
+      success: true,
+      orders: enhancedOrders,
+      totalOrders: enhancedOrders.length
+    });
+
+  } catch (error) {
+    console.error('Get orders error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching orders'
+    });
+  }
+};
+
+router.get('/', authenticate, getUserOrdersHandler);
+router.get('/user', authenticate, getUserOrdersHandler);
+
+// @route   GET /api/orders/cancelled
+router.get('/cancelled', authenticate, async (req, res) => {
+  try {
+    const cancelledProducts = await CancelledProduct.find({
+      userId: req.user._id
+    })
+      .populate('product', 'name image')
+      .populate('service', 'name image')
+      .sort({ cancelledAt: -1 });
+
+    res.json({
+      cancelledProducts: cancelledProducts.map((cp) => ({
+        id: cp._id.toString(),
+        orderNumber: cp.orderNumber,
+        product: cp.product,
+        service: cp.service,
+        quantity: cp.quantity,
+        price: cp.price,
+        customization: cp.customization,
+        cancellationReason: cp.cancellationReason,
+        refundAmount: cp.refundAmount,
+        pointsDeducted: cp.pointsDeducted,
+        cancelledAt: cp.cancelledAt,
+        processedBy: cp.processedBy
+      }))
+    });
+
+  } catch (error) {
+    console.error('Get cancelled products error:', error);
+    res.status(500).json({
+      message: 'Server error while fetching cancelled products'
     });
   }
 });
