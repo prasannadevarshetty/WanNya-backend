@@ -5,6 +5,8 @@ const axios = require('axios');
 
 const Order = require('../models/Order');
 const User = require('../models/User');
+const Product = require('../models/Product');
+const Service = require('../models/Service');
 const CancelledProduct = require('../models/CancelledProduct');
 const Notification = require('../models/Notifications');
 
@@ -205,76 +207,79 @@ router.post('/cancel/:orderId', authenticate, async (req, res) => {
 // @route   GET /api/orders/user
 const getUserOrdersHandler = async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.user._id })
+    const userId = req.user._id || req.user.id;
+    
+    const orders = await Order.find({ userId })
       .populate('items.product', 'name nameEn nameJa image price category')
       .populate('items.service', 'name nameEn nameJa image price category')
       .sort({ createdAt: -1 });
 
     const enhancedOrders = orders.map((o) => {
-      const firstItem = o.items[0];
+      try {
+        const firstItem = o.items && o.items.length > 0 ? o.items[0] : null;
 
-      const itemName =
-        firstItem?.customization?.name ||
-        firstItem?.product?.name ||
-        firstItem?.service?.name ||
-        'Order Item';
+        const itemName =
+          firstItem?.customization?.name ||
+          firstItem?.product?.name ||
+          firstItem?.service?.name ||
+          'Order Item';
 
-      const itemImage =
-        firstItem?.customization?.image ||
-        firstItem?.product?.image ||
-        firstItem?.service?.image ||
-        '/placeholder-product.jpg';
+        const itemEn =
+          firstItem?.product?.nameEn ||
+          firstItem?.service?.nameEn ||
+          itemName; // Fallback to itemName if nameEn is missing
 
-      const itemEn =
-        firstItem?.product?.nameEn ||
-        firstItem?.service?.nameEn ||
-        'Order Item';
+        const itemJa =
+          firstItem?.product?.nameJa ||
+          firstItem?.service?.nameJa ||
+          itemName;
 
-      const itemJa =
-        firstItem?.product?.nameJa ||
-        firstItem?.service?.nameJa ||
-        '注文アイテム';
-
-      return {
-        id: o._id.toString(),
-        orderNumber: o.orderNumber || `ORD-${o._id.toString().slice(-8)}`,
-        title: itemName,
-        titleEn: itemEn,
-        titleJa: itemJa,
-        category: o.type,
-        price: o.totalAmount,
-        date: o.createdAt
-          ? o.createdAt.toISOString().split('T')[0]
-          : new Date().toISOString().split('T')[0],
-        status:
-          o.status === 'delivered'
-            ? 'completed'
-            : (o.status === 'cancelled' ? 'cancelled' : 'ongoing'),
-        items: o.items.map(item => ({
-          id: item._id,
-          name:
-            item.customization?.name ||
-            item.product?.name ||
-            item.service?.name,
-          nameEn: item.product?.nameEn || item.service?.nameEn,
-          nameJa: item.product?.nameJa || item.service?.nameJa,
-          image:
-            item.customization?.image ||
-            item.product?.image ||
-            item.service?.image,
-          quantity: item.quantity,
-          price: item.price,
-          category:
-            item.customization?.category ||
-            item.product?.category ||
-            item.service?.category
-        })),
-        totalItems: o.items.reduce((sum, item) => sum + item.quantity, 0),
-        pointsEarned: o.pointsEarned || 0,
-        createdAt: o.createdAt,
-        shippingAddress: o.shippingAddress
-      };
-    });
+        return {
+          id: o._id.toString(),
+          orderNumber: o.orderNumber || `ORD-${o._id.toString().slice(-8)}`,
+          title: itemName,
+          titleEn: itemEn,
+          titleJa: itemJa,
+          category: o.type,
+          price: o.totalAmount,
+          date: o.createdAt
+            ? o.createdAt.toISOString().split('T')[0]
+            : new Date().toISOString().split('T')[0],
+          status:
+            o.status === 'delivered'
+              ? 'completed'
+              : (o.status === 'cancelled' ? 'cancelled' : 'ongoing'),
+          items: (o.items || []).map(item => ({
+            id: item._id,
+            name:
+              item.customization?.name ||
+              item.product?.name ||
+              item.service?.name ||
+              'Item',
+            nameEn: item.product?.nameEn || item.service?.nameEn || item.product?.name || item.service?.name,
+            nameJa: item.product?.nameJa || item.service?.nameJa || item.product?.name || item.service?.name,
+            image:
+              item.customization?.image ||
+              item.product?.image ||
+              item.service?.image ||
+              '/placeholder-product.jpg',
+            quantity: item.quantity || 0,
+            price: item.price || 0,
+            category:
+              item.customization?.category ||
+              item.product?.category ||
+              item.service?.category
+          })),
+          totalItems: (o.items || []).reduce((sum, item) => sum + (item.quantity || 0), 0),
+          pointsEarned: o.pointsEarned || 0,
+          createdAt: o.createdAt,
+          shippingAddress: o.shippingAddress
+        };
+      } catch (mapError) {
+        console.error('Error mapping order:', o._id, mapError);
+        return null; // Skip this order if it fails
+      }
+    }).filter(o => o !== null);
 
     res.json({
       success: true,
@@ -286,7 +291,8 @@ const getUserOrdersHandler = async (req, res) => {
     console.error('Get orders error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching orders'
+      message: 'Server error while fetching orders',
+      error: error.message // Include message for easier debugging
     });
   }
 };
