@@ -104,4 +104,48 @@ const deleteAllNotifications = async (req, res) => {
   }
 };
 
-module.exports = { getNotifications, deleteNotification, deleteAllNotifications };
+const markAsRead = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user._id || req.user.id;
+    
+    const notification = await Notification.findOneAndUpdate(
+      { _id: id, userId: userId },
+      { isRead: true },
+      { new: true }
+    );
+    
+    if (!notification) {
+      return res.status(404).json({ message: 'Notification not found' });
+    }
+    
+    res.status(200).json({ 
+      message: 'Notification marked as read',
+      notification: {
+        id: notification._id,
+        isRead: notification.isRead
+      }
+    });
+  } catch (error) {
+    console.error('Mark as read error:', error);
+    res.status(500).json({ message: 'Failed to mark notification as read' });
+  }
+};
+
+const markAllAsRead = async (req, res) => {
+  try {
+    const userId = req.user._id || req.user.id;
+    
+    await Notification.updateMany(
+      { userId: userId, isRead: false },
+      { isRead: true }
+    );
+    
+    res.status(200).json({ message: 'All notifications marked as read' });
+  } catch (error) {
+    console.error('Mark all as read error:', error);
+    res.status(500).json({ message: 'Failed to mark all notifications as read' });
+  }
+};
+
+module.exports = { getNotifications, deleteNotification, deleteAllNotifications, markAsRead, markAllAsRead };
