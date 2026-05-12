@@ -260,7 +260,7 @@ const getUserOrdersHandler = async (req, res) => {
           status:
             o.status === 'delivered'
               ? 'completed'
-              : (o.status === 'cancelled' ? 'cancelled' : 'ongoing'),
+              : (o.status === 'cancelled' ? 'cancelled' : (o.status || 'ongoing')),
           items: (o.items || []).map(item => ({
             id: item._id,
             name:
