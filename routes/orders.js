@@ -258,9 +258,7 @@ const getUserOrdersHandler = async (req, res) => {
             ? o.createdAt.toISOString().split('T')[0]
             : new Date().toISOString().split('T')[0],
           status:
-            o.status === 'delivered'
-              ? 'completed'
-              : (o.status === 'cancelled' ? 'cancelled' : (o.status || 'ongoing')),
+            o.status === 'cancelled' ? 'cancelled' : (o.status || 'ongoing'),
           items: (o.items || []).map(item => ({
             id: item._id,
             name:
