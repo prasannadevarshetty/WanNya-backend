@@ -125,9 +125,9 @@ router.get('/', authenticate, async (req, res) => {
       userId: req.user._id || req.user.id
     }).sort({ createdAt: -1 });
 
-    res.status(200).json({
-      orders
-    });
+    // ✅ RETURN DIRECT ARRAY
+    res.status(200).json(orders);
+
   } catch (error) {
     console.error('Get orders error:', error);
 
