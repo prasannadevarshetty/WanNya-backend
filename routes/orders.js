@@ -116,6 +116,27 @@ router.post('/create', authenticate, async (req, res) => {
   }
 });
 
+// @route GET /api/orders
+// @desc Get current user's order history
+// @access Private
+router.get('/', authenticate, async (req, res) => {
+  try {
+    const orders = await Order.find({
+      userId: req.user._id || req.user.id
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      orders
+    });
+  } catch (error) {
+    console.error('Get orders error:', error);
+
+    res.status(500).json({
+      message: 'Server error while fetching orders'
+    });
+  }
+});
+
 // @route POST /api/orders/cancel/:orderId
 router.post('/cancel/:orderId', authenticate, async (req, res) => {
   try {
