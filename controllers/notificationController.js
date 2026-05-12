@@ -11,12 +11,8 @@ const getNotifications = async (req, res) => {
     }).sort({ createdAt: -1 });
 
     const result = notifications.map((n) => {
-      const translatedMessage = translate(n.key, n.data, translations);
-
-      const message =
-        translatedMessage === n.key
-          ? translations.notifications?.[n.key] || n.key
-          : translatedMessage;
+      // ✅ Use full path for translation key
+      const message = translate(`notifications.${n.key}`, n.data, translations);
 
       return {
         id: n._id,
