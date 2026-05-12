@@ -176,18 +176,19 @@ router.post('/cancel/:orderId', authenticate, async (req, res) => {
 
     await order.save();
 
-    const totalPointsDeducted = cancelledProducts.reduce(
-      (sum, item) => sum + item.pointsDeducted,
-      0
-    );
+   // Deduct same points that were earned during order placement
+const totalPointsDeducted = order.pointsEarned || 0;
 
-    if (totalPointsDeducted > 0) {
-      await User.findByIdAndUpdate(req.user._id, {
-        $inc: {
-          points: -totalPointsDeducted
-        }
-      });
+if (totalPointsDeducted > 0) {
+  await User.findByIdAndUpdate(
+    req.user._id || req.user.id,
+    {
+      $inc: {
+        points: -totalPointsDeducted
+      }
     }
+  );
+}
 
     // Trigger Notification
     const Notification = require('../models/Notifications');
