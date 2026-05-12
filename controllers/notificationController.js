@@ -11,12 +11,17 @@ const getNotifications = async (req, res) => {
     }).sort({ createdAt: -1 });
 
     const result = notifications.map((n) => {
-      const message = translate(n.key, n.data, translations);
+      const translatedMessage = translate(n.key, n.data, translations);
+
+      const message =
+        translatedMessage === n.key
+          ? translations.notifications?.[n.key] || n.key
+          : translatedMessage;
 
       return {
         id: n._id,
         key: n.key,
-        title: n.data?.title || getNotificationTitle(n.key),
+        title: getNotificationTitle(n.key),
         message,
         content: message,
         type: n.data?.type || getNotificationType(n.key),
@@ -31,6 +36,7 @@ const getNotifications = async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     console.error('Get notifications error:', error);
+
     res.status(500).json({
       message: 'Failed to fetch notifications'
     });
