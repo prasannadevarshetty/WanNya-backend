@@ -47,6 +47,14 @@ const getNotificationTitle = (key) => {
   switch (key) {
     case 'orderPlaced':
       return 'Order Placed';
+    case 'orderShipped':
+      return 'Order Shipped';
+    case 'orderDelivered':
+      return 'Order Delivered';
+    case 'orderCancelled':
+      return 'Order Cancelled';
+    case 'bookingConfirmed':
+      return 'Booking Confirmed';
     default:
       return 'Notification';
   }
@@ -55,19 +63,23 @@ const getNotificationTitle = (key) => {
 const getNotificationType = (key) => {
   switch (key) {
     case 'orderPlaced':
+    case 'orderDelivered':
+    case 'bookingConfirmed':
       return 'success';
+    case 'orderCancelled':
+      return 'warning';
+    case 'orderShipped':
+      return 'info';
     default:
       return 'info';
   }
 };
 
 const getNotificationCategory = (key) => {
-  switch (key) {
-    case 'orderPlaced':
-      return 'order';
-    default:
-      return 'system';
+  if (key.startsWith('order') || key.startsWith('booking')) {
+    return 'order';
   }
+  return 'system';
 };
 
 module.exports = { getNotifications };

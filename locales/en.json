@@ -5,18 +5,20 @@
     "empty": "No notifications yet!",
     "delete": "Delete all",
     "emptyDesc": "You are all caught up. We will notify you when something arrives.",
-    "orderPlaced": "Your order has been placed successfully.",
- 
+    "orderPlaced": "Your order #{{orderNumber}} for {{totalAmount}} has been placed successfully!",
+    "orderShipped": "Great news! Your order #{{orderNumber}} has been shipped.",
+    "orderDelivered": "Your order #{{orderNumber}} has been delivered. Enjoy!",
+    "orderCancelled": "Your order #{{orderNumber}} has been cancelled successfully.",
     "bookingConfirmed": {
       "title": "Booking Confirmed",
       "desc": "Your grooming session is booked successfully.",
       "expires": "Expires on"
     },
     "system": {
-    "error": "Error",
-    "otpSent": "OTP sent",
-    "addedToCart": "Added to cart",
-    "sessionExpired": "Session expired"
+      "error": "Error",
+      "otpSent": "OTP sent",
+      "addedToCart": "Added to cart",
+      "sessionExpired": "Session expired"
     }
-}
+  }
 }

@@ -189,6 +189,18 @@ router.post('/cancel/:orderId', authenticate, async (req, res) => {
       });
     }
 
+    // Trigger Notification
+    const Notification = require('../models/Notifications');
+    await Notification.create({
+      userId: req.user._id,
+      key: 'orderCancelled',
+      data: {
+        orderId: order._id,
+        orderNumber: order.orderNumber
+      },
+      isRead: false
+    });
+
     res.json({
       message: 'Order cancelled successfully',
       cancelledProducts: cancelledProducts.length,
