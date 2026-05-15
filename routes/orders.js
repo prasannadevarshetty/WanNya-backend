@@ -226,15 +226,14 @@ router.put('/:orderId/status', authenticate, async (req, res) => {
     order.status = status;
 
     // Add points only once when delivered
-    if (
-      previousStatus !== 'delivered' &&
-      status === 'delivered'
-    ) {
-      await User.findByIdAndUpdate(order.userId, {
-        $inc: {
-          points: order.pointsEarned || 0
-        }
-      });
+    if (status === 'delivered') {
+  const user = await User.findById(order.userId);
+
+  if (user) {
+    user.points = (user.points || 0) + (order.pointsEarned || 0);
+    await user.save();
+  }
+}
 
       await Notification.create({
         userId: order.userId,
