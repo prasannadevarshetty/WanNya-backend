@@ -11,7 +11,6 @@ const getNotifications = async (req, res) => {
     }).sort({ createdAt: -1 });
 
     const result = notifications.map((n) => {
-      // ✅ Use full path for translation key
       const message = translate(`notifications.${n.key}`, n.data, translations);
 
       return {
@@ -107,25 +106,15 @@ const deleteAllNotifications = async (req, res) => {
 const markAsRead = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user._id || req.user.id;
-    
-    const notification = await Notification.findOneAndUpdate(
-      { _id: id, userId: userId },
-      { isRead: true },
+    await Notification.findOneAndUpdate(
+      {
+        _id: id,
+        userId: req.user._id || req.user.id
+      },
+      { $set: { isRead: true } },
       { new: true }
     );
-    
-    if (!notification) {
-      return res.status(404).json({ message: 'Notification not found' });
-    }
-    
-    res.status(200).json({ 
-      message: 'Notification marked as read',
-      notification: {
-        id: notification._id,
-        isRead: notification.isRead
-      }
-    });
+    res.status(200).json({ message: 'Notification marked as read' });
   } catch (error) {
     console.error('Mark as read error:', error);
     res.status(500).json({ message: 'Failed to mark notification as read' });
@@ -134,13 +123,13 @@ const markAsRead = async (req, res) => {
 
 const markAllAsRead = async (req, res) => {
   try {
-    const userId = req.user._id || req.user.id;
-    
     await Notification.updateMany(
-      { userId: userId, isRead: false },
-      { isRead: true }
+      {
+        userId: req.user._id || req.user.id,
+        isRead: { $ne: true }
+      },
+      { $set: { isRead: true } }
     );
-    
     res.status(200).json({ message: 'All notifications marked as read' });
   } catch (error) {
     console.error('Mark all as read error:', error);
