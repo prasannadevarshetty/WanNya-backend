@@ -14,6 +14,7 @@ const { sendOtpEmail } = require('../utils/emailService');
 const { catchAsync } = require('../middleware/errorHandler');
 const { logAuth } = require('../utils/logger');
 const { generateOTP } = require('../utils/otpGenerator');
+const { getTranslations, translate } = require('../utils/translate');
 
 const router = express.Router();
 
@@ -63,11 +64,17 @@ const generateToken = (userId) => {
 
 // REGISTER
 router.post('/register', registerLimiter, validateUserRegistration, catchAsync(async (req, res) => {
+  const lang = req.query.lang || 'en';
+  const translations = getTranslations(lang);
+
   const { name, email, password } = req.body;
 
   const existingUser = await User.findOne({ email });
+
   if (existingUser) {
-    return res.status(400).json({ message: 'User already exists' });
+    return res.status(400).json({
+      message: translations.userAlreadyExists
+    });
   }
 
   const user = new User({ name, email, password });
@@ -76,7 +83,7 @@ router.post('/register', registerLimiter, validateUserRegistration, catchAsync(a
   const token = generateToken(user._id);
 
   res.status(201).json({
-    message: 'User registered successfully',
+    message: translations.userRegisteredSuccessfully,
     token,
     user: user.toPublicJSON()
   });
@@ -84,38 +91,50 @@ router.post('/register', registerLimiter, validateUserRegistration, catchAsync(a
 
 // LOGIN
 router.post('/login', loginLimiter, validateUserLogin, catchAsync(async (req, res) => {
+  const lang = req.query.lang || 'en';
+  const translations = getTranslations(lang);
+
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
 
   if (!user || !user.password) {
-    return res.status(401).json({ message: 'Invalid email or password' });
+    return res.status(401).json({
+      message: translations.invalidEmailOrPassword
+    });
   }
 
   const isValid = await user.comparePassword(password);
+
   if (!isValid) {
-    return res.status(401).json({ message: 'Invalid email or password' });
+    return res.status(401).json({
+      message: translations.invalidEmailOrPassword
+    });
   }
 
   const token = generateToken(user._id);
 
   res.json({
-    message: 'Login successful',
+    message: translations.loginSuccessful,
     token,
     user: user.toPublicJSON()
   });
 }));
 
-// FORGOT PASSWORD (FAST OTP)
+// FORGOT PASSWORD
 router.post('/forgot-password', forgotPasswordLimiter, validateOtpRequest, catchAsync(async (req, res) => {
+  const lang = req.query.lang || 'en';
+  const translations = getTranslations(lang);
+
   const { email } = req.body;
 
   const user = await User.findOne({ email });
 
   if (!user) {
     logAuth('forgot_password_attempt', null, false, { email });
+
     return res.json({
-      message: 'If an account with that email exists, an OTP has been sent.'
+      message: translations.otpSentMessage
     });
   }
 
@@ -126,8 +145,13 @@ router.post('/forgot-password', forgotPasswordLimiter, validateOtpRequest, catch
 
     if (Date.now() < resendAllowedAt) {
       const remainingSecs = Math.ceil((resendAllowedAt - Date.now()) / 1000);
+
       return res.status(429).json({
-        message: `Please wait ${remainingSecs} seconds before requesting a new OTP.`
+        message: translate(
+          'waitBeforeNewOtp',
+          { seconds: remainingSecs },
+          translations
+        )
       });
     }
   }
@@ -136,6 +160,7 @@ router.post('/forgot-password', forgotPasswordLimiter, validateOtpRequest, catch
 
   user.otp = otp;
   user.otpExpires = new Date(Date.now() + 5 * 60 * 1000);
+
   await user.save();
 
   // Send email without blocking API response
@@ -157,12 +182,15 @@ router.post('/forgot-password', forgotPasswordLimiter, validateOtpRequest, catch
   logAuth('forgot_password', user._id, true, { email });
 
   return res.json({
-    message: 'If an account with that email exists, an OTP has been sent.'
+    message: translations.otpSentMessage
   });
 }));
 
 // VERIFY OTP
 router.post('/verify-otp', otpLimiter, validateOtpVerify, catchAsync(async (req, res) => {
+  const lang = req.query.lang || 'en';
+  const translations = getTranslations(lang);
+
   const { email, otp } = req.body;
 
   const user = await User.findOne({ email });
@@ -179,14 +207,21 @@ router.post('/verify-otp', otpLimiter, validateOtpVerify, catchAsync(async (req,
     user.otpExpires > Date.now();
 
   if (!otpMatch || !notExpired) {
-    return res.status(400).json({ message: 'Invalid or expired OTP' });
+    return res.status(400).json({
+      message: translations.invalidOrExpiredOtp
+    });
   }
 
-  res.json({ message: 'OTP verified' });
+  res.json({
+    message: translations.otpVerified
+  });
 }));
 
 // RESET PASSWORD
 router.post('/reset-password', otpLimiter, validateResetPassword, catchAsync(async (req, res) => {
+  const lang = req.query.lang || 'en';
+  const translations = getTranslations(lang);
+
   const { email, otp, newPassword } = req.body;
 
   const user = await User.findOne({ email });
@@ -203,7 +238,9 @@ router.post('/reset-password', otpLimiter, validateResetPassword, catchAsync(asy
     user.otpExpires > Date.now();
 
   if (!otpMatch || !notExpired) {
-    return res.status(400).json({ message: 'Invalid or expired OTP' });
+    return res.status(400).json({
+      message: translations.invalidOrExpiredOtp
+    });
   }
 
   user.password = newPassword;
@@ -212,12 +249,16 @@ router.post('/reset-password', otpLimiter, validateResetPassword, catchAsync(asy
 
   await user.save();
 
-  res.json({ message: 'Password reset successful' });
+  res.json({
+    message: translations.passwordResetSuccessful
+  });
 }));
 
 // CURRENT USER
 router.get('/me', authenticate, (req, res) => {
-  res.json({ user: req.user.toPublicJSON() });
+  res.json({
+    user: req.user.toPublicJSON()
+  });
 });
 
 module.exports = router;
