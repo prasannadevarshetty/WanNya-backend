@@ -226,17 +226,16 @@ router.put('/:orderId/status', authenticate, async (req, res) => {
     order.status = status;
 
     // Add points only once when delivered
-    // Add points only once when delivered
-if (status === "delivered" && !order.pointsAdded) {
-  const user = await User.findById(order.userId);
-
-  if (user) {
-    user.points = (user.points || 0) + (order.pointsEarned || 0);
-    await user.save();
-  }
-
-  order.pointsAdded = true;
-}
+      if (status === "delivered" && !order.pointsAdded) {
+        const user = await User.findById(order.userId);
+      
+        if (user) {
+          user.points = (user.points || 0) + (order.pointsEarned || 0);
+          await user.save();
+        }
+      
+        order.pointsAdded = true;
+      }
 
       await Notification.create({
         userId: order.userId,
