@@ -20,5 +20,18 @@
             "addedToCart": "カートに追加しました",
             "sessionExpired": "セッションの有効期限が切れました"
         }
-    }
+    },
+    "tooManyLoginAttempts": "ログイン試行回数が多すぎます。後でもう一度お試しください。",
+    "tooManyPasswordResetRequests": "パスワードリセットのリクエスト回数が多すぎます。後でもう一度お試しください。",
+    "tooManyVerificationAttempts": "認証試行回数が多すぎます。後でもう一度お試しください。",
+    "tooManyAccountsCreated": "アカウント作成回数が多すぎます。後でもう一度お試しください。",
+    "userAlreadyExists": "ユーザーは既に存在します",
+    "userRegisteredSuccessfully": "ユーザー登録に成功しました",
+    "invalidEmailOrPassword": "メールアドレスまたはパスワードが無効です",
+    "loginSuccessful": "ログイン成功",
+    "otpSentMessage": "そのメールアドレスのアカウントが存在する場合、OTPが送信されました。",
+    "waitBeforeNewOtp": "新しいOTPをリクエストする前に {{seconds}} 秒お待ちください。",
+    "invalidOrExpiredOtp": "OTPが無効または期限切れです",
+    "otpVerified": "OTP確認成功",
+    "passwordResetSuccessful": "パスワードのリセットに成功しました"
 }   
