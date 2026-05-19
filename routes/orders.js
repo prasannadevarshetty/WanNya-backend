@@ -221,34 +221,33 @@ router.put('/:orderId/status', authenticate, async (req, res) => {
       });
     }
 
-    const previousStatus = order.status;
+   const previousStatus = order.status;
 
-    order.status = status;
+order.status = status;
 
-    // Add points only once when delivered
-      if (status === "delivered" && !order.pointsAdded) {
-        const user = await User.findById(order.userId);
-      
-        if (user) {
-          user.points = (user.points || 0) + (order.pointsEarned || 0);
-          await user.save();
-        }
-      
-        order.pointsAdded = true;
-      }
+// Add points only once when delivered
+if (status === "delivered" && !order.pointsAdded) {
+  const user = await User.findById(order.userId);
 
-      await Notification.create({
-        userId: order.userId,
-        key: 'orderDelivered',
-        data: {
-          orderId: order._id,
-          orderNumber: order.orderNumber
-        },
-        isRead: false
-      });
-    }
+  if (user) {
+    user.points = (user.points || 0) + (order.pointsEarned || 0);
+    await user.save();
+  }
 
-    await order.save();
+  order.pointsAdded = true;
+}
+
+await Notification.create({
+  userId: order.userId,
+  key: 'orderDelivered',
+  data: {
+    orderId: order._id,
+    orderNumber: order.orderNumber
+  },
+  isRead: false
+});
+
+await order.save();
 
     res.status(200).json({
       message: 'Order status updated successfully',
