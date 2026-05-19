@@ -226,7 +226,7 @@ router.put('/:orderId/status', authenticate, async (req, res) => {
 order.status = status;
 
 // Add points only once when delivered
-if (status === "delivered" && !order.pointsAdded) {
+if (status === "delivered") {
 
   console.log("Points logic triggered");
   console.log("Order Points:", order.pointsEarned);
