@@ -20,5 +20,18 @@
       "addedToCart": "Added to cart",
       "sessionExpired": "Session expired"
     }
-  }
+  },
+  "tooManyLoginAttempts": "Too many login attempts. Please try again later.",
+  "tooManyPasswordResetRequests": "Too many password reset requests. Please try again later.",
+  "tooManyVerificationAttempts": "Too many verification attempts. Please try again later.",
+  "tooManyAccountsCreated": "Too many accounts created. Please try again later.",
+  "userAlreadyExists": "User already exists",
+  "userRegisteredSuccessfully": "User registered successfully",
+  "invalidEmailOrPassword": "Invalid email or password",
+  "loginSuccessful": "Login successful",
+  "otpSentMessage": "If an account with that email exists, an OTP has been sent.",
+  "waitBeforeNewOtp": "Please wait {{seconds}} seconds before requesting a new OTP.",
+  "invalidOrExpiredOtp": "Invalid or expired OTP",
+  "otpVerified": "OTP verified",
+  "passwordResetSuccessful": "Password reset successful"
 }
