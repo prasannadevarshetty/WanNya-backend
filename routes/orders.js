@@ -1,6 +1,12 @@
 const express = require('express');
 const router = express.Router();
 
+// 🔥 Route logger
+router.use((req, res, next) => {
+  console.log("ORDERS ROUTE HIT:", req.method, req.originalUrl);
+  next();
+});
+
 const axios = require('axios');
 
 const Order = require('../models/Order');
@@ -103,6 +109,7 @@ router.post('/create', authenticate, async (req, res) => {
         pointsEarned: order.pointsEarned
       }
     });
+
   } catch (error) {
     console.error('Create order error:', error);
 
@@ -112,92 +119,16 @@ router.post('/create', authenticate, async (req, res) => {
   }
 });
 
-// @route POST /api/orders/cancel/:orderId
-router.post('/cancel/:orderId', authenticate, async (req, res) => {
-  try {
-    const { orderId } = req.params;
-    const { cancellationReason } = req.body;
-
-    if (!cancellationReason || cancellationReason.trim().length === 0) {
-      return res.status(400).json({
-        message: 'Cancellation reason is required'
-      });
-    }
-
-    const order = await Order.findOne({
-      _id: orderId,
-      userId: req.user._id
-    });
-
-    if (!order) {
-      return res.status(404).json({
-        message: 'Order not found'
-      });
-    }
-
-    if (order.status === 'cancelled') {
-      return res.status(400).json({
-        message: 'Order is already cancelled'
-      });
-    }
-
-    if (order.status === 'delivered') {
-      return res.status(400).json({
-        message: 'Cannot cancel delivered order'
-      });
-    }
-
-    const cancelledProducts = order.items.map((item) => ({
-      orderId: order._id,
-      orderNumber: order.orderNumber,
-      userId: order.userId,
-      product: item.product,
-      service: item.service,
-      quantity: item.quantity,
-      price: item.price,
-      customization: item.customization,
-      cancellationReason: cancellationReason.trim(),
-      refundAmount: item.price * item.quantity,
-      pointsDeducted: 0,
-      processedBy: 'user'
-    }));
-
-    await CancelledProduct.insertMany(cancelledProducts);
-
-    order.status = 'cancelled';
-    order.cancelledAt = new Date();
-    order.cancellationReason = cancellationReason.trim();
-
-    await order.save();
-
-    await Notification.create({
-      userId: req.user._id,
-      key: 'orderCancelled',
-      data: {
-        orderId: order._id,
-        orderNumber: order.orderNumber
-      },
-      isRead: false
-    });
-
-    res.json({
-      message: 'Order cancelled successfully',
-      cancelledProducts: cancelledProducts.length
-    });
-  } catch (error) {
-    console.error('Cancel order error:', error);
-
-    res.status(500).json({
-      message: 'Server error while cancelling order'
-    });
-  }
-});
-
 // @route PUT /api/orders/:orderId/status
 router.put('/:orderId/status', authenticate, async (req, res) => {
+
+  console.log("STATUS API HIT");
+
   try {
     const { orderId } = req.params;
     const { status } = req.body;
+
+    console.log("Incoming Status:", status);
 
     const validStatuses = [
       'pending',
@@ -221,43 +152,42 @@ router.put('/:orderId/status', authenticate, async (req, res) => {
       });
     }
 
-   const previousStatus = order.status;
+    console.log("Previous Status:", order.status);
 
-order.status = status;
+    order.status = status;
 
-// Add points only once when delivered
-if (status === "delivered") {
+    // 🔥 Add points when delivered
+    if (status === "delivered") {
 
-  console.log("Points logic triggered");
-  console.log("Order Points:", order.pointsEarned);
-  console.log("Already Added:", order.pointsAdded);
+      console.log("Points logic triggered");
+      console.log("Order Points:", order.pointsEarned);
 
-  const user = await User.findById(order.userId);
+      const user = await User.findById(order.userId);
 
-  console.log("User Found:", !!user);
+      console.log("User Found:", !!user);
 
-  if (user) {
-    user.points = (user.points || 0) + (order.pointsEarned || 0);
+      if (user) {
+        user.points = (user.points || 0) + (order.pointsEarned || 0);
 
-    console.log("Updated Points:", user.points);
+        console.log("Updated User Points:", user.points);
 
-    await user.save();
-  }
+        await user.save();
+      }
 
-  order.pointsAdded = true;
-}
+      order.pointsAdded = true;
 
-await Notification.create({
-  userId: order.userId,
-  key: 'orderDelivered',
-  data: {
-    orderId: order._id,
-    orderNumber: order.orderNumber
-  },
-  isRead: false
-});
+      await Notification.create({
+        userId: order.userId,
+        key: 'orderDelivered',
+        data: {
+          orderId: order._id,
+          orderNumber: order.orderNumber
+        },
+        isRead: false
+      });
+    }
 
-await order.save();
+    await order.save();
 
     res.status(200).json({
       message: 'Order status updated successfully',
@@ -269,177 +199,6 @@ await order.save();
 
     res.status(500).json({
       message: 'Server error while updating order status'
-    });
-  }
-});
-
-// @route GET /api/orders
-// @route GET /api/orders/user
-const getUserOrdersHandler = async (req, res) => {
-  try {
-    const userId = req.user._id || req.user.id;
-
-    const orders = await Order.find({ userId })
-      .populate('items.product', 'name nameEn nameJa image price category')
-      .populate('items.service', 'name nameEn nameJa image price category')
-      .sort({ createdAt: -1 });
-
-    const enhancedOrders = orders.map((o) => {
-      try {
-        const firstItem =
-          o.items && o.items.length > 0
-            ? o.items[0]
-            : null;
-
-        const itemName =
-          firstItem?.customization?.name ||
-          firstItem?.product?.name ||
-          firstItem?.service?.name ||
-          'Order Item';
-
-        const itemEn =
-          firstItem?.product?.nameEn ||
-          firstItem?.service?.nameEn ||
-          itemName;
-
-        const itemJa =
-          firstItem?.product?.nameJa ||
-          firstItem?.service?.nameJa ||
-          itemName;
-
-        return {
-          id: o._id.toString(),
-          orderNumber:
-            o.orderNumber ||
-            `ORD-${o._id.toString().slice(-8)}`,
-          title: itemName,
-          titleEn: itemEn,
-          titleJa: itemJa,
-          category: o.type,
-          price: o.totalAmount,
-          date: o.createdAt
-            ? o.createdAt.toISOString().split('T')[0]
-            : new Date().toISOString().split('T')[0],
-          status:
-            o.status === 'cancelled'
-              ? 'cancelled'
-              : (o.status || 'ongoing'),
-
-          items: (o.items || []).map((item) => ({
-            id: item._id,
-            name:
-              item.customization?.name ||
-              item.product?.name ||
-              item.service?.name ||
-              'Item',
-
-            nameEn:
-              item.product?.nameEn ||
-              item.service?.nameEn ||
-              item.product?.name ||
-              item.service?.name,
-
-            nameJa:
-              item.product?.nameJa ||
-              item.service?.nameJa ||
-              item.product?.name ||
-              item.service?.name,
-
-            image:
-              item.customization?.image ||
-              item.product?.image ||
-              item.service?.image ||
-              '/placeholder-product.jpg',
-
-            quantity: item.quantity || 0,
-            price: item.price || 0,
-
-            category:
-              item.customization?.category ||
-              item.product?.category ||
-              item.service?.category
-          })),
-
-          totalItems: (o.items || []).reduce(
-            (sum, item) =>
-              sum + (item.quantity || 0),
-            0
-          ),
-
-          pointsEarned: o.pointsEarned || 0,
-          createdAt: o.createdAt,
-          shippingAddress: o.shippingAddress
-        };
-      } catch (mapError) {
-        console.error(
-          'Error mapping order:',
-          o._id,
-          mapError
-        );
-
-        return null;
-      }
-    }).filter((o) => o !== null);
-
-    res.json({
-      success: true,
-      orders: enhancedOrders,
-      totalOrders: enhancedOrders.length
-    });
-
-  } catch (error) {
-    console.error('Get orders error:', error);
-
-    res.status(500).json({
-      success: false,
-      message: 'Server error while fetching orders',
-      error: error.message
-    });
-  }
-};
-
-router.get('/', authenticate, getUserOrdersHandler);
-router.get('/user', authenticate, getUserOrdersHandler);
-
-// @route GET /api/orders/cancelled
-router.get('/cancelled', authenticate, async (req, res) => {
-  try {
-    const cancelledProducts =
-      await CancelledProduct.find({
-        userId: req.user._id
-      })
-        .populate('product', 'name image')
-        .populate('service', 'name image')
-        .sort({ cancelledAt: -1 });
-
-    res.json({
-      cancelledProducts:
-        cancelledProducts.map((cp) => ({
-          id: cp._id.toString(),
-          orderNumber: cp.orderNumber,
-          product: cp.product,
-          service: cp.service,
-          quantity: cp.quantity,
-          price: cp.price,
-          customization: cp.customization,
-          cancellationReason:
-            cp.cancellationReason,
-          refundAmount: cp.refundAmount,
-          pointsDeducted: cp.pointsDeducted,
-          cancelledAt: cp.cancelledAt,
-          processedBy: cp.processedBy
-        }))
-    });
-
-  } catch (error) {
-    console.error(
-      'Get cancelled products error:',
-      error
-    );
-
-    res.status(500).json({
-      message:
-        'Server error while fetching cancelled products'
     });
   }
 });
