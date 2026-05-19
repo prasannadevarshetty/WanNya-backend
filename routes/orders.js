@@ -227,10 +227,20 @@ order.status = status;
 
 // Add points only once when delivered
 if (status === "delivered" && !order.pointsAdded) {
+
+  console.log("Points logic triggered");
+  console.log("Order Points:", order.pointsEarned);
+  console.log("Already Added:", order.pointsAdded);
+
   const user = await User.findById(order.userId);
+
+  console.log("User Found:", !!user);
 
   if (user) {
     user.points = (user.points || 0) + (order.pointsEarned || 0);
+
+    console.log("Updated Points:", user.points);
+
     await user.save();
   }
 
