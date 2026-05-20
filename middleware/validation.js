@@ -1,11 +1,16 @@
-const { body, param, validationResult } = require('express-validator');
+const { body, validationResult } = require('express-validator');
+const { getTranslations } = require('../utils/translate');
 
 // Handle validation errors
 const handleValidationErrors = (req, res, next) => {
+  const lang = req.query.lang || 'en';
+  const translations = getTranslations(lang);
+
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(400).json({
-      message: 'Validation failed',
+      message: translations.validationFailed,
       errors: errors.array().map(error => ({
         field: error.path,
         message: error.msg,
@@ -13,212 +18,118 @@ const handleValidationErrors = (req, res, next) => {
       }))
     });
   }
+
   next();
 };
 
-// Email normalization - keeps dots in Gmail addresses
+// Email normalization
 const normalizeEmailOptions = {
   gmail_remove_dots: false
 };
 
 // User registration validation
 const validateUserRegistration = [
+  (req, res, next) => {
+    req.translations = getTranslations(req.query.lang || 'en');
+    next();
+  },
+
   body('name')
     .trim()
     .isLength({ min: 2, max: 50 })
-    .withMessage('Name must be between 2 and 50 characters'),
+    .withMessage((value, { req }) => req.translations.nameLength),
 
   body('email')
     .isEmail()
     .normalizeEmail(normalizeEmailOptions)
-    .withMessage('Please provide a valid email address'),
+    .withMessage((value, { req }) => req.translations.validEmailRequired),
 
   body('password')
     .if(body('password').exists())
     .isLength({ min: 6 })
-    .withMessage('Password must be at least 6 characters long')
+    .withMessage((value, { req }) => req.translations.passwordMinLength)
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-    .withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number'),
+    .withMessage((value, { req }) => req.translations.passwordRequirements),
 
   handleValidationErrors
 ];
 
 // User login validation
 const validateUserLogin = [
+  (req, res, next) => {
+    req.translations = getTranslations(req.query.lang || 'en');
+    next();
+  },
+
   body('email')
     .isEmail()
     .normalizeEmail(normalizeEmailOptions)
-    .withMessage('Please provide a valid email address'),
+    .withMessage((value, { req }) => req.translations.validEmailRequired),
 
   body('password')
     .notEmpty()
-    .withMessage('Password is required'),
+    .withMessage((value, { req }) => req.translations.passwordRequired),
 
   handleValidationErrors
 ];
 
-// Pet creation validation
-const validatePetCreation = [
-  body('name')
-    .trim()
-    .isLength({ min: 1, max: 50 })
-    .withMessage('Pet name must be between 1 and 50 characters'),
-
-  body('breed')
-    .trim()
-    .isLength({ min: 1, max: 50 })
-    .withMessage('Breed must be between 1 and 50 characters'),
-
-  body('type')
-    .isIn(['dog', 'cat'])
-    .withMessage('Pet type must be either dog or cat'),
-
-  body('gender')
-    .optional()
-    .isIn(['M', 'F'])
-    .withMessage('Gender must be either M or F'),
-
-  body('dob.date')
-    .notEmpty()
-    .withMessage('Date of birth date is required'),
-
-  body('dob.month')
-    .notEmpty()
-    .withMessage('Date of birth month is required'),
-
-  body('dob.year')
-    .notEmpty()
-    .withMessage('Date of birth year is required'),
-
-  handleValidationErrors
-];
-
-// Address validation
-const validateAddress = [
-  body('label')
-    .trim()
-    .isLength({ min: 1, max: 50 })
-    .withMessage('Address label must be between 1 and 50 characters'),
-
-  body('street')
-    .trim()
-    .isLength({ min: 2, max: 200 })
-    .withMessage('Street address must be between 2 and 200 characters'),
-
-  body('city')
-    .trim()
-    .isLength({ min: 1, max: 50 })
-    .withMessage('City must be between 1 and 50 characters'),
-
-  body('country')
-    .trim()
-    .isLength({ min: 1, max: 50 })
-    .withMessage('Country must be between 1 and 50 characters'),
-
-  handleValidationErrors
-];
-
-// Order creation validation
-const validateCreateOrder = [
-  body('items')
-    .isArray({ min: 1 })
-    .withMessage('Order must contain at least one item'),
-
-  body('items.*.quantity')
-    .isInt({ min: 1, max: 100 })
-    .withMessage('Item quantity must be between 1 and 100'),
-
-  body('items.*.price')
-    .isFloat({ min: 0.01, max: 1000000 })
-    .withMessage('Item price must be a positive number'),
-
-  body('totalAmount')
-    .isFloat({ min: 0.01, max: 10000000 })
-    .withMessage('Total amount must be a positive number'),
-
-  body('shippingAddress.street')
-    .trim()
-    .notEmpty()
-    .withMessage('Shipping street address is required'),
-
-  body('shippingAddress.city')
-    .trim()
-    .notEmpty()
-    .withMessage('Shipping city is required'),
-
-  body('shippingAddress.country')
-    .trim()
-    .notEmpty()
-    .withMessage('Shipping country is required'),
-
-  handleValidationErrors
-];
-
-// OTP fields validation
+// OTP request validation
 const validateOtpRequest = [
+  (req, res, next) => {
+    req.translations = getTranslations(req.query.lang || 'en');
+    next();
+  },
+
   body('email')
     .isEmail()
     .normalizeEmail(normalizeEmailOptions)
-    .withMessage('Valid email is required'),
+    .withMessage((value, { req }) => req.translations.validEmailRequired),
 
   handleValidationErrors
 ];
 
+// OTP verify validation
 const validateOtpVerify = [
+  (req, res, next) => {
+    req.translations = getTranslations(req.query.lang || 'en');
+    next();
+  },
+
   body('email')
     .isEmail()
     .normalizeEmail(normalizeEmailOptions)
-    .withMessage('Valid email is required'),
+    .withMessage((value, { req }) => req.translations.validEmailRequired),
 
   body('otp')
     .trim()
     .isLength({ min: 4, max: 10 })
     .isNumeric()
-    .withMessage('OTP must be a numeric code'),
+    .withMessage((value, { req }) => req.translations.otpNumeric),
 
   handleValidationErrors
 ];
 
+// Reset password validation
 const validateResetPassword = [
+  (req, res, next) => {
+    req.translations = getTranslations(req.query.lang || 'en');
+    next();
+  },
+
   body('email')
     .isEmail()
     .normalizeEmail(normalizeEmailOptions)
-    .withMessage('Valid email is required'),
+    .withMessage((value, { req }) => req.translations.validEmailRequired),
 
   body('otp')
     .trim()
     .isLength({ min: 4, max: 10 })
     .isNumeric()
-    .withMessage('OTP must be a numeric code'),
+    .withMessage((value, { req }) => req.translations.otpNumeric),
 
   body('newPassword')
     .isLength({ min: 6 })
-    .withMessage('New password must be at least 6 characters'),
-
-  handleValidationErrors
-];
-
-// Review creation validation
-const validateReview = [
-  body('productId')
-    .notEmpty()
-    .withMessage('Product ID is required')
-    .isMongoId()
-    .withMessage('Invalid product ID'),
-
-  body('orderId')
-    .optional()
-    .isMongoId()
-    .withMessage('Invalid order ID'),
-
-  body('rating')
-    .isInt({ min: 1, max: 5 })
-    .withMessage('Rating must be between 1 and 5'),
-
-  body('comment')
-    .trim()
-    .isLength({ min: 1, max: 1000 })
-    .withMessage('Comment must be between 1 and 1000 characters'),
+    .withMessage((value, { req }) => req.translations.newPasswordMinLength),
 
   handleValidationErrors
 ];
@@ -226,13 +137,8 @@ const validateReview = [
 module.exports = {
   validateUserRegistration,
   validateUserLogin,
-  validatePetCreation,
-  validateAddress,
-  validateOrder: validateCreateOrder,
-  validateCreateOrder,
   validateOtpRequest,
   validateOtpVerify,
   validateResetPassword,
-  validateReview,
   handleValidationErrors
 };
