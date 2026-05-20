@@ -39,5 +39,11 @@
     "invalidToken": "無効なトークンです。",
     "tokenExpired": "トークンの有効期限が切れています。",
     "serverErrorDuringAuthentication": "認証中にサーバーエラーが発生しました。",
-    "emailVerificationRequired": "メール認証が必要です。メールアドレスを確認してください。"
+    "emailVerificationRequired": "メール認証が必要です。メールアドレスを確認してください。",
+    "invalidInputData": "無効な入力データです。",
+    "invalidTokenLoginAgain": "無効なトークンです。再度ログインしてください。",
+    "tokenExpiredLoginAgain": "トークンの有効期限が切れました。再度ログインしてください。",
+    "somethingWentWrong": "問題が発生しました。",
+    "somethingWentVeryWrong": "重大なエラーが発生しました。",
+    "pleaseTryAgainLater": "後でもう一度お試しください。"
 }   
