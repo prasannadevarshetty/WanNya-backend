@@ -1,3 +1,5 @@
+const { getTranslations } = require('../utils/translate');
+
 // Custom error class
 class AppError extends Error {
   constructor(message, statusCode) {
@@ -31,12 +33,12 @@ const handleValidationErrorDB = (err) => {
 };
 
 // Handle JWT error
-const handleJWTError = () =>
-  new AppError('Invalid token. Please log in again!', 401);
+const handleJWTError = (translations) =>
+  new AppError(translations.invalidTokenLoginAgain, 401);
 
 // Handle JWT expired error
-const handleJWTExpiredError = () =>
-  new AppError('Your token has expired! Please log in again.', 401);
+const handleJWTExpiredError = (translations) =>
+  new AppError(translations.tokenExpiredLoginAgain, 401);
 
 // Send error response in development
 const sendErrorDev = (err, req, res) => {
@@ -52,6 +54,7 @@ const sendErrorDev = (err, req, res) => {
 
   // B) RENDERED WEBSITE
   console.error('ERROR 💥', err);
+
   return res.status(err.statusCode).json({
     title: 'Something went wrong!',
     msg: err.message
@@ -59,7 +62,7 @@ const sendErrorDev = (err, req, res) => {
 };
 
 // Send error response in production
-const sendErrorProd = (err, req, res) => {
+const sendErrorProd = (err, req, res, translations) => {
   // A) API
   if (req.originalUrl.startsWith('/api')) {
     // A) Operational, trusted error: send message to client
@@ -71,38 +74,36 @@ const sendErrorProd = (err, req, res) => {
     }
 
     // B) Programming or other unknown error: don't leak error details
-    // 1) Log error
     console.error('ERROR 💥', err);
 
-    // 2) Send generic message
     return res.status(500).json({
       status: 'error',
-      message: 'Something went very wrong!'
+      message: translations.somethingWentVeryWrong
     });
   }
 
   // B) RENDERED WEBSITE
-  // A) Operational, trusted error: send message to client
   if (err.isOperational) {
     return res.status(err.statusCode).json({
-      title: 'Something went wrong!',
+      title: translations.somethingWentWrong,
       msg: err.message
     });
   }
 
   // B) Programming or other unknown error: don't leak error details
-  // 1) Log error
   console.error('ERROR 💥', err);
 
-  // 2) Send generic message
   return res.status(err.statusCode).json({
-    title: 'Something went wrong!',
-    msg: 'Please try again later.'
+    title: translations.somethingWentWrong,
+    msg: translations.pleaseTryAgainLater
   });
 };
 
 // Global error handling middleware
 const globalErrorHandler = (err, req, res, next) => {
+  const lang = req.query.lang || 'en';
+  const translations = getTranslations(lang);
+
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
@@ -112,13 +113,27 @@ const globalErrorHandler = (err, req, res, next) => {
     let error = { ...err };
     error.message = err.message;
 
-    if (error.name === 'CastError') error = handleCastErrorDB(error);
-    if (error.code === 11000) error = handleDuplicateFieldsDB(error);
-    if (error.name === 'ValidationError') error = handleValidationErrorDB(error);
-    if (error.name === 'JsonWebTokenError') error = handleJWTError();
-    if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
+    if (error.name === 'CastError') {
+      error = handleCastErrorDB(error);
+    }
 
-    sendErrorProd(error, req, res);
+    if (error.code === 11000) {
+      error = handleDuplicateFieldsDB(error);
+    }
+
+    if (error.name === 'ValidationError') {
+      error = handleValidationErrorDB(error);
+    }
+
+    if (error.name === 'JsonWebTokenError') {
+      error = handleJWTError(translations);
+    }
+
+    if (error.name === 'TokenExpiredError') {
+      error = handleJWTExpiredError(translations);
+    }
+
+    sendErrorProd(error, req, res, translations);
   }
 };
 
