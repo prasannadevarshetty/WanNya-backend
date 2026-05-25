@@ -8,7 +8,6 @@ const {
   markAsRead,
   markAllAsRead
 } = require('../controllers/notificationController');
-
 const { authenticate } = require('../middleware/auth');
 
 // GET all notifications

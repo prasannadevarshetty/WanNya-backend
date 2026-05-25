@@ -11,11 +11,16 @@ const handleValidationErrors = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({
       message: translations.validationFailed,
-      errors: errors.array().map(error => ({
-        field: error.path,
-        message: error.msg,
-        value: error.value
-      }))
+      key: 'validationFailed',
+      errors: errors.array().map(error => {
+        const msgKey = error.msg;
+        const translatedMsg = translations[msgKey] || msgKey;
+        return {
+          field: error.path,
+          message: translatedMsg,
+          key: msgKey
+        };
+      })
     });
   }
 
@@ -29,107 +34,102 @@ const normalizeEmailOptions = {
 
 // User registration validation
 const validateUserRegistration = [
-  (req, res, next) => {
-    req.translations = getTranslations(req.query.lang || 'en');
-    next();
-  },
-
   body('name')
     .trim()
     .isLength({ min: 2, max: 50 })
-    .withMessage((value, { req }) => req.translations.nameLength),
+    .withMessage('nameLength'),
 
   body('email')
     .isEmail()
     .normalizeEmail(normalizeEmailOptions)
-    .withMessage((value, { req }) => req.translations.validEmailRequired),
+    .withMessage('validEmailRequired'),
 
   body('password')
     .if(body('password').exists())
     .isLength({ min: 6 })
-    .withMessage((value, { req }) => req.translations.passwordMinLength)
+    .withMessage('passwordMinLength')
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-    .withMessage((value, { req }) => req.translations.passwordRequirements),
+    .withMessage('passwordRequirements'),
 
   handleValidationErrors
 ];
 
 // User login validation
 const validateUserLogin = [
-  (req, res, next) => {
-    req.translations = getTranslations(req.query.lang || 'en');
-    next();
-  },
-
   body('email')
     .isEmail()
     .normalizeEmail(normalizeEmailOptions)
-    .withMessage((value, { req }) => req.translations.validEmailRequired),
+    .withMessage('validEmailRequired'),
 
   body('password')
     .notEmpty()
-    .withMessage((value, { req }) => req.translations.passwordRequired),
+    .withMessage('passwordRequired'),
 
   handleValidationErrors
 ];
 
 // OTP request validation
 const validateOtpRequest = [
-  (req, res, next) => {
-    req.translations = getTranslations(req.query.lang || 'en');
-    next();
-  },
-
   body('email')
     .isEmail()
     .normalizeEmail(normalizeEmailOptions)
-    .withMessage((value, { req }) => req.translations.validEmailRequired),
+    .withMessage('validEmailRequired'),
 
   handleValidationErrors
 ];
 
 // OTP verify validation
 const validateOtpVerify = [
-  (req, res, next) => {
-    req.translations = getTranslations(req.query.lang || 'en');
-    next();
-  },
-
   body('email')
     .isEmail()
     .normalizeEmail(normalizeEmailOptions)
-    .withMessage((value, { req }) => req.translations.validEmailRequired),
+    .withMessage('validEmailRequired'),
 
   body('otp')
     .trim()
     .isLength({ min: 4, max: 10 })
     .isNumeric()
-    .withMessage((value, { req }) => req.translations.otpNumeric),
+    .withMessage('otpNumeric'),
 
   handleValidationErrors
 ];
 
 // Reset password validation
 const validateResetPassword = [
-  (req, res, next) => {
-    req.translations = getTranslations(req.query.lang || 'en');
-    next();
-  },
-
   body('email')
     .isEmail()
     .normalizeEmail(normalizeEmailOptions)
-    .withMessage((value, { req }) => req.translations.validEmailRequired),
+    .withMessage('validEmailRequired'),
 
   body('otp')
     .trim()
     .isLength({ min: 4, max: 10 })
     .isNumeric()
-    .withMessage((value, { req }) => req.translations.otpNumeric),
+    .withMessage('otpNumeric'),
 
   body('newPassword')
     .isLength({ min: 6 })
-    .withMessage((value, { req }) => req.translations.newPasswordMinLength),
+    .withMessage('newPasswordMinLength'),
+
+  handleValidationErrors
+];
+
+// Review validation
+const validateReview = [
+  body('productId')
+    .notEmpty()
+    .isMongoId()
+    .withMessage('invalidInputData'),
+
+  body('rating')
+    .notEmpty()
+    .isInt({ min: 1, max: 5 })
+    .withMessage('invalidInputData'),
+
+  body('comment')
+    .trim()
+    .isLength({ min: 2, max: 1000 })
+    .withMessage('invalidInputData'),
 
   handleValidationErrors
 ];
@@ -139,12 +139,21 @@ const validatePetCreation = [
   body('name')
     .trim()
     .notEmpty()
-    .withMessage('Pet name is required'),
+    .withMessage('invalidInputData'),
+
+  body('breed')
+    .trim()
+    .notEmpty()
+    .withMessage('invalidInputData'),
 
   body('type')
     .trim()
+    .isIn(['dog', 'cat'])
+    .withMessage('invalidInputData'),
+
+  body('dob')
     .notEmpty()
-    .withMessage('Pet type is required'),
+    .withMessage('invalidInputData'),
 
   handleValidationErrors
 ];
@@ -155,6 +164,7 @@ module.exports = {
   validateOtpRequest,
   validateOtpVerify,
   validateResetPassword,
+  validateReview,
   validatePetCreation,
   handleValidationErrors
 };

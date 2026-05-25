@@ -12,7 +12,8 @@ const authenticate = async (req, res, next) => {
 
     if (!token) {
       return res.status(401).json({
-        message: translations.accessDeniedNoToken
+        message: translations.accessDeniedNoToken,
+        key: 'accessDeniedNoToken'
       });
     }
 
@@ -21,7 +22,8 @@ const authenticate = async (req, res, next) => {
 
     if (!user) {
       return res.status(401).json({
-        message: translations.invalidTokenUserNotFound
+        message: translations.invalidTokenUserNotFound,
+        key: 'invalidTokenUserNotFound'
       });
     }
 
@@ -30,18 +32,21 @@ const authenticate = async (req, res, next) => {
   } catch (error) {
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({
-        message: translations.invalidToken
+        message: translations.invalidToken,
+        key: 'invalidToken'
       });
     }
 
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({
-        message: translations.tokenExpired
+        message: translations.tokenExpired,
+        key: 'tokenExpired'
       });
     }
 
     res.status(500).json({
-      message: translations.serverErrorDuringAuthentication
+      message: translations.serverErrorDuringAuthentication,
+      key: 'serverErrorDuringAuthentication'
     });
   }
 };
@@ -74,7 +79,8 @@ const requireEmailVerification = (req, res, next) => {
 
   if (!req.user.isEmailVerified) {
     return res.status(403).json({
-      message: translations.emailVerificationRequired
+      message: translations.emailVerificationRequired,
+      key: 'emailVerificationRequired'
     });
   }
 

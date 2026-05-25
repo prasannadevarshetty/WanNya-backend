@@ -26,6 +26,7 @@
   "tooManyVerificationAttempts": "Too many verification attempts. Please try again later.",
   "tooManyAccountsCreated": "Too many accounts created. Please try again later.",
   "userAlreadyExists": "User already exists",
+  "userNotFound": "User not found",
   "userRegisteredSuccessfully": "User registered successfully",
   "invalidEmailOrPassword": "Invalid email or password",
   "loginSuccessful": "Login successful",

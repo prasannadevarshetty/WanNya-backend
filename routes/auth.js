@@ -33,7 +33,14 @@ const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 50,
   skip: (req) => req.method === 'OPTIONS',
-  message: { message: 'Too many login attempts. Please try again later.' },
+  handler: (req, res) => {
+    const lang = req.query.lang || 'en';
+    const translations = getTranslations(lang);
+    res.status(429).json({
+      message: translations.tooManyLoginAttempts || 'Too many login attempts. Please try again later.',
+      key: 'tooManyLoginAttempts'
+    });
+  },
   standardHeaders: true,
   legacyHeaders: false
 });
@@ -42,7 +49,14 @@ const forgotPasswordLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 5,
   skip: (req) => req.method === 'OPTIONS',
-  message: { message: 'Too many password reset requests. Please try again later.' },
+  handler: (req, res) => {
+    const lang = req.query.lang || 'en';
+    const translations = getTranslations(lang);
+    res.status(429).json({
+      message: translations.tooManyPasswordResetRequests || 'Too many password reset requests. Please try again later.',
+      key: 'tooManyPasswordResetRequests'
+    });
+  },
   standardHeaders: true,
   legacyHeaders: false
 });
@@ -51,7 +65,14 @@ const otpLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 8,
   skip: (req) => req.method === 'OPTIONS',
-  message: { message: 'Too many verification attempts. Please try again later.' },
+  handler: (req, res) => {
+    const lang = req.query.lang || 'en';
+    const translations = getTranslations(lang);
+    res.status(429).json({
+      message: translations.tooManyVerificationAttempts || 'Too many verification attempts. Please try again later.',
+      key: 'tooManyVerificationAttempts'
+    });
+  },
   standardHeaders: true,
   legacyHeaders: false
 });
@@ -60,7 +81,14 @@ const registerLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 20,
   skip: (req) => req.method === 'OPTIONS',
-  message: { message: 'Too many accounts created. Please try again later.' },
+  handler: (req, res) => {
+    const lang = req.query.lang || 'en';
+    const translations = getTranslations(lang);
+    res.status(429).json({
+      message: translations.tooManyAccountsCreated || 'Too many accounts created. Please try again later.',
+      key: 'tooManyAccountsCreated'
+    });
+  },
   standardHeaders: true,
   legacyHeaders: false
 });
@@ -83,7 +111,8 @@ router.post('/register', registerLimiter, validateUserRegistration, catchAsync(a
 
   if (existingUser) {
     return res.status(400).json({
-      message: translations.userAlreadyExists
+      message: translations.userAlreadyExists,
+      key: 'userAlreadyExists'
     });
   }
 
@@ -94,6 +123,7 @@ router.post('/register', registerLimiter, validateUserRegistration, catchAsync(a
 
   res.status(201).json({
     message: translations.userRegisteredSuccessfully,
+    key: 'userRegisteredSuccessfully',
     token,
     user: user.toPublicJSON()
   });
@@ -110,7 +140,8 @@ router.post('/login', loginLimiter, validateUserLogin, catchAsync(async (req, re
 
   if (!user || !user.password) {
     return res.status(401).json({
-      message: translations.invalidEmailOrPassword
+      message: translations.invalidEmailOrPassword,
+      key: 'invalidEmailOrPassword'
     });
   }
 
@@ -118,7 +149,8 @@ router.post('/login', loginLimiter, validateUserLogin, catchAsync(async (req, re
 
   if (!isValid) {
     return res.status(401).json({
-      message: translations.invalidEmailOrPassword
+      message: translations.invalidEmailOrPassword,
+      key: 'invalidEmailOrPassword'
     });
   }
 
@@ -126,6 +158,7 @@ router.post('/login', loginLimiter, validateUserLogin, catchAsync(async (req, re
 
   res.json({
     message: translations.loginSuccessful,
+    key: 'loginSuccessful',
     token,
     user: user.toPublicJSON()
   });
@@ -143,8 +176,9 @@ router.post('/forgot-password', forgotPasswordLimiter, validateOtpRequest, catch
   if (!user) {
     logAuth('forgot_password_attempt', null, false, { email });
 
-    return res.json({
-      message: translations.otpSentMessage
+    return res.status(404).json({
+      message: translations.userNotFound || 'User not found',
+      key: 'userNotFound'
     });
   }
 
@@ -161,7 +195,9 @@ router.post('/forgot-password', forgotPasswordLimiter, validateOtpRequest, catch
           'waitBeforeNewOtp',
           { seconds: remainingSecs },
           translations
-        )
+        ),
+        key: 'waitBeforeNewOtp',
+        remainingSeconds: remainingSecs
       });
     }
   }
@@ -192,7 +228,8 @@ router.post('/forgot-password', forgotPasswordLimiter, validateOtpRequest, catch
   logAuth('forgot_password', user._id, true, { email });
 
   return res.json({
-    message: translations.otpSentMessage
+    message: translations.otpSentMessage,
+    key: 'otpSentMessage'
   });
 }));
 
@@ -218,12 +255,14 @@ router.post('/verify-otp', otpLimiter, validateOtpVerify, catchAsync(async (req,
 
   if (!otpMatch || !notExpired) {
     return res.status(400).json({
-      message: translations.invalidOrExpiredOtp
+      message: translations.invalidOrExpiredOtp,
+      key: 'invalidOrExpiredOtp'
     });
   }
 
   res.json({
-    message: translations.otpVerified
+    message: translations.otpVerified,
+    key: 'otpVerified'
   });
 }));
 
@@ -249,7 +288,8 @@ router.post('/reset-password', otpLimiter, validateResetPassword, catchAsync(asy
 
   if (!otpMatch || !notExpired) {
     return res.status(400).json({
-      message: translations.invalidOrExpiredOtp
+      message: translations.invalidOrExpiredOtp,
+      key: 'invalidOrExpiredOtp'
     });
   }
 
@@ -260,7 +300,8 @@ router.post('/reset-password', otpLimiter, validateResetPassword, catchAsync(asy
   await user.save();
 
   res.json({
-    message: translations.passwordResetSuccessful
+    message: translations.passwordResetSuccessful,
+    key: 'passwordResetSuccessful'
   });
 }));
 

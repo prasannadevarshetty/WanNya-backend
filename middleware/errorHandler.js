@@ -2,11 +2,12 @@ const { getTranslations } = require('../utils/translate');
 
 // Custom error class
 class AppError extends Error {
-  constructor(message, statusCode) {
+  constructor(message, statusCode, key) {
     super(message);
     this.statusCode = statusCode;
     this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
     this.isOperational = true;
+    this.key = key;
 
     Error.captureStackTrace(this, this.constructor);
   }
@@ -15,30 +16,30 @@ class AppError extends Error {
 // Handle CastError (invalid ObjectId)
 const handleCastErrorDB = (err) => {
   const message = `Invalid ${err.path}: ${err.value}`;
-  return new AppError(message, 400);
+  return new AppError(message, 400, 'invalidInputData');
 };
 
 // Handle Duplicate fields error
 const handleDuplicateFieldsDB = (err) => {
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
   const message = `Duplicate field value: ${value}. Please use another value!`;
-  return new AppError(message, 400);
+  return new AppError(message, 400, 'invalidInputData');
 };
 
 // Handle Validation error
 const handleValidationErrorDB = (err) => {
   const errors = Object.values(err.errors).map(el => el.message);
   const message = `Invalid input data. ${errors.join('. ')}`;
-  return new AppError(message, 400);
+  return new AppError(message, 400, 'validationFailed');
 };
 
 // Handle JWT error
 const handleJWTError = (translations) =>
-  new AppError(translations.invalidTokenLoginAgain, 401);
+  new AppError(translations.invalidTokenLoginAgain, 401, 'invalidTokenLoginAgain');
 
 // Handle JWT expired error
 const handleJWTExpiredError = (translations) =>
-  new AppError(translations.tokenExpiredLoginAgain, 401);
+  new AppError(translations.tokenExpiredLoginAgain, 401, 'tokenExpiredLoginAgain');
 
 // Send error response in development
 const sendErrorDev = (err, req, res) => {
@@ -48,6 +49,7 @@ const sendErrorDev = (err, req, res) => {
       status: err.status,
       error: err,
       message: err.message,
+      key: err.key,
       stack: err.stack
     });
   }
@@ -69,7 +71,8 @@ const sendErrorProd = (err, req, res, translations) => {
     if (err.isOperational) {
       return res.status(err.statusCode).json({
         status: err.status,
-        message: err.message
+        message: err.message,
+        key: err.key
       });
     }
 
@@ -78,7 +81,8 @@ const sendErrorProd = (err, req, res, translations) => {
 
     return res.status(500).json({
       status: 'error',
-      message: translations.somethingWentVeryWrong
+      message: translations.somethingWentVeryWrong,
+      key: 'somethingWentVeryWrong'
     });
   }
 
