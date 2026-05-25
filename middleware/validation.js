@@ -134,11 +134,27 @@ const validateResetPassword = [
   handleValidationErrors
 ];
 
+// Pet creation validation
+const validatePetCreation = [
+  body('name')
+    .trim()
+    .notEmpty()
+    .withMessage('Pet name is required'),
+
+  body('type')
+    .trim()
+    .notEmpty()
+    .withMessage('Pet type is required'),
+
+  handleValidationErrors
+];
+
 module.exports = {
   validateUserRegistration,
   validateUserLogin,
   validateOtpRequest,
   validateOtpVerify,
   validateResetPassword,
+  validatePetCreation,
   handleValidationErrors
 };
