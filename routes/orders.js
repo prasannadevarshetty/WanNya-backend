@@ -119,6 +119,27 @@ router.post('/create', authenticate, async (req, res) => {
   }
 });
 
+// @route GET /api/orders/my-orders
+router.get('/my-orders', authenticate, async (req, res) => {
+  try {
+
+    const orders = await Order.find({
+      userId: req.user._id
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      orders
+    });
+
+  } catch (error) {
+    console.error('Fetch orders error:', error);
+
+    res.status(500).json({
+      message: 'Server error while fetching orders'
+    });
+  }
+});
+
 // @route PUT /api/orders/:orderId/status
 router.put('/:orderId/status', authenticate, async (req, res) => {
 
