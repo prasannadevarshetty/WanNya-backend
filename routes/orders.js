@@ -124,8 +124,10 @@ router.get('/my-orders', authenticate, async (req, res) => {
   try {
 
     const orders = await Order.find({
-      userId: req.user._id
-    }).sort({ createdAt: -1 });
+  userId: req.user._id
+        })
+  .populate('items.product')
+  .sort({ createdAt: -1 });
 
     res.status(200).json({
       orders
