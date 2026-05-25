@@ -16,6 +16,16 @@ const { logAuth } = require('../utils/logger');
 const { generateOTP } = require('../utils/otpGenerator');
 const { getTranslations, translate } = require('../utils/translate');
 
+console.log({
+  validateOtpRequest,
+  validateOtpVerify,
+  validateResetPassword,
+  validateUserLogin,
+  validateUserRegistration,
+  authenticate,
+  catchAsync
+});
+
 const router = express.Router();
 
 // RATE LIMITERS
