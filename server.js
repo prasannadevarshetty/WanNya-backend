@@ -115,6 +115,8 @@ app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminUsersRoutes);
+app.use('/api/bentos', require('./routes/bentos'));
+app.use('/api/bookings', require('./routes/bookings'));
 
 // ======================
 // 🔥 HEALTH CHECK
