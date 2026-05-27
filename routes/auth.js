@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const User = require('../models/User');
+const LoginActivity = require('../models/LoginActivity');
 const {
   validateUserRegistration,
   validateUserLogin,
@@ -155,6 +156,15 @@ router.post('/login', loginLimiter, validateUserLogin, catchAsync(async (req, re
   }
 
   const token = generateToken(user._id);
+
+  // SAVE LOGIN ACTIVITY
+  await LoginActivity.create({
+    user: user._id,
+    loginTime: new Date(),
+    ipAddress: req.ip,
+    userAgent: req.headers['user-agent'],
+    isActive: true
+  });
 
   res.json({
     message: translations.loginSuccessful,
@@ -311,5 +321,27 @@ router.get('/me', authenticate, (req, res) => {
     user: req.user.toPublicJSON()
   });
 });
+
+// LOGOUT
+router.post('/logout', authenticate, catchAsync(async (req, res) => {
+
+  await LoginActivity.findOneAndUpdate(
+    {
+      user: req.user._id,
+      isActive: true
+    },
+    {
+      logoutTime: new Date(),
+      isActive: false
+    },
+    {
+      sort: { createdAt: -1 }
+    }
+  );
+
+  res.json({
+    message: 'Logout successful'
+  });
+}));
 
 module.exports = router;
