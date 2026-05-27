@@ -29,4 +29,80 @@ router.get('/my-locations', authenticate, catchAsync(async (req, res) => {
   });
 }));
 
+// UPDATE LOCATION
+router.put('/:id', authenticate, catchAsync(async (req, res) => {
+  const location = await Location.findOneAndUpdate(
+    {
+      _id: req.params.id,
+      user: req.user._id
+    },
+    req.body,
+    {
+      new: true,
+      runValidators: true
+    }
+  );
+
+  if (!location) {
+    return res.status(404).json({
+      message: 'Location not found'
+    });
+  }
+
+  res.json({
+    message: 'Location updated successfully',
+    location
+  });
+}));
+
+// DELETE LOCATION
+router.delete('/:id', authenticate, catchAsync(async (req, res) => {
+  const location = await Location.findOneAndDelete({
+    _id: req.params.id,
+    user: req.user._id
+  });
+
+  if (!location) {
+    return res.status(404).json({
+      message: 'Location not found'
+    });
+  }
+
+  res.json({
+    message: 'Location deleted successfully'
+  });
+}));
+
+// SET DEFAULT LOCATION
+router.patch('/:id/default', authenticate, catchAsync(async (req, res) => {
+  await Location.updateMany(
+    { user: req.user._id },
+    { isDefault: false }
+  );
+
+  const location = await Location.findOneAndUpdate(
+    {
+      _id: req.params.id,
+      user: req.user._id
+    },
+    {
+      isDefault: true
+    },
+    {
+      new: true
+    }
+  );
+
+  if (!location) {
+    return res.status(404).json({
+      message: 'Location not found'
+    });
+  }
+
+  res.json({
+    message: 'Default location updated successfully',
+    location
+  });
+}));
+
 module.exports = router;
