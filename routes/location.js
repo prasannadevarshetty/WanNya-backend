@@ -7,10 +7,20 @@ const router = express.Router();
 
 // ADD LOCATION
 router.post('/', authenticate, catchAsync(async (req, res) => {
-  const location = await Location.create({
-    user: req.user._id,
-    ...req.body
-  });
+  const {
+  latitude,
+  longitude
+} = req.body;
+
+const location = await Location.create({
+  user: req.user._id,
+  ...req.body,
+
+  coordinates: {
+    type: 'Point',
+    coordinates: [longitude, latitude]
+  }
+});
 
   res.status(201).json({
     message: 'Location added successfully',
@@ -30,13 +40,23 @@ router.get('/my-locations', authenticate, catchAsync(async (req, res) => {
 }));
 
 // UPDATE LOCATION
+// UPDATE LOCATION
 router.put('/:id', authenticate, catchAsync(async (req, res) => {
+  const updateData = { ...req.body };
+
+  if (req.body.latitude && req.body.longitude) {
+    updateData.coordinates = {
+      type: 'Point',
+      coordinates: [req.body.longitude, req.body.latitude]
+    };
+  }
+
   const location = await Location.findOneAndUpdate(
     {
       _id: req.params.id,
       user: req.user._id
     },
-    req.body,
+    updateData,
     {
       new: true,
       runValidators: true
@@ -102,6 +122,32 @@ router.patch('/:id/default', authenticate, catchAsync(async (req, res) => {
   res.json({
     message: 'Default location updated successfully',
     location
+  });
+}));
+
+// NEARBY LOCATIONS
+router.get('/nearby/search', authenticate, catchAsync(async (req, res) => {
+
+  const { longitude, latitude, maxDistance = 5000 } = req.query;
+
+  const locations = await Location.find({
+    coordinates: {
+      $near: {
+        $geometry: {
+          type: 'Point',
+          coordinates: [
+            parseFloat(longitude),
+            parseFloat(latitude)
+          ]
+        },
+        $maxDistance: parseInt(maxDistance)
+      }
+    }
+  });
+
+  res.json({
+    count: locations.length,
+    locations
   });
 }));
 

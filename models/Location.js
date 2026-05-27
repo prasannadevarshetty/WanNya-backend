@@ -55,12 +55,27 @@ const locationSchema = new mongoose.Schema({
   latitude: Number,
   longitude: Number,
 
+  coordinates: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      default: 'Point'
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      default: [0, 0]
+    }
+  },
+
   isDefault: {
     type: Boolean,
     default: false
   }
+
 }, {
   timestamps: true
 });
+
+locationSchema.index({ coordinates: '2dsphere' });
 
 module.exports = mongoose.model('Location', locationSchema);
