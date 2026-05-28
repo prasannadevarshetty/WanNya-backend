@@ -188,4 +188,16 @@ cartSchema.methods.clearCart = function() {
   return this.save();
 };
 
+// VALIDATION
+cartItemSchema.pre('validate', function(next) {
+
+  if (!this.productId && !this.serviceId) {
+    return next(
+      new Error('Either productId or serviceId is required')
+    );
+  }
+
+  next();
+});
+
 module.exports = mongoose.model('Cart', cartSchema);

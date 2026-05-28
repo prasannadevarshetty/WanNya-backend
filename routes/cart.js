@@ -9,7 +9,10 @@ const router = express.Router();
 router.use(authenticate);
 
 const getUserCart = async (userId) => {
-  return Cart.findOne({ userId }).sort({ updatedAt: -1 });
+  return Cart.findOne({
+  userId,
+  isActive: true
+}).sort({ updatedAt: -1 });
 };
 
 const recalculateCartTotals = async (userId) => {
