@@ -21,6 +21,7 @@ const wishlistRoutes = require('./routes/wishlist');
 const notificationRoutes = require('./routes/notifications');
 const adminUsersRoutes = require('./routes/adminUsers');
 const locationRoutes = require('./routes/location');
+const bookingRoutes = require('./routes/bookings');
 
 const app = express();
 
@@ -117,8 +118,8 @@ app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin', adminUsersRoutes);
 app.use('/api/bentos', require('./routes/bentos'));
-app.use('/api/bookings', require('./routes/bookings'));
 app.use('/api/locations', locationRoutes);
+app.use('/api/bookings', bookingRoutes);
 
 
 // ======================

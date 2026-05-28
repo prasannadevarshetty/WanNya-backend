@@ -1,24 +1,73 @@
 const mongoose = require('mongoose');
 
 const bookingSchema = new mongoose.Schema({
-  serviceId: {
+
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+
+  service: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Service',
     required: true
   },
-  bookingDate: {
-    type: String,
+
+  pet: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Pet'
+  },
+
+  location: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Location',
     required: true
   },
+
+  bookingDate: {
+    type: Date,
+    required: true
+  },
+
   bookingTime: {
     type: String,
     required: true
   },
+
+  notes: {
+    type: String,
+    trim: true
+  },
+
+  totalAmount: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+
   status: {
     type: String,
-    enum: ['pending', 'confirmed', 'cancelled', 'completed'],
-    default: 'confirmed'
+    enum: [
+      'pending',
+      'confirmed',
+      'completed',
+      'cancelled'
+    ],
+    default: 'pending'
+  },
+
+  paymentStatus: {
+    type: String,
+    enum: [
+      'pending',
+      'paid',
+      'failed',
+      'refunded'
+    ],
+    default: 'pending'
   }
+
 }, {
   timestamps: true
 });
