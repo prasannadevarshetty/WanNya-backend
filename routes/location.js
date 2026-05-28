@@ -151,4 +151,59 @@ router.get('/nearby/search', authenticate, catchAsync(async (req, res) => {
   });
 }));
 
+// CALCULATE DISTANCE & DELIVERY FEE
+router.post('/calculate-distance', authenticate, catchAsync(async (req, res) => {
+
+  const { from, to } = req.body;
+
+  const toRad = (value) => {
+    return (value * Math.PI) / 180;
+  };
+
+  const earthRadius = 6371;
+
+  const latDiff =
+    toRad(to.latitude - from.latitude);
+
+  const lonDiff =
+    toRad(to.longitude - from.longitude);
+
+  const a =
+    Math.sin(latDiff / 2) *
+      Math.sin(latDiff / 2) +
+    Math.cos(toRad(from.latitude)) *
+      Math.cos(toRad(to.latitude)) *
+      Math.sin(lonDiff / 2) *
+      Math.sin(lonDiff / 2);
+
+  const c =
+    2 * Math.atan2(
+      Math.sqrt(a),
+      Math.sqrt(1 - a)
+    );
+
+  const distanceKm =
+    earthRadius * c;
+
+  let deliveryFee = 300;
+
+  if (distanceKm > 5) {
+    deliveryFee = 500;
+  }
+
+  if (distanceKm > 10) {
+    deliveryFee = 800;
+  }
+
+  if (distanceKm > 20) {
+    deliveryFee = 1200;
+  }
+
+  res.json({
+    distanceKm:
+      Number(distanceKm.toFixed(2)),
+    deliveryFee
+  });
+}));
+
 module.exports = router;

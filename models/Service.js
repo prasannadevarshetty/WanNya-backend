@@ -18,8 +18,7 @@ const serviceSchema = new mongoose.Schema({
   },
   provider: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'ServiceProvider',
-    required: true
+    ref: 'ServiceProvider'
   },
   petType: {
     type: String,

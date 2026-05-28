@@ -172,18 +172,27 @@ router.post('/', async (req, res) => {
     const productId =
       req.body.productId || req.body.id;
 
+    const serviceId =
+      req.body.serviceId;
+
     const quantity =
       Number(req.body.quantity || 1);
 
     const price =
       Number(req.body.price || 0);
 
+    const bookingDetails =
+      req.body.bookingDetails;
+
     if (
-      !productId ||
-      !mongoose.Types.ObjectId.isValid(productId)
+      (!productId && !serviceId) ||
+      (productId &&
+        !mongoose.Types.ObjectId.isValid(productId)) ||
+      (serviceId &&
+        !mongoose.Types.ObjectId.isValid(serviceId))
     ) {
       return res.status(400).json({
-        message: 'Valid productId is required'
+        message: 'Valid productId or serviceId is required'
       });
     }
 
@@ -197,15 +206,20 @@ router.post('/', async (req, res) => {
       });
     }
 
-    const product = await Product.findOne({
-      _id: productId,
-      isActive: true
-    });
+    let product = null;
 
-    if (!product) {
-      return res.status(404).json({
-        message: 'Product not found'
+    if (productId) {
+
+      product = await Product.findOne({
+        _id: productId,
+        isActive: true
       });
+
+      if (!product) {
+        return res.status(404).json({
+          message: 'Product not found'
+        });
+      }
     }
 
     let cart = await Cart.findOneAndUpdate(
@@ -224,11 +238,20 @@ router.post('/', async (req, res) => {
       }
     );
 
-    const existingItem = cart.items.find(
-      (item) =>
-        String(item.productId) ===
-        String(product._id)
-    );
+    const existingItem = cart.items.find((item) => {
+
+      const sameProduct =
+        productId &&
+        item.productId &&
+        String(item.productId) === String(productId);
+
+      const sameService =
+        serviceId &&
+        item.serviceId &&
+        String(item.serviceId) === String(serviceId);
+
+      return sameProduct || sameService;
+    });
 
     if (existingItem) {
 
@@ -242,19 +265,9 @@ router.post('/', async (req, res) => {
         });
       }
 
-      await Cart.updateOne(
-        {
-          userId: req.user._id,
-          'items.productId': product._id
-        },
-        {
-          $set: {
-            'items.$.quantity': newQuantity,
-            'items.$.price':
-              price || product.price
-          }
-        }
-      );
+      existingItem.quantity = newQuantity;
+
+      await cart.save();
 
     } else {
 
@@ -263,10 +276,12 @@ router.post('/', async (req, res) => {
         {
           $push: {
             items: {
-              productId: product._id,
+              productId,
+              serviceId,
               quantity,
               price:
-                price || product.price
+                price || product?.price || 0,
+              bookingDetails
             }
           }
         }

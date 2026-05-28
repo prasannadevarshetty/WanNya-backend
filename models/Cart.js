@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const cartItemSchema = new mongoose.Schema({
   productId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Product',
-    required: true
+    ref: 'Product'
   },
 
   serviceId: {
@@ -28,6 +27,16 @@ const cartItemSchema = new mongoose.Schema({
   customization: {
     type: mongoose.Schema.Types.Mixed,
     default: {}
+  },
+
+  bookingDetails: {
+  bookingDate: Date,
+  bookingTime: String,
+  petId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Pet'
+  },
+  notes: String
   },
 
   addedAt: {
@@ -134,15 +143,22 @@ cartSchema.methods.addItem = function(itemData) {
 
   console.log("ADDING ITEM:", itemData);
 
-  const existingItem = this.items.find(item =>
-    item.productId.toString() ===
-      itemData.productId.toString() &&
-    (
-      !itemData.serviceId ||
-      item.serviceId?.toString() ===
-        itemData.serviceId.toString()
-    )
-  );
+  const existingItem = this.items.find(item => {
+
+    const sameProduct =
+      item.productId &&
+      itemData.productId &&
+      item.productId.toString() ===
+        itemData.productId.toString();
+
+    const sameService =
+      item.serviceId &&
+      itemData.serviceId &&
+      item.serviceId.toString() ===
+        itemData.serviceId.toString();
+
+    return sameProduct || sameService;
+  });
 
   if (existingItem) {
 
