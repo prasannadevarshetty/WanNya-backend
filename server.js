@@ -53,7 +53,8 @@ app.use(
 // ======================
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://wannya.onrender.com'
+  'https://wannya.onrender.com',
+  'https://wan-frontend-zwik.onrender.com'
 ];
 
 app.use(
