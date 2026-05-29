@@ -23,6 +23,8 @@ router.get('/', async (req, res) => {
 
       description: service.description,
 
+      category: service.category,
+
       price: service.price,
 
       duration: `${service.duration} min`,
