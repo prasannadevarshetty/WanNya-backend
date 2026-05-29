@@ -6,16 +6,42 @@ const router = express.Router();
 // GET ALL SERVICES
 router.get('/', async (req, res) => {
   try {
-    const services = await Service.find({ isActive: true })
-      .sort({ featured: -1, rating: -1, createdAt: -1 });
+
+    const services = await Service.find({
+      isActive: true
+    })
+    .sort({
+      featured: -1,
+      rating: -1,
+      createdAt: -1
+    });
+
+    const formattedServices = services.map((service) => ({
+      id: service._id,
+
+      name: service.name,
+
+      description: service.description,
+
+      price: service.price,
+
+      duration: `${service.duration} min`,
+
+      rating: service.rating || 0,
+
+      image:
+        service.images?.[0] ||
+        'https://via.placeholder.com/300'
+    }));
 
     res.json({
       success: true,
-      count: services.length,
-      services
+      count: formattedServices.length,
+      services: formattedServices
     });
 
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: 'Server error while fetching services'

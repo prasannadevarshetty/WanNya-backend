@@ -1,0 +1,93 @@
+require('dotenv').config();
+const mongoose = require('mongoose');
+const fs = require('fs');
+const csv = require('csv-parser');
+const Service = require('./models/Service');
+
+const bookings = [];
+
+async function importBookings() {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+
+    console.log('MongoDB connected');
+
+    fs.createReadStream('./data/bookings.csv')
+      .pipe(csv())
+      .on('data', (row) => {
+        bookings.push({
+          name: row.nameEn,
+          nameEn: row.nameEn,
+          nameJa: row.nameJa,
+
+          description: row.descriptionEn,
+          descriptionEn: row.descriptionEn,
+          descriptionJa: row.descriptionJa,
+
+          category: row.category,
+          petType: 'dog',
+
+          duration: 1440,
+          durationText: row.duration,
+
+          price: Number(row.price),
+
+          pricingType:
+            row.duration === '1 night'
+              ? 'per-night'
+              : 'per-day',
+
+          images: [row.image],
+
+          rating: Number(row.rating),
+
+          location: {
+            address: row.location,
+            city: row.location.includes('Shinjuku')
+              ? 'Shinjuku'
+              : 'Tokyo',
+            country: 'Japan'
+          },
+
+          checkIn: row.checkIn,
+          checkOut: row.checkOut,
+
+          isActive: true,
+          featured: false,
+
+          maxPetSize: 'any',
+          maxPets: 1
+        });
+      })
+      .on('end', async () => {
+        try {
+          await Service.deleteMany({
+            category: 'hotel'
+          });
+
+          await Service.insertMany(bookings);
+
+          console.log(
+            `${bookings.length} hotel bookings imported successfully`
+          );
+
+          process.exit(0);
+        } catch (error) {
+          console.error(
+            'Insert error:',
+            error
+          );
+          process.exit(1);
+        }
+      });
+
+  } catch (error) {
+    console.error(
+      'Import error:',
+      error
+    );
+    process.exit(1);
+  }
+}
+
+importBookings();
