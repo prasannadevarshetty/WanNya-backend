@@ -51,6 +51,30 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET SINGLE SERVICE BY ID
+router.get('/:id', async (req, res) => {
+  try {
+    const service = await Service.findById(req.params.id);
+    if (!service) {
+      return res.status(404).json({
+        success: false,
+        message: 'Service not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      service
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Server error while fetching service details',
+      error: error.message
+    });
+  }
+});
+
 // ADD SERVICE
 router.post('/', async (req, res) => {
   try {

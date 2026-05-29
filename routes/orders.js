@@ -226,4 +226,77 @@ router.put('/:orderId/status', authenticate, async (req, res) => {
   }
 });
 
+// @route   POST /api/orders/cancel/:orderId
+// @desc    Cancel order
+router.post('/cancel/:orderId', authenticate, async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { cancellationReason } = req.body;
+
+    const order = await Order.findOne({
+      _id: orderId,
+      userId: req.user._id
+    });
+
+    if (!order) {
+      return res.status(404).json({
+        message: 'Order not found'
+      });
+    }
+
+    const uncancelableStatuses = ['shipped', 'delivered', 'cancelled', 'refunded'];
+    if (uncancelableStatuses.includes(order.status)) {
+      return res.status(400).json({
+        message: `Order cannot be cancelled because it is already ${order.status}`
+      });
+    }
+
+    order.status = 'cancelled';
+    order.cancellationReason = cancellationReason || 'Cancelled by user';
+    order.cancelledAt = new Date();
+    await order.save();
+
+    // Create CancelledProduct record
+    try {
+      await CancelledProduct.create({
+        userId: req.user._id,
+        orderId: order._id,
+        cancellationReason: order.cancellationReason,
+        cancelledAt: order.cancelledAt
+      });
+    } catch (cancelProdErr) {
+      console.error('Failed to create CancelledProduct entry:', cancelProdErr);
+    }
+
+    // Create notification
+    try {
+      await Notification.create({
+        userId: req.user._id,
+        key: 'orderCancelled',
+        data: {
+          orderId: order._id,
+          orderNumber: order.orderNumber,
+          reason: order.cancellationReason
+        },
+        isRead: false
+      });
+    } catch (notifErr) {
+      console.error('Failed to create order cancellation notification:', notifErr);
+    }
+
+    res.json({
+      success: true,
+      message: 'Order cancelled successfully',
+      order
+    });
+
+  } catch (error) {
+    console.error('Cancel order error:', error);
+    res.status(500).json({
+      message: 'Server error while cancelling order'
+    });
+  }
+});
+
 module.exports = router;
+
