@@ -54,8 +54,15 @@ app.use(
 // ======================
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://wannya.onrender.com'
+  'http://localhost:3001',
+  'https://wannya.onrender.com',
+  'https://wan-frontend-zwik.onrender.com',
+  'https://wannya-sm35.onrender.com'
 ];
+
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
 
 app.use(
   cors({
