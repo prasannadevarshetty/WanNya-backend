@@ -1,24 +1,24 @@
-nameEn	nameJa	descriptionEn	descriptionJa	price	duration	rating	image	category	location	checkIn	checkOut
-Pet Hotel Suite (Small Dogs)	ペットホテル スイートルーム（小型犬）	Private premium suite room for dogs up to 7kg	7kgまでの小型犬向けプレミアムスイートルーム	13600	1 day	4.9	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780047715/room-s-sweet_zbqu4g.jpg	hotel	Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0023	10:00:00	19:00:00
-Pet Hotel Tower Room A (Small Dogs)	ペットホテル タワールームA（小型犬）	Comfortable tower room for dogs up to 7kg	7kgまでの小型犬向け快適なタワールーム	11000	1 day	4.8	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780050278/room-s-towerA_ysfoda.jpg	hotel	Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0024	10:00:00	19:00:00
-Pet Hotel Tower Room C (Small Dogs)	ペットホテル タワールームC（小型犬）	Standard tower room for dogs up to 7kg	7kgまでの小型犬向けスタンダードルーム	9000	1 day	4.7	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780050322/room-s-towerC_f8k5gi.jpg	hotel	Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0025	10:00:00	19:00:00
-Pet Hotel House (Small Dogs)	ペットホテル ハウス（小型犬）	Economical house stay for dogs up to 7kg	7kgまでの小型犬向けリーズナブルな宿泊施設	7800	1 day	4.6	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780050361/room-s-house_htbt8w.jpg	hotel	Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0026	10:00:00	19:00:00
-Pet Hotel Suite (Medium Dogs)	ペットホテル スイートルーム（中型犬）	Private premium suite room for dogs between 7kg and 15kg	7kg〜15kgの中型犬向けプレミアムスイートルーム	15600	1 day	4.9	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780047715/room-s-sweet_zbqu4g.jpg	hotel	Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0027	10:00:00	19:00:00
-Pet Hotel Tower Room A (Medium Dogs)	ペットホテル タワールームA（中型犬）	Comfortable tower room for dogs between 7kg and 15kg	7kg〜15kgの中型犬向け快適なタワールーム	13500	1 day	4.8	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780050278/room-s-towerA_ysfoda.jpg	hotel	Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0028	10:00:00	19:00:00
-Pet Hotel Tower Room C (Medium Dogs)	ペットホテル タワールームC（中型犬）	Standard tower room for dogs between 7kg and 15kg	7kg〜15kgの中型犬向けスタンダードルーム	11600	1 day	4.7	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780050322/room-s-towerC_f8k5gi.jpg	hotel	Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0029	10:00:00	19:00:00
-Pet Hotel House (Medium Dogs)	ペットホテル ハウス（中型犬）	Economical house stay for dogs between 7kg and 15kg	7kg〜15kgの中型犬向けリーズナブルな宿泊施設	10300	1 day	4.6	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780050877/room-m-house_eloayr.jpg	hotel	Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0030	10:00:00	19:00:00
-Pet Hotel Suite (Large Dogs)	ペットホテル スイートルーム（大型犬）	Premium suite room for dogs between 16kg and 30kg	16kg〜30kgの大型犬向けプレミアムスイートルーム	17700	1 day	4.9	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780047715/room-s-sweet_zbqu4g.jpg	hotel	Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0031	10:00:00	19:00:00
-Pet Hotel House (Large Dogs)	ペットホテル ハウス（大型犬）	Comfortable house stay for dogs between 16kg and 30kg	16kg〜30kgの大型犬向け宿泊施設	11600	1 day	4.7	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051044/room-b-house_afr2jz.jpg	hotel	Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0032	10:00:00	19:00:00
-Pet Boarding (Up to 10kg)	小型犬ペットホテル	Overnight boarding for dogs up to 10kg	10kgまでの犬向け宿泊サービス	7000	1 night	4.8	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051264/621352_c9fb9a12a7fa45a58cc4c911810a7c40_mv2_xngtzj.jpg	hotel	4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan	8:00:00	20:00:00
-Pet Boarding (10kg-15kg)	中型犬ペットホテル	Overnight boarding for dogs between 10kg and 15kg	10kg〜15kgの犬向け宿泊サービス	7500	1 night	4.8	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051285/621352_291f05332bec4ce6b3a855a59bc0af3e_mv2_z5gs9d.jpg	hotel	4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan	8:00:00	20:00:00
-Pet Boarding (15kg-20kg)	大型犬ペットホテル	Overnight boarding for dogs between 15kg and 20kg	15kg〜20kgの犬向け宿泊サービス	8000	1 night	4.8	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051264/621352_c9fb9a12a7fa45a58cc4c911810a7c40_mv2_xngtzj.jpg	hotel	4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan	8:00:00	20:00:00
-Pet Boarding (20kg-25kg)	大型犬ペットホテル	Overnight boarding for dogs between 20kg and 25kg	20kg〜25kgの犬向け宿泊サービス	9000	1 night	4.8	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051285/621352_291f05332bec4ce6b3a855a59bc0af3e_mv2_z5gs9d.jpg	hotel	4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan	8:00:00	20:00:00
-Pet Boarding (25kg-30kg)	大型犬ペットホテル	Overnight boarding for dogs between 25kg and 30kg	25kg〜30kgの犬向け宿泊サービス	10000	1 night	4.8	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051264/621352_c9fb9a12a7fa45a58cc4c911810a7c40_mv2_xngtzj.jpg	hotel	4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan	8:00:00	20:00:00
-Pet Boarding (30kg-40kg)	超大型犬ペットホテル	Overnight boarding for dogs between 30kg and 40kg	30kg〜40kgの犬向け宿泊サービス	12000	1 night	4.8	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051285/621352_291f05332bec4ce6b3a855a59bc0af3e_mv2_z5gs9d.jpg	hotel	4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan	8:00:00	20:00:00
-Pet Boarding (Over 40kg)	超大型犬ペットホテル	Overnight boarding for dogs over 40kg	40kg以上の犬向け宿泊サービス	13000	1 night	4.8	https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051264/621352_c9fb9a12a7fa45a58cc4c911810a7c40_mv2_xngtzj.jpg	hotel	4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan	8:00:00	20:00:00
-Herb Pack [~8kg] Short hair	ハーブパック【～8kg】短毛	"The thick, herbal pack gently washes away sebum and dirt, repairing the coat. It
-moisturizes and adds shine to the skin and coat."	"ハーブパックのとろみが皮脂汚れを優しく洗い流し、被毛を補修。
-皮膚や被毛に潤いとツヤを与えます。"	2200			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070736/option_pic03_uktxei.jpg	grooming	"PET-SPA Takanawa Store
+nameEn,nameJa,descriptionEn,descriptionJa,price,duration,rating,image,category,location,checkIn,checkOut
+Pet Hotel Suite (Small Dogs),ペットホテル スイートルーム（小型犬）,Private premium suite room for dogs up to 7kg,7kgまでの小型犬向けプレミアムスイートルーム,13600,1 day,4.9,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780047715/room-s-sweet_zbqu4g.jpg,hotel,"Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0023",10:00:00,19:00:00
+Pet Hotel Tower Room A (Small Dogs),ペットホテル タワールームA（小型犬）,Comfortable tower room for dogs up to 7kg,7kgまでの小型犬向け快適なタワールーム,11000,1 day,4.8,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780050278/room-s-towerA_ysfoda.jpg,hotel,"Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0024",10:00:00,19:00:00
+Pet Hotel Tower Room C (Small Dogs),ペットホテル タワールームC（小型犬）,Standard tower room for dogs up to 7kg,7kgまでの小型犬向けスタンダードルーム,9000,1 day,4.7,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780050322/room-s-towerC_f8k5gi.jpg,hotel,"Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0025",10:00:00,19:00:00
+Pet Hotel House (Small Dogs),ペットホテル ハウス（小型犬）,Economical house stay for dogs up to 7kg,7kgまでの小型犬向けリーズナブルな宿泊施設,7800,1 day,4.6,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780050361/room-s-house_htbt8w.jpg,hotel,"Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0026",10:00:00,19:00:00
+Pet Hotel Suite (Medium Dogs),ペットホテル スイートルーム（中型犬）,Private premium suite room for dogs between 7kg and 15kg,7kg〜15kgの中型犬向けプレミアムスイートルーム,15600,1 day,4.9,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780047715/room-s-sweet_zbqu4g.jpg,hotel,"Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0027",10:00:00,19:00:00
+Pet Hotel Tower Room A (Medium Dogs),ペットホテル タワールームA（中型犬）,Comfortable tower room for dogs between 7kg and 15kg,7kg〜15kgの中型犬向け快適なタワールーム,13500,1 day,4.8,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780050278/room-s-towerA_ysfoda.jpg,hotel,"Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0028",10:00:00,19:00:00
+Pet Hotel Tower Room C (Medium Dogs),ペットホテル タワールームC（中型犬）,Standard tower room for dogs between 7kg and 15kg,7kg〜15kgの中型犬向けスタンダードルーム,11600,1 day,4.7,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780050322/room-s-towerC_f8k5gi.jpg,hotel,"Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0029",10:00:00,19:00:00
+Pet Hotel House (Medium Dogs),ペットホテル ハウス（中型犬）,Economical house stay for dogs between 7kg and 15kg,7kg〜15kgの中型犬向けリーズナブルな宿泊施設,10300,1 day,4.6,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780050877/room-m-house_eloayr.jpg,hotel,"Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0030",10:00:00,19:00:00
+Pet Hotel Suite (Large Dogs),ペットホテル スイートルーム（大型犬）,Premium suite room for dogs between 16kg and 30kg,16kg〜30kgの大型犬向けプレミアムスイートルーム,17700,1 day,4.9,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780047715/room-s-sweet_zbqu4g.jpg,hotel,"Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0031",10:00:00,19:00:00
+Pet Hotel House (Large Dogs),ペットホテル ハウス（大型犬）,Comfortable house stay for dogs between 16kg and 30kg,16kg〜30kgの大型犬向け宿泊施設,11600,1 day,4.7,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051044/room-b-house_afr2jz.jpg,hotel,"Shinagawa Shibaura ,Shibaura, Minato-ku, Tokyo 108-0032",10:00:00,19:00:00
+Pet Boarding (Up to 10kg),小型犬ペットホテル,Overnight boarding for dogs up to 10kg,10kgまでの犬向け宿泊サービス,7000,1 night,4.8,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051264/621352_c9fb9a12a7fa45a58cc4c911810a7c40_mv2_xngtzj.jpg,hotel,"4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan",08:00:00,20:00:00
+Pet Boarding (10kg-15kg),中型犬ペットホテル,Overnight boarding for dogs between 10kg and 15kg,10kg〜15kgの犬向け宿泊サービス,7500,1 night,4.8,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051285/621352_291f05332bec4ce6b3a855a59bc0af3e_mv2_z5gs9d.jpg,hotel,"4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan",08:00:00,20:00:00
+Pet Boarding (15kg-20kg),大型犬ペットホテル,Overnight boarding for dogs between 15kg and 20kg,15kg〜20kgの犬向け宿泊サービス,8000,1 night,4.8,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051264/621352_c9fb9a12a7fa45a58cc4c911810a7c40_mv2_xngtzj.jpg,hotel,"4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan",08:00:00,20:00:00
+Pet Boarding (20kg-25kg),大型犬ペットホテル,Overnight boarding for dogs between 20kg and 25kg,20kg〜25kgの犬向け宿泊サービス,9000,1 night,4.8,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051285/621352_291f05332bec4ce6b3a855a59bc0af3e_mv2_z5gs9d.jpg,hotel,"4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan",08:00:00,20:00:00
+Pet Boarding (25kg-30kg),大型犬ペットホテル,Overnight boarding for dogs between 25kg and 30kg,25kg〜30kgの犬向け宿泊サービス,10000,1 night,4.8,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051264/621352_c9fb9a12a7fa45a58cc4c911810a7c40_mv2_xngtzj.jpg,hotel,"4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan",08:00:00,20:00:00
+Pet Boarding (30kg-40kg),超大型犬ペットホテル,Overnight boarding for dogs between 30kg and 40kg,30kg〜40kgの犬向け宿泊サービス,12000,1 night,4.8,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051285/621352_291f05332bec4ce6b3a855a59bc0af3e_mv2_z5gs9d.jpg,hotel,"4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan",08:00:00,20:00:00
+Pet Boarding (Over 40kg),超大型犬ペットホテル,Overnight boarding for dogs over 40kg,40kg以上の犬向け宿泊サービス,13000,1 night,4.8,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780051264/621352_c9fb9a12a7fa45a58cc4c911810a7c40_mv2_xngtzj.jpg,hotel,"4-chōme-1-7 Shinjuku, Shinjuku City, Tokyo 160-0022, Japan",08:00:00,20:00:00
+Herb Pack [~8kg] Short hair,ハーブパック【～8kg】短毛,"The thick, herbal pack gently washes away sebum and dirt, repairing the coat. It
+moisturizes and adds shine to the skin and coat.","ハーブパックのとろみが皮脂汚れを優しく洗い流し、被毛を補修。
+皮膚や被毛に潤いとツヤを与えます。",2200,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070736/option_pic03_uktxei.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -64,10 +64,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Herb Pack [~20kg] Short hair	ハーブパック【～20kg】短毛	"The thick, herbal pack gently washes away sebum and dirt, repairing the coat. It
-moisturizes and adds shine to the skin and coat."	"ハーブパックのとろみが皮脂汚れを優しく洗い流し、被毛を補修。
-皮膚や被毛に潤いとツヤを与えます。"	3300			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070736/option_pic03_uktxei.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Herb Pack [~20kg] Short hair,ハーブパック【～20kg】短毛,"The thick, herbal pack gently washes away sebum and dirt, repairing the coat. It
+moisturizes and adds shine to the skin and coat.","ハーブパックのとろみが皮脂汚れを優しく洗い流し、被毛を補修。
+皮膚や被毛に潤いとツヤを与えます。",3300,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070736/option_pic03_uktxei.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -113,10 +113,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Herb Pack [20kg ~] Short hair	ハーブパック【20kg～】短毛	"The thick, herbal pack gently washes away sebum and dirt, repairing the coat. It
-moisturizes and adds shine to the skin and coat."	"ハーブパックのとろみが皮脂汚れを優しく洗い流し、被毛を補修。
-皮膚や被毛に潤いとツヤを与えます。"	4400			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070736/option_pic03_uktxei.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Herb Pack [20kg ~] Short hair,ハーブパック【20kg～】短毛,"The thick, herbal pack gently washes away sebum and dirt, repairing the coat. It
+moisturizes and adds shine to the skin and coat.","ハーブパックのとろみが皮脂汚れを優しく洗い流し、被毛を補修。
+皮膚や被毛に潤いとツヤを与えます。",4400,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070736/option_pic03_uktxei.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -162,10 +162,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Herb Pack [~8kg] Medium long hair	ハーブパック 【～8kg】中長毛	"The thick, herbal pack gently washes away sebum and dirt, repairing the coat. It
-moisturizes and adds shine to the skin and coat."	"ハーブパックのとろみが皮脂汚れを優しく洗い流し、被毛を補修。
-皮膚や被毛に潤いとツヤを与えます。"	3300			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070736/option_pic03_uktxei.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Herb Pack [~8kg] Medium long hair,ハーブパック 【～8kg】中長毛,"The thick, herbal pack gently washes away sebum and dirt, repairing the coat. It
+moisturizes and adds shine to the skin and coat.","ハーブパックのとろみが皮脂汚れを優しく洗い流し、被毛を補修。
+皮膚や被毛に潤いとツヤを与えます。",3300,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070736/option_pic03_uktxei.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -211,10 +211,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Herb Pack [~20kg] Medium long hair	ハーブパック 【～20kg】中長毛	"The thick, herbal pack gently washes away sebum and dirt, repairing the coat. It
-moisturizes and adds shine to the skin and coat."	"ハーブパックのとろみが皮脂汚れを優しく洗い流し、被毛を補修。
-皮膚や被毛に潤いとツヤを与えます。"	4400			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070736/option_pic03_uktxei.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Herb Pack [~20kg] Medium long hair,ハーブパック 【～20kg】中長毛,"The thick, herbal pack gently washes away sebum and dirt, repairing the coat. It
+moisturizes and adds shine to the skin and coat.","ハーブパックのとろみが皮脂汚れを優しく洗い流し、被毛を補修。
+皮膚や被毛に潤いとツヤを与えます。",4400,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070736/option_pic03_uktxei.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -260,10 +260,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Herb Pack [20kg~] Medium long hair	ハーブパック 【20kg～】中長毛	"The thick, herbal pack gently washes away sebum and dirt, repairing the coat. It
-moisturizes and adds shine to the skin and coat."	"ハーブパックのとろみが皮脂汚れを優しく洗い流し、被毛を補修。
-皮膚や被毛に潤いとツヤを与えます。"	3300			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070736/option_pic03_uktxei.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Herb Pack [20kg~] Medium long hair,ハーブパック 【20kg～】中長毛,"The thick, herbal pack gently washes away sebum and dirt, repairing the coat. It
+moisturizes and adds shine to the skin and coat.","ハーブパックのとろみが皮脂汚れを優しく洗い流し、被毛を補修。
+皮膚や被毛に潤いとツヤを与えます。",3300,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070736/option_pic03_uktxei.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -309,10 +309,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Silk Pack [~8kg] Short hair	シルクパック【～8kg】短毛	"This foam pack, containing 70% silk, adds shine to your dog's coat and enhances their natural color,
-leaving it soft and fluffy."	"シルク成分を70%含む泡パックが、被毛に艶を与え、愛犬本来の色を引き立てます。
-柔らかでふわふわな仕上がりに"	1100			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070780/option_pic04_e8kdwf.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Silk Pack [~8kg] Short hair,シルクパック【～8kg】短毛,"This foam pack, containing 70% silk, adds shine to your dog's coat and enhances their natural color,
+leaving it soft and fluffy.","シルク成分を70%含む泡パックが、被毛に艶を与え、愛犬本来の色を引き立てます。
+柔らかでふわふわな仕上がりに",1100,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070780/option_pic04_e8kdwf.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -358,10 +358,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Silk Pack [~20kg] Short hair	シルクパック【～20kg】短毛	"This foam pack, containing 70% silk, adds shine to your dog's coat and enhances their natural color,
-leaving it soft and fluffy."	"シルク成分を70%含む泡パックが、被毛に艶を与え、愛犬本来の色を引き立てます。
-柔らかでふわふわな仕上がりに"	1650			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070780/option_pic04_e8kdwf.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Silk Pack [~20kg] Short hair,シルクパック【～20kg】短毛,"This foam pack, containing 70% silk, adds shine to your dog's coat and enhances their natural color,
+leaving it soft and fluffy.","シルク成分を70%含む泡パックが、被毛に艶を与え、愛犬本来の色を引き立てます。
+柔らかでふわふわな仕上がりに",1650,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070780/option_pic04_e8kdwf.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -407,10 +407,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Silk Pack [20kg ~] Short hair	シルクパック【20kg～】短毛	"This foam pack, containing 70% silk, adds shine to your dog's coat and enhances their natural color,
-leaving it soft and fluffy."	"シルク成分を70%含む泡パックが、被毛に艶を与え、愛犬本来の色を引き立てます。
-柔らかでふわふわな仕上がりに"	2200			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070780/option_pic04_e8kdwf.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Silk Pack [20kg ~] Short hair,シルクパック【20kg～】短毛,"This foam pack, containing 70% silk, adds shine to your dog's coat and enhances their natural color,
+leaving it soft and fluffy.","シルク成分を70%含む泡パックが、被毛に艶を与え、愛犬本来の色を引き立てます。
+柔らかでふわふわな仕上がりに",2200,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070780/option_pic04_e8kdwf.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -456,10 +456,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Silk Pack [~8kg] Medium long hair	シルクパック 【～8kg】中長毛	"This foam pack, containing 70% silk, adds shine to your dog's coat and enhances their natural color,
-leaving it soft and fluffy."	"シルク成分を70%含む泡パックが、被毛に艶を与え、愛犬本来の色を引き立てます。
-柔らかでふわふわな仕上がりに"	2200			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070780/option_pic04_e8kdwf.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Silk Pack [~8kg] Medium long hair,シルクパック 【～8kg】中長毛,"This foam pack, containing 70% silk, adds shine to your dog's coat and enhances their natural color,
+leaving it soft and fluffy.","シルク成分を70%含む泡パックが、被毛に艶を与え、愛犬本来の色を引き立てます。
+柔らかでふわふわな仕上がりに",2200,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070780/option_pic04_e8kdwf.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -505,10 +505,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Silk Pack [~20kg] Medium long hair	シルクパック【～20kg】中長毛	"This foam pack, containing 70% silk, adds shine to your dog's coat and enhances their natural color,
-leaving it soft and fluffy."	"シルク成分を70%含む泡パックが、被毛に艶を与え、愛犬本来の色を引き立てます。
-柔らかでふわふわな仕上がりに"	3300			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070780/option_pic04_e8kdwf.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Silk Pack [~20kg] Medium long hair,シルクパック【～20kg】中長毛,"This foam pack, containing 70% silk, adds shine to your dog's coat and enhances their natural color,
+leaving it soft and fluffy.","シルク成分を70%含む泡パックが、被毛に艶を与え、愛犬本来の色を引き立てます。
+柔らかでふわふわな仕上がりに",3300,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070780/option_pic04_e8kdwf.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -554,10 +554,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Silk Pack [20kg~] Medium long hair	シルクパック【20kg～】中長毛	"This foam pack, containing 70% silk, adds shine to your dog's coat and enhances their natural color,
-leaving it soft and fluffy."	"シルク成分を70%含む泡パックが、被毛に艶を与え、愛犬本来の色を引き立てます。
-柔らかでふわふわな仕上がりに"	3850			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070780/option_pic04_e8kdwf.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Silk Pack [20kg~] Medium long hair,シルクパック【20kg～】中長毛,"This foam pack, containing 70% silk, adds shine to your dog's coat and enhances their natural color,
+leaving it soft and fluffy.","シルク成分を70%含む泡パックが、被毛に艶を与え、愛犬本来の色を引き立てます。
+柔らかでふわふわな仕上がりに",3850,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070780/option_pic04_e8kdwf.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -603,12 +603,12 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Moisturize [~20kg]	モイスチャライズ【～20kg】	"A leave-in moisturizer used as a final rinse after shampooing.
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Moisturize [~20kg],モイスチャライズ【～20kg】,"A leave-in moisturizer used as a final rinse after shampooing.
 Quick and easy care.
-Leaves skin and coat feeling soft and moisturized."	"シャンプーの仕上げに掛け湯する、洗い流さない保湿剤。
+Leaves skin and coat feeling soft and moisturized.","シャンプーの仕上げに掛け湯する、洗い流さない保湿剤。
 短時間でケアできます。
-皮膚・被毛がしっとり潤います"	550			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070822/option_moisturize_hrkmkm.jpg	grooming	"PET-SPA Takanawa Store
+皮膚・被毛がしっとり潤います",550,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070822/option_moisturize_hrkmkm.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -654,12 +654,12 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Moisturize [20kg~]	モイスチャライズ【20kg～】	"A leave-in moisturizer used as a final rinse after shampooing.
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Moisturize [20kg~],モイスチャライズ【20kg～】,"A leave-in moisturizer used as a final rinse after shampooing.
 Quick and easy care.
-Leaves skin and coat feeling soft and moisturized."	"シャンプーの仕上げに掛け湯する、洗い流さない保湿剤。
+Leaves skin and coat feeling soft and moisturized.","シャンプーの仕上げに掛け湯する、洗い流さない保湿剤。
 短時間でケアできます。
-皮膚・被毛がしっとり潤います"	1100			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070822/option_moisturize_hrkmkm.jpg	grooming	"PET-SPA Takanawa Store
+皮膚・被毛がしっとり潤います",1100,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070822/option_moisturize_hrkmkm.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -705,10 +705,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Herb Bath [~20kg]	ハーブ浴【～20kg】	"A bath with dissolved herbal pack powder.
-An easy way to try herbal care."	"ハーブパックの粉を溶かしたお風呂。
-お手軽にハーブケアをお試しいただけます。"	1100			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070866/option_herbbath_zrkcxc.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Herb Bath [~20kg],ハーブ浴【～20kg】,"A bath with dissolved herbal pack powder.
+An easy way to try herbal care.","ハーブパックの粉を溶かしたお風呂。
+お手軽にハーブケアをお試しいただけます。",1100,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070866/option_herbbath_zrkcxc.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -754,10 +754,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Herb Bath [20kg~]	ハーブ浴【20kg～】	"A bath with dissolved herbal pack powder.
-An easy way to try herbal care."	"ハーブパックの粉を溶かしたお風呂。
-お手軽にハーブケアをお試しいただけます。"	2200			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070866/option_herbbath_zrkcxc.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Herb Bath [20kg~],ハーブ浴【20kg～】,"A bath with dissolved herbal pack powder.
+An easy way to try herbal care.","ハーブパックの粉を溶かしたお風呂。
+お手軽にハーブケアをお試しいただけます。",2200,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070866/option_herbbath_zrkcxc.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -803,12 +803,12 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Cashmere Touch Shampoo [~20kg]	カシミヤタッチシャンプー【～20kg】	"A luxurious shampoo formulated with cashmere-derived keratin.
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Cashmere Touch Shampoo [~20kg],カシミヤタッチシャンプー【～20kg】,"A luxurious shampoo formulated with cashmere-derived keratin.
 Leaves hair feeling both soft and smooth.
-Features a floral fruity scent."	"カシミヤ由来ケラチンを配合した贅沢なシャンプー。
+Features a floral fruity scent.","カシミヤ由来ケラチンを配合した贅沢なシャンプー。
 ふんわりとなめらかを両立した仕上がりに。
-フローラルフルーティの香り"	1650			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070894/option_cashmere_touch_jlvmhc.jpg	grooming	"PET-SPA Takanawa Store
+フローラルフルーティの香り",1650,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070894/option_cashmere_touch_jlvmhc.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -854,12 +854,12 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Cashmere Touch Shampoo [20kg~]	カシミヤタッチシャンプー【20kg～】	"A luxurious shampoo formulated with cashmere-derived keratin.
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Cashmere Touch Shampoo [20kg~],カシミヤタッチシャンプー【20kg～】,"A luxurious shampoo formulated with cashmere-derived keratin.
 Leaves hair feeling both soft and smooth.
-Features a floral fruity scent."	"カシミヤ由来ケラチンを配合した贅沢なシャンプー。
+Features a floral fruity scent.","カシミヤ由来ケラチンを配合した贅沢なシャンプー。
 ふんわりとなめらかを両立した仕上がりに。
-フローラルフルーティの香り"	2200			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070894/option_cashmere_touch_jlvmhc.jpg	grooming	"PET-SPA Takanawa Store
+フローラルフルーティの香り",2200,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070894/option_cashmere_touch_jlvmhc.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -905,10 +905,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Animaru Yu Shampoo [~20kg]	アニマー湯シャンプー【～20kg】	"This amino acid-based shampoo is made primarily from natural palm and coconut oil.
-It's recommended for those seeking moisture for both their pet's skin and coat."	"天然パームとヤシ油を主成分としたアミノ酸系シャンプー。
-皮膚・被毛の両方にうるおいを求める方にオススメです"	1100			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070919/option_animayu_f9v7wv.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Animaru Yu Shampoo [~20kg],アニマー湯シャンプー【～20kg】,"This amino acid-based shampoo is made primarily from natural palm and coconut oil.
+It's recommended for those seeking moisture for both their pet's skin and coat.","天然パームとヤシ油を主成分としたアミノ酸系シャンプー。
+皮膚・被毛の両方にうるおいを求める方にオススメです",1100,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070919/option_animayu_f9v7wv.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -954,10 +954,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Animaru Yu Shampoo [20kg~]	アニマー湯シャンプー【20kg～】	"This amino acid-based shampoo is made primarily from natural palm and coconut oil.
-It's recommended for those seeking moisture for both their pet's skin and coat."	"天然パームとヤシ油を主成分としたアミノ酸系シャンプー。
-皮膚・被毛の両方にうるおいを求める方にオススメです"	1650			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070919/option_animayu_f9v7wv.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Animaru Yu Shampoo [20kg~],アニマー湯シャンプー【20kg～】,"This amino acid-based shampoo is made primarily from natural palm and coconut oil.
+It's recommended for those seeking moisture for both their pet's skin and coat.","天然パームとヤシ油を主成分としたアミノ酸系シャンプー。
+皮膚・被毛の両方にうるおいを求める方にオススメです",1650,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070919/option_animayu_f9v7wv.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1003,10 +1003,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Salon Shampoo [~20kg]	サロンシャンプー【～20kg】	"This product uses luxurious silk-based cleansing ingredients, including lauroyl silk amino acid K, to leave your pet's coat feeling soft and smooth. It has
-an elegant scent of lemongrass and ylang-ylang."	"贅沢なシルク系洗浄成分、ラウロイルシルクアミノ酸Kを使用し、手触りの良い被毛に。
-レモングラスとイランイランの上品な香り"	1100			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070956/option_salon_aml6in.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Salon Shampoo [~20kg],サロンシャンプー【～20kg】,"This product uses luxurious silk-based cleansing ingredients, including lauroyl silk amino acid K, to leave your pet's coat feeling soft and smooth. It has
+an elegant scent of lemongrass and ylang-ylang.","贅沢なシルク系洗浄成分、ラウロイルシルクアミノ酸Kを使用し、手触りの良い被毛に。
+レモングラスとイランイランの上品な香り",1100,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070956/option_salon_aml6in.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1052,10 +1052,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Salon Shampoo [20kg~]	サロンシャンプー【20kg～】	"This product uses luxurious silk-based cleansing ingredients, including lauroyl silk amino acid K, to leave your pet's coat feeling soft and smooth. It has
-an elegant scent of lemongrass and ylang-ylang."	"贅沢なシルク系洗浄成分、ラウロイルシルクアミノ酸Kを使用し、手触りの良い被毛に。
-レモングラスとイランイランの上品な香り"	1650			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070956/option_salon_aml6in.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Salon Shampoo [20kg~],サロンシャンプー【20kg～】,"This product uses luxurious silk-based cleansing ingredients, including lauroyl silk amino acid K, to leave your pet's coat feeling soft and smooth. It has
+an elegant scent of lemongrass and ylang-ylang.","贅沢なシルク系洗浄成分、ラウロイルシルクアミノ酸Kを使用し、手触りの良い被毛に。
+レモングラスとイランイランの上品な香り",1650,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070956/option_salon_aml6in.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1101,10 +1101,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Setouchi Lemon Shampoo [~20kg]	瀬戸内レモンシャンプー【～20kg】	"This product uses amino acid-based surfactants as its main ingredient, achieving a balance between moderate cleansing power and moisturizing properties.
-It also contains collagen, leaving hair feeling soft and moisturized even without conditioner."	"アミノ酸系の界面活性剤を主成分にし、適度な洗浄力と保湿力を両立。
-コラーゲン配合で、リンス不使用でもしっとり"	1100			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070983/option_lemon_mshxm8.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Setouchi Lemon Shampoo [~20kg],瀬戸内レモンシャンプー【～20kg】,"This product uses amino acid-based surfactants as its main ingredient, achieving a balance between moderate cleansing power and moisturizing properties.
+It also contains collagen, leaving hair feeling soft and moisturized even without conditioner.","アミノ酸系の界面活性剤を主成分にし、適度な洗浄力と保湿力を両立。
+コラーゲン配合で、リンス不使用でもしっとり",1100,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070983/option_lemon_mshxm8.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1150,10 +1150,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Setouchi Lemon Shampoo [20kg~]	瀬戸内レモンシャンプー【20kg～】	"This product uses amino acid-based surfactants as its main ingredient, achieving a balance between moderate cleansing power and moisturizing properties.
-It also contains collagen, leaving hair feeling soft and moisturized even without conditioner."	"アミノ酸系の界面活性剤を主成分にし、適度な洗浄力と保湿力を両立。
-コラーゲン配合で、リンス不使用でもしっとり"	1650			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070983/option_lemon_mshxm8.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Setouchi Lemon Shampoo [20kg~],瀬戸内レモンシャンプー【20kg～】,"This product uses amino acid-based surfactants as its main ingredient, achieving a balance between moderate cleansing power and moisturizing properties.
+It also contains collagen, leaving hair feeling soft and moisturized even without conditioner.","アミノ酸系の界面活性剤を主成分にし、適度な洗浄力と保湿力を両立。
+コラーゲン配合で、リンス不使用でもしっとり",1650,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780070983/option_lemon_mshxm8.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1199,10 +1199,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Aomori Hiba Shampoo [~20kg]	青森ヒバシャンプー【～20kg】	"A shampoo that leaves your pet's coat feeling refreshed.
-Formulated with keratin, it leaves their coat smooth and healthy even without conditioner."	"さっぱりとした洗い上がりのシャンプー。
-ケラチン配合で、リンス不使用でもさらさらで、ハリがある被毛に。"	1100			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780071025/option_hiba_srunlc.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Aomori Hiba Shampoo [~20kg],青森ヒバシャンプー【～20kg】,"A shampoo that leaves your pet's coat feeling refreshed.
+Formulated with keratin, it leaves their coat smooth and healthy even without conditioner.","さっぱりとした洗い上がりのシャンプー。
+ケラチン配合で、リンス不使用でもさらさらで、ハリがある被毛に。",1100,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780071025/option_hiba_srunlc.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1248,10 +1248,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Aomori Hiba Shampoo [20kg~]	青森ヒバシャンプー【20kg～】	"A shampoo that leaves your pet's coat feeling refreshed.
-Formulated with keratin, it leaves their coat smooth and healthy even without conditioner."	"さっぱりとした洗い上がりのシャンプー。
-ケラチン配合で、リンス不使用でもさらさらで、ハリがある被毛に。"	1650			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780071025/option_hiba_srunlc.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Aomori Hiba Shampoo [20kg~],青森ヒバシャンプー【20kg～】,"A shampoo that leaves your pet's coat feeling refreshed.
+Formulated with keratin, it leaves their coat smooth and healthy even without conditioner.","さっぱりとした洗い上がりのシャンプー。
+ケラチン配合で、リンス不使用でもさらさらで、ハリがある被毛に。",1650,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780071025/option_hiba_srunlc.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1297,10 +1297,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Paw Care [Small/Medium]	パウケア【小型・中型】	"Use soaps, sprays, and creams specifically designed for paw pads to provide thorough moisturizing care.
-For soft and supple paw pads."	"肉球専用のソープ、スプレー、クリームを使ってしっかり保湿ケア。
-ぷにゅぷにゅな肉球に。"	550			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131230/option_pic07_glmpnx.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Paw Care [Small/Medium],パウケア【小型・中型】,"Use soaps, sprays, and creams specifically designed for paw pads to provide thorough moisturizing care.
+For soft and supple paw pads.","肉球専用のソープ、スプレー、クリームを使ってしっかり保湿ケア。
+ぷにゅぷにゅな肉球に。",550,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131230/option_pic07_glmpnx.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1346,10 +1346,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Paw Care [Large]	パウケア 【大型】	"Use soaps, sprays, and creams specifically designed for paw pads to provide thorough moisturizing care.
-For soft and supple paw pads."	"肉球専用のソープ、スプレー、クリームを使ってしっかり保湿ケア。
-ぷにゅぷにゅな肉球に。"	1100			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131230/option_pic07_glmpnx.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Paw Care [Large],パウケア 【大型】,"Use soaps, sprays, and creams specifically designed for paw pads to provide thorough moisturizing care.
+For soft and supple paw pads.","肉球専用のソープ、スプレー、クリームを使ってしっかり保湿ケア。
+ぷにゅぷにゅな肉球に。",1100,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131230/option_pic07_glmpnx.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1395,8 +1395,8 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Dental Care [All dog breeds]	デンタルケア【全犬種】	We use dental paste to gently care for your mouth.	デンタルペーストを使用し、やさしくお口のケアを行います。	550			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131277/option_pic08_quhg9e.jpg	grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Dental Care [All dog breeds],デンタルケア【全犬種】,We use dental paste to gently care for your mouth.,デンタルペーストを使用し、やさしくお口のケアを行います。,550,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131277/option_pic08_quhg9e.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1442,59 +1442,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Raking [~5kg]	レーキング【～5kg】	We use specialized equipment to remove any undercoat that wasn't completely shed during molting.	"換毛で抜けきれなかったアンダーコートを、専用器具で処理します。
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Raking [~5kg],レーキング【～5kg】,We use specialized equipment to remove any undercoat that wasn't completely shed during molting.,"換毛で抜けきれなかったアンダーコートを、専用器具で処理します。
 
-"	2200			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131326/raking_tm4vsk.jpg	grooming	"PET-SPA Takanawa Store
-
-3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
-
-PET-SPA Kotobu Suna Store [NEW OPEN! June 3, 2026]
-
-1F, Comforia Liv Minamisunamachi East, 7-1-2 Kitasuna, Koto-ku, Tokyo 136-0073
-
-PET-SPA Platinum Street Store
-
-〒108-0071 5-15-1 Shirokanedai, Minato-ku, Tokyo, Forma Shirokane 2F, inside Shirokanedai Hannari
-
-PET-SPA Komazawa Park Store
-
-4-11-1 Yakumo, Meguro-ku, Tokyo 152-0023
-
-PET-SPA Bajikoen Store
-
-1F, Grand Clair Bajikoen, 1-22-23 Kamiyoga, Setagaya-ku, Tokyo 158-0098, Japan
-
-4 & 2 Kyodo Store
-
-3-1-20 Miyasaka, Setagaya-ku, Tokyo 156-0051
-
-4&2 Umegaoka Store
-
-1-43-37 Umegaoka, Setagaya-ku, Tokyo 154-0022
-
-PET-SPA CARE+CURE Shakujii Park
-
-1-28-7 Shakujii-cho, Nerima-ku, Tokyo 177-0041
-
-PET-SPA Orinas Kinshicho Store
-
-1F Orinas Kinshicho, 4-1-2 Taihei, Sumida-ku, Tokyo 130-0012
-
-PET-SPA Chofu Sengawa Store
-
-3-4-1 Sengawa-cho, Chofu City, Tokyo 182-0002 (Located next to Inageya Chofu Sengawa store)
-
-PET-SPA CARE+CURE Hibarigaoka
-
-3-9-19 Sumiyoshi-cho, Nishitokyo-shi, Tokyo 202-0005　
-
-PET-SPA Machida Store
-
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Raking [~9kg]	レーキング【～9kg】	We use specialized equipment to remove any undercoat that wasn't completely shed during molting.	"換毛で抜けきれなかったアンダーコートを、専用器具で処理します。
-
-"	2750			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131326/raking_tm4vsk.jpg	grooming	"PET-SPA Takanawa Store
+",2200,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131326/raking_tm4vsk.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1540,59 +1491,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Raking [~15kg]	レーキング【～15kg】	We use specialized equipment to remove any undercoat that wasn't completely shed during molting.	"換毛で抜けきれなかったアンダーコートを、専用器具で処理します。
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Raking [~9kg],レーキング【～9kg】,We use specialized equipment to remove any undercoat that wasn't completely shed during molting.,"換毛で抜けきれなかったアンダーコートを、専用器具で処理します。
 
-"	3850			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131326/raking_tm4vsk.jpg	grooming	"PET-SPA Takanawa Store
-
-3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
-
-PET-SPA Kotobu Suna Store [NEW OPEN! June 3, 2026]
-
-1F, Comforia Liv Minamisunamachi East, 7-1-2 Kitasuna, Koto-ku, Tokyo 136-0073
-
-PET-SPA Platinum Street Store
-
-〒108-0071 5-15-1 Shirokanedai, Minato-ku, Tokyo, Forma Shirokane 2F, inside Shirokanedai Hannari
-
-PET-SPA Komazawa Park Store
-
-4-11-1 Yakumo, Meguro-ku, Tokyo 152-0023
-
-PET-SPA Bajikoen Store
-
-1F, Grand Clair Bajikoen, 1-22-23 Kamiyoga, Setagaya-ku, Tokyo 158-0098, Japan
-
-4 & 2 Kyodo Store
-
-3-1-20 Miyasaka, Setagaya-ku, Tokyo 156-0051
-
-4&2 Umegaoka Store
-
-1-43-37 Umegaoka, Setagaya-ku, Tokyo 154-0022
-
-PET-SPA CARE+CURE Shakujii Park
-
-1-28-7 Shakujii-cho, Nerima-ku, Tokyo 177-0041
-
-PET-SPA Orinas Kinshicho Store
-
-1F Orinas Kinshicho, 4-1-2 Taihei, Sumida-ku, Tokyo 130-0012
-
-PET-SPA Chofu Sengawa Store
-
-3-4-1 Sengawa-cho, Chofu City, Tokyo 182-0002 (Located next to Inageya Chofu Sengawa store)
-
-PET-SPA CARE+CURE Hibarigaoka
-
-3-9-19 Sumiyoshi-cho, Nishitokyo-shi, Tokyo 202-0005　
-
-PET-SPA Machida Store
-
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Raking [~20kg] 	レーキング【～20kg】	We use specialized equipment to remove any undercoat that wasn't completely shed during molting.	"換毛で抜けきれなかったアンダーコートを、専用器具で処理します。
-
-"	4400			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131326/raking_tm4vsk.jpg	grooming	"PET-SPA Takanawa Store
+",2750,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131326/raking_tm4vsk.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1638,57 +1540,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Raking [20kg~]	レーキング【20kg～】	We use specialized equipment to remove any undercoat that wasn't completely shed during molting.	"換毛で抜けきれなかったアンダーコートを、専用器具で処理します。
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Raking [~15kg],レーキング【～15kg】,We use specialized equipment to remove any undercoat that wasn't completely shed during molting.,"換毛で抜けきれなかったアンダーコートを、専用器具で処理します。
 
-"	5500			https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131326/raking_tm4vsk.jpg	grooming	"PET-SPA Takanawa Store
-
-3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
-
-PET-SPA Kotobu Suna Store [NEW OPEN! June 3, 2026]
-
-1F, Comforia Liv Minamisunamachi East, 7-1-2 Kitasuna, Koto-ku, Tokyo 136-0073
-
-PET-SPA Platinum Street Store
-
-〒108-0071 5-15-1 Shirokanedai, Minato-ku, Tokyo, Forma Shirokane 2F, inside Shirokanedai Hannari
-
-PET-SPA Komazawa Park Store
-
-4-11-1 Yakumo, Meguro-ku, Tokyo 152-0023
-
-PET-SPA Bajikoen Store
-
-1F, Grand Clair Bajikoen, 1-22-23 Kamiyoga, Setagaya-ku, Tokyo 158-0098, Japan
-
-4 & 2 Kyodo Store
-
-3-1-20 Miyasaka, Setagaya-ku, Tokyo 156-0051
-
-4&2 Umegaoka Store
-
-1-43-37 Umegaoka, Setagaya-ku, Tokyo 154-0022
-
-PET-SPA CARE+CURE Shakujii Park
-
-1-28-7 Shakujii-cho, Nerima-ku, Tokyo 177-0041
-
-PET-SPA Orinas Kinshicho Store
-
-1F Orinas Kinshicho, 4-1-2 Taihei, Sumida-ku, Tokyo 130-0012
-
-PET-SPA Chofu Sengawa Store
-
-3-4-1 Sengawa-cho, Chofu City, Tokyo 182-0002 (Located next to Inageya Chofu Sengawa store)
-
-PET-SPA CARE+CURE Hibarigaoka
-
-3-9-19 Sumiyoshi-cho, Nishitokyo-shi, Tokyo 202-0005　
-
-PET-SPA Machida Store
-
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Plucking Ear Hairs [All dog breeds]	耳毛抜き【全犬種】	We remove any excess hair growing inside the ears.	耳の中に生えている余分な毛を取り除きます。	550				grooming	"PET-SPA Takanawa Store
+",3850,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131326/raking_tm4vsk.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1734,8 +1589,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Decorative Cut [Small/Medium]	デコレーションカット【小型・中型】	For those who want to bring out their individuality and enjoy fashion.	個性を引き出し、おしゃれを楽しみたい方へ。	550~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Raking [~20kg] ,レーキング【～20kg】,We use specialized equipment to remove any undercoat that wasn't completely shed during molting.,"換毛で抜けきれなかったアンダーコートを、専用器具で処理します。
+
+",4400,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131326/raking_tm4vsk.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1781,8 +1638,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Decorative Cut [Large]	デコレーションカット【大型】	For those who want to bring out their individuality and enjoy fashion.	個性を引き出し、おしゃれを楽しみたい方へ。	1100~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Raking [20kg~],レーキング【20kg～】,We use specialized equipment to remove any undercoat that wasn't completely shed during molting.,"換毛で抜けきれなかったアンダーコートを、専用器具で処理します。
+
+",5500,,,https://res.cloudinary.com/dcrsau6jm/image/upload/v1780131326/raking_tm4vsk.jpg,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1828,8 +1687,8 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-All Scissor Finished [Small/Medium]	全シザー仕上げ 【小型・中型】	For those who want an even fluffier finish.	よりふわふわした仕上がりにしたい方へ。	550~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Plucking Ear Hairs [All dog breeds],耳毛抜き【全犬種】,We remove any excess hair growing inside the ears.,耳の中に生えている余分な毛を取り除きます。,550,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1875,8 +1734,8 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-All Scissor Finished [Large]	全シザー仕上げ 【大型】	For those who want an even fluffier finish.	よりふわふわした仕上がりにしたい方へ。	1100~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Decorative Cut [Small/Medium],デコレーションカット【小型・中型】,For those who want to bring out their individuality and enjoy fashion.,個性を引き出し、おしゃれを楽しみたい方へ。,550~,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1922,8 +1781,8 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Beard and Eyebrow Trimming [All dog breeds] 	ひげ・まゆカット【全犬種】	Trim beard and eyebrows	ひげ・まゆカット	550				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Decorative Cut [Large],デコレーションカット【大型】,For those who want to bring out their individuality and enjoy fashion.,個性を引き出し、おしゃれを楽しみたい方へ。,1100~,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -1969,9 +1828,8 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Paw Trimmer [Small/Medium]	足先バリカン【小型・中型】	We will trim the fur until the toes are fully visible.	"足の指が全体に見えるまで刈上げます。
-"	1100				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+All Scissor Finished [Small/Medium],全シザー仕上げ 【小型・中型】,For those who want an even fluffier finish.,よりふわふわした仕上がりにしたい方へ。,550~,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -2017,9 +1875,8 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Paw Trimmer [Large]	足先バリカン【大型】	We will trim the fur until the toes are fully visible.	"足の指が全体に見えるまで刈上げます。
-"	2200				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+All Scissor Finished [Large],全シザー仕上げ 【大型】,For those who want an even fluffier finish.,よりふわふわした仕上がりにしたい方へ。,1100~,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -2065,10 +1922,8 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Point Cut - Forelegs(2) [Small/Medium]	ポイントカット 前足(2本)【小型・中型】	"For those who want to adjust the length or volume of specific areas.
-*Point cuts are an optional service that can only be added when using the ""Shampoo Course"" or ""Quick Shampoo"" service"	"気になる部分の長さやボリュームを調整したい方へ。
-※ポイントカットは、「シャンプーコース」または「クイックシャンプー」をご利用の際にのみ追加できるオプションです。"	550~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Beard and Eyebrow Trimming [All dog breeds] ,ひげ・まゆカット【全犬種】,Trim beard and eyebrows,ひげ・まゆカット,550,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -2114,10 +1969,9 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Point Cut - Forelegs(2) [Large]	ポイントカット 前足(2本)【大型】	"For those who want to adjust the length or volume of specific areas.
-*Point cuts are an optional service that can only be added when using the ""Shampoo Course"" or ""Quick Shampoo"" service"	"気になる部分の長さやボリュームを調整したい方へ。
-※ポイントカットは、「シャンプーコース」または「クイックシャンプー」をご利用の際にのみ追加できるオプションです。"	1100~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Paw Trimmer [Small/Medium],足先バリカン【小型・中型】,We will trim the fur until the toes are fully visible.,"足の指が全体に見えるまで刈上げます。
+",1100,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -2163,8 +2017,9 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Point Cut - Hind Legs(2) [Small/Medium]	ポイントカット 後足(2本)【小型・中型】	Point cut hind legs	後足ポイントカット	550~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Paw Trimmer [Large],足先バリカン【大型】,We will trim the fur until the toes are fully visible.,"足の指が全体に見えるまで刈上げます。
+",2200,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -2210,8 +2065,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Point Cut - Hind Legs(2) [Large]	ポイントカット 後足(2本)【大型】	Point cut hind legs	後足ポイントカット	1100~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Point Cut - Forelegs(2) [Small/Medium],ポイントカット 前足(2本)【小型・中型】,"For those who want to adjust the length or volume of specific areas.
+*Point cuts are an optional service that can only be added when using the ""Shampoo Course"" or ""Quick Shampoo"" service","気になる部分の長さやボリュームを調整したい方へ。
+※ポイントカットは、「シャンプーコース」または「クイックシャンプー」をご利用の際にのみ追加できるオプションです。",550~,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -2257,8 +2114,10 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Point Cut - Rear End [Small/Medium]	ポイントカット お尻【小型・中型】	Point cut rear end	お尻ポイントカット	550~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Point Cut - Forelegs(2) [Large],ポイントカット 前足(2本)【大型】,"For those who want to adjust the length or volume of specific areas.
+*Point cuts are an optional service that can only be added when using the ""Shampoo Course"" or ""Quick Shampoo"" service","気になる部分の長さやボリュームを調整したい方へ。
+※ポイントカットは、「シャンプーコース」または「クイックシャンプー」をご利用の際にのみ追加できるオプションです。",1100~,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -2304,8 +2163,8 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Point Cut - Rear End [Large]	ポイントカット お尻【大型】	Point cut rear end	お尻ポイントカット	1100~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Point Cut - Hind Legs(2) [Small/Medium],ポイントカット 後足(2本)【小型・中型】,Point cut hind legs,後足ポイントカット,550~,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -2351,8 +2210,8 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Point Cut - Face [Small/Medium]	ポイントカット 顔【小型・中型】	Point cut face	顔ポイントカット	1100~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Point Cut - Hind Legs(2) [Large],ポイントカット 後足(2本)【大型】,Point cut hind legs,後足ポイントカット,1100~,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -2398,8 +2257,8 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Point Cut - Face [Large]	ポイントカット 顔【大型】	Point cut face	顔ポイントカット	2200~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Point Cut - Rear End [Small/Medium],ポイントカット お尻【小型・中型】,Point cut rear end,お尻ポイントカット,550~,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -2445,8 +2304,8 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Point Cut - Ears + Face [Small/Medium]	ポイントカット 耳+顔【小型・中型】	Point cut ears and face	耳+顔ポイントカット	1650~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Point Cut - Rear End [Large],ポイントカット お尻【大型】,Point cut rear end,お尻ポイントカット,1100~,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -2492,8 +2351,8 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Point Cut - Ears + Face [Large]	ポイントカット 耳+顔【大型】	Point cut ears and face	耳+顔ポイントカット	3300~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Point Cut - Face [Small/Medium],ポイントカット 顔【小型・中型】,Point cut face,顔ポイントカット,1100~,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -2539,8 +2398,8 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
-Blow Drying and Brushing [per 10 minutes]	ブロー・ブラッシング【10分単位】	Blow drying and brushing	ブロー・ブラッシング	1100~				grooming	"PET-SPA Takanawa Store
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Point Cut - Face [Large],ポイントカット 顔【大型】,Point cut face,顔ポイントカット,2200~,,,,grooming,"PET-SPA Takanawa Store
 
 3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
 
@@ -2586,4 +2445,1103 @@ PET-SPA CARE+CURE Hibarigaoka
 
 PET-SPA Machida Store
 
-6-28-1 Morino, Machida City, Tokyo 194-0022"		
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Point Cut - Ears + Face [Small/Medium],ポイントカット 耳+顔【小型・中型】,Point cut ears and face,耳+顔ポイントカット,1650~,,,,grooming,"PET-SPA Takanawa Store
+
+3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
+
+PET-SPA Kotobu Suna Store [NEW OPEN! June 3, 2026]
+
+1F, Comforia Liv Minamisunamachi East, 7-1-2 Kitasuna, Koto-ku, Tokyo 136-0073
+
+PET-SPA Platinum Street Store
+
+〒108-0071 5-15-1 Shirokanedai, Minato-ku, Tokyo, Forma Shirokane 2F, inside Shirokanedai Hannari
+
+PET-SPA Komazawa Park Store
+
+4-11-1 Yakumo, Meguro-ku, Tokyo 152-0023
+
+PET-SPA Bajikoen Store
+
+1F, Grand Clair Bajikoen, 1-22-23 Kamiyoga, Setagaya-ku, Tokyo 158-0098, Japan
+
+4 & 2 Kyodo Store
+
+3-1-20 Miyasaka, Setagaya-ku, Tokyo 156-0051
+
+4&2 Umegaoka Store
+
+1-43-37 Umegaoka, Setagaya-ku, Tokyo 154-0022
+
+PET-SPA CARE+CURE Shakujii Park
+
+1-28-7 Shakujii-cho, Nerima-ku, Tokyo 177-0041
+
+PET-SPA Orinas Kinshicho Store
+
+1F Orinas Kinshicho, 4-1-2 Taihei, Sumida-ku, Tokyo 130-0012
+
+PET-SPA Chofu Sengawa Store
+
+3-4-1 Sengawa-cho, Chofu City, Tokyo 182-0002 (Located next to Inageya Chofu Sengawa store)
+
+PET-SPA CARE+CURE Hibarigaoka
+
+3-9-19 Sumiyoshi-cho, Nishitokyo-shi, Tokyo 202-0005　
+
+PET-SPA Machida Store
+
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Point Cut - Ears + Face [Large],ポイントカット 耳+顔【大型】,Point cut ears and face,耳+顔ポイントカット,3300~,,,,grooming,"PET-SPA Takanawa Store
+
+3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
+
+PET-SPA Kotobu Suna Store [NEW OPEN! June 3, 2026]
+
+1F, Comforia Liv Minamisunamachi East, 7-1-2 Kitasuna, Koto-ku, Tokyo 136-0073
+
+PET-SPA Platinum Street Store
+
+〒108-0071 5-15-1 Shirokanedai, Minato-ku, Tokyo, Forma Shirokane 2F, inside Shirokanedai Hannari
+
+PET-SPA Komazawa Park Store
+
+4-11-1 Yakumo, Meguro-ku, Tokyo 152-0023
+
+PET-SPA Bajikoen Store
+
+1F, Grand Clair Bajikoen, 1-22-23 Kamiyoga, Setagaya-ku, Tokyo 158-0098, Japan
+
+4 & 2 Kyodo Store
+
+3-1-20 Miyasaka, Setagaya-ku, Tokyo 156-0051
+
+4&2 Umegaoka Store
+
+1-43-37 Umegaoka, Setagaya-ku, Tokyo 154-0022
+
+PET-SPA CARE+CURE Shakujii Park
+
+1-28-7 Shakujii-cho, Nerima-ku, Tokyo 177-0041
+
+PET-SPA Orinas Kinshicho Store
+
+1F Orinas Kinshicho, 4-1-2 Taihei, Sumida-ku, Tokyo 130-0012
+
+PET-SPA Chofu Sengawa Store
+
+3-4-1 Sengawa-cho, Chofu City, Tokyo 182-0002 (Located next to Inageya Chofu Sengawa store)
+
+PET-SPA CARE+CURE Hibarigaoka
+
+3-9-19 Sumiyoshi-cho, Nishitokyo-shi, Tokyo 202-0005　
+
+PET-SPA Machida Store
+
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+Blow Drying and Brushing [per 10 minutes],ブロー・ブラッシング【10分単位】,Blow drying and brushing,ブロー・ブラッシング,1100~,,,,grooming,"PET-SPA Takanawa Store
+
+3-13-1 Takanawa, Minato-ku, Tokyo 108-0074, Japan (Located inside the Grand Prince Hotel Shin Takanawa, along Zakurozaka Street)
+
+PET-SPA Kotobu Suna Store [NEW OPEN! June 3, 2026]
+
+1F, Comforia Liv Minamisunamachi East, 7-1-2 Kitasuna, Koto-ku, Tokyo 136-0073
+
+PET-SPA Platinum Street Store
+
+〒108-0071 5-15-1 Shirokanedai, Minato-ku, Tokyo, Forma Shirokane 2F, inside Shirokanedai Hannari
+
+PET-SPA Komazawa Park Store
+
+4-11-1 Yakumo, Meguro-ku, Tokyo 152-0023
+
+PET-SPA Bajikoen Store
+
+1F, Grand Clair Bajikoen, 1-22-23 Kamiyoga, Setagaya-ku, Tokyo 158-0098, Japan
+
+4 & 2 Kyodo Store
+
+3-1-20 Miyasaka, Setagaya-ku, Tokyo 156-0051
+
+4&2 Umegaoka Store
+
+1-43-37 Umegaoka, Setagaya-ku, Tokyo 154-0022
+
+PET-SPA CARE+CURE Shakujii Park
+
+1-28-7 Shakujii-cho, Nerima-ku, Tokyo 177-0041
+
+PET-SPA Orinas Kinshicho Store
+
+1F Orinas Kinshicho, 4-1-2 Taihei, Sumida-ku, Tokyo 130-0012
+
+PET-SPA Chofu Sengawa Store
+
+3-4-1 Sengawa-cho, Chofu City, Tokyo 182-0002 (Located next to Inageya Chofu Sengawa store)
+
+PET-SPA CARE+CURE Hibarigaoka
+
+3-9-19 Sumiyoshi-cho, Nishitokyo-shi, Tokyo 202-0005　
+
+PET-SPA Machida Store
+
+6-28-1 Morino, Machida City, Tokyo 194-0022",,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,
+,,,,,,,,,,,

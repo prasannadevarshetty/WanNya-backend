@@ -13,7 +13,7 @@ async function importBookings() {
     console.log('MongoDB connected');
 
     fs.createReadStream('./data/bookings.csv')
-      .pipe(csv({ separator: '\t' }))
+      .pipe(csv())
       .on('data', (row) => {
         bookings.push({
           name: row.nameEn,
@@ -28,31 +28,29 @@ async function importBookings() {
           petType: 'dog',
 
           duration: 1440,
-          durationText: row.duration || '',
+          durationText: row.duration,
 
-          price: row.price
-            ? Number(row.price.replace(/[^\d]/g, ''))
-            : 0,
+          price: Number(row.price),
 
           pricingType:
             row.duration === '1 night'
               ? 'per-night'
-              : (row.category === 'grooming' ? 'per-session' : 'per-day'),
+              : 'per-day',
 
-          images: row.image ? [row.image] : [],
+          images: [row.image],
 
-          rating: row.rating ? Number(row.rating) : 0,
+          rating: Number(row.rating),
 
           location: {
-            address: row.location || '',
-            city: (row.location && row.location.includes('Shinjuku'))
+            address: row.location,
+            city: row.location.includes('Shinjuku')
               ? 'Shinjuku'
               : 'Tokyo',
             country: 'Japan'
           },
 
-          checkIn: row.checkIn || '',
-          checkOut: row.checkOut || '',
+          checkIn: row.checkIn,
+          checkOut: row.checkOut,
 
           isActive: true,
           featured: false,
@@ -63,15 +61,14 @@ async function importBookings() {
       })
       .on('end', async () => {
         try {
-          // Clear existing hotel and grooming services to prevent duplicates
           await Service.deleteMany({
-            category: { $in: ['hotel', 'grooming'] }
+            category: 'hotel'
           });
 
           await Service.insertMany(bookings);
 
           console.log(
-            `✅ ${bookings.length} bookings (hotel & grooming) imported successfully`
+            `${bookings.length} hotel bookings imported successfully`
           );
 
           process.exit(0);
