@@ -20,8 +20,12 @@ router.get('/', async (req, res) => {
       id: service._id,
 
       name: service.name,
+      nameEn: service.nameEn || '',
+      nameJa: service.nameJa || '',
 
       description: service.description,
+      descriptionEn: service.descriptionEn || '',
+      descriptionJa: service.descriptionJa || '',
 
       category: service.category,
 

@@ -67,7 +67,7 @@ async function importBookings() {
       .on('end', async () => {
         try {
           await Service.deleteMany({
-            category: 'hotel'
+            category: { $in: ['hotel', 'grooming'] }
           });
 
           await Service.insertMany(bookings);
