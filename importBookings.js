@@ -15,6 +15,11 @@ async function importBookings() {
     fs.createReadStream('./data/bookings.csv')
       .pipe(csv())
       .on('data', (row) => {
+        // Skip rows with missing required fields
+        if (!row.nameEn || !row.descriptionEn || !row.category) {
+          return;
+        }
+
         bookings.push({
           name: row.nameEn,
           nameEn: row.nameEn,
