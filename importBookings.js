@@ -13,7 +13,7 @@ async function importBookings() {
     console.log('MongoDB connected');
 
     fs.createReadStream('./data/bookings.csv')
-      .pipe(csv())
+      .pipe(csv({ separator: '\t' }))
       .on('data', (row) => {
         bookings.push({
           name: row.nameEn,
@@ -28,29 +28,31 @@ async function importBookings() {
           petType: 'dog',
 
           duration: 1440,
-          durationText: row.duration,
+          durationText: row.duration || '',
 
-          price: Number(row.price),
+          price: row.price
+            ? Number(row.price.replace(/[^\d]/g, ''))
+            : 0,
 
           pricingType:
             row.duration === '1 night'
               ? 'per-night'
-              : 'per-day',
+              : (row.category === 'grooming' ? 'per-session' : 'per-day'),
 
-          images: [row.image],
+          images: row.image ? [row.image] : [],
 
-          rating: Number(row.rating),
+          rating: row.rating ? Number(row.rating) : 0,
 
           location: {
-            address: row.location,
-            city: row.location.includes('Shinjuku')
+            address: row.location || '',
+            city: (row.location && row.location.includes('Shinjuku'))
               ? 'Shinjuku'
               : 'Tokyo',
             country: 'Japan'
           },
 
-          checkIn: row.checkIn,
-          checkOut: row.checkOut,
+          checkIn: row.checkIn || '',
+          checkOut: row.checkOut || '',
 
           isActive: true,
           featured: false,
@@ -61,14 +63,15 @@ async function importBookings() {
       })
       .on('end', async () => {
         try {
+          // Clear existing hotel and grooming services to prevent duplicates
           await Service.deleteMany({
-            category: 'hotel'
+            category: { $in: ['hotel', 'grooming'] }
           });
 
           await Service.insertMany(bookings);
 
           console.log(
-            `${bookings.length} hotel bookings imported successfully`
+            `✅ ${bookings.length} bookings (hotel & grooming) imported successfully`
           );
 
           process.exit(0);
