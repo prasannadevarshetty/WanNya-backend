@@ -35,7 +35,7 @@ async function importBookings() {
           duration: 1440,
           durationText: row.duration,
 
-          price: row.price && !isNaN(Number(row.price)) ? Number(row.price) : 0,
+          price: row.price && !isNaN(Number(row.price.trim())) ? Number(row.price.trim()) : 0,
 
           pricingType:
             row.duration === '1 night'
@@ -44,7 +44,7 @@ async function importBookings() {
 
           images: [row.image],
 
-          rating: row.rating && !isNaN(Number(row.rating)) ? Number(row.rating) : 0,
+          rating: row.rating && !isNaN(Number(row.rating.trim())) ? Number(row.rating.trim()) : 0,
 
           location: {
             address: row.location,
