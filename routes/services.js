@@ -11,9 +11,7 @@ router.get('/', async (req, res) => {
       isActive: true
     })
     .sort({
-      featured: -1,
-      rating: -1,
-      createdAt: -1
+      _id: 1
     });
 
     const formattedServices = services.map((service) => ({
