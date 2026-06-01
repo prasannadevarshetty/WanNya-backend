@@ -206,4 +206,26 @@ router.post('/calculate-distance', authenticate, catchAsync(async (req, res) => 
   });
 }));
 
+// GOOGLE PLACE SEARCH
+router.get('/google/search', authenticate, catchAsync(async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).json({
+      message: 'Search query is required'
+    });
+  }
+
+  const response = await fetch(
+    `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+  );
+
+  const data = await response.json();
+
+  res.json({
+    success: true,
+    results: data.results
+  });
+}));
+
 module.exports = router;

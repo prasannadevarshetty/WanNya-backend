@@ -54,6 +54,9 @@ const locationSchema = new mongoose.Schema({
 
   latitude: Number,
   longitude: Number,
+  
+  placeId: String,
+  formattedAddress: String,
 
   coordinates: {
     type: {
