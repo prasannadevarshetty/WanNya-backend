@@ -34,20 +34,14 @@ const serviceSchema = new mongoose.Schema({
   },
 
   category: {
-    type: String,
-    enum: [
-      'grooming',
-      'walking',
-      'training',
-      'veterinary',
-      'boarding',
-      'daycare',
-      'sitting',
-      'hotel',
-      'clinic'
-    ],
-    required: [true, 'Service category is required']
-  },
+  type: String,
+  enum: [
+    'salons',
+    'hotels',
+    'clinic'
+  ],
+  required: [true, 'Service category is required']
+},
 
   provider: {
     type: mongoose.Schema.Types.ObjectId,
@@ -61,15 +55,14 @@ const serviceSchema = new mongoose.Schema({
   },
 
   duration: {
-    type: Number,
-    required: [true, 'Service duration is required'],
-    min: 15
-  },
+  type: String,
+  trim: true
+},
 
-  durationText: {
-    type: String,
-    trim: true
-  },
+durationText: {
+  type: String,
+  trim: true
+},
 
   price: {
     type: Number,
