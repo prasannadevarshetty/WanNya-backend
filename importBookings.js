@@ -7,27 +7,6 @@ const Service = require('./models/Service');
 const bookings = [];
 const allowedCategories = ['hotel', 'grooming', 'clinic'];
 
-function convertDurationToMinutes(duration) {
-  if (!duration) return 60; // Default to 60 minutes
-  
-  const durationLower = duration.toLowerCase();
-  
-  if (durationLower.includes('day')) {
-    return 24 * 60; // 1 day = 1440 minutes
-  } else if (durationLower.includes('night')) {
-    return 12 * 60; // 1 night = 720 minutes
-  } else if (durationLower.includes('session')) {
-    return 60; // 1 session = 60 minutes
-  } else if (durationLower.includes('hour')) {
-    const hours = parseInt(durationLower) || 1;
-    return hours * 60;
-  } else if (durationLower.includes('minute')) {
-    return parseInt(durationLower) || 60;
-  }
-  
-  return 60; // Default to 60 minutes
-}
-
 async function importBookings() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
@@ -39,16 +18,11 @@ async function importBookings() {
     fs.createReadStream('./data/bookings.csv')
       .pipe(csv({
         skipEmptyLines: true,
-        mapHeaders: ({ header, index }) => header.trim()
+        mapHeaders: ({ header }) => header.trim()
       }))
       .on('data', (row) => {
-        if (!row.nameEn || !row.descriptionEn || !row.category) {
-          return;
-        }
-
-        if (!allowedCategories.includes(row.category)) {
-          return;
-        }
+        if (!row.nameEn || !row.descriptionEn || !row.category) return;
+        if (!allowedCategories.includes(row.category)) return;
 
         bookings.push({
           name: row.nameEn,
@@ -62,7 +36,7 @@ async function importBookings() {
           category: row.category,
           petType: 'dog',
 
-          duration: convertDurationToMinutes(row.duration),
+          duration: row.duration || '',
           durationText: row.duration || '',
 
           price: row.price
@@ -76,6 +50,7 @@ async function importBookings() {
               ? 'per-session'
               : 'per-day',
 
+          image: row.image || '',
           images: row.image ? [row.image] : [],
 
           rating:
@@ -97,7 +72,6 @@ async function importBookings() {
 
           isActive: true,
           featured: false,
-
           maxPetSize: 'any',
           maxPets: 1
         });
@@ -105,13 +79,14 @@ async function importBookings() {
       .on('end', async () => {
         try {
           await Service.deleteMany({
-            category: { $in: allowedCategories }
+            category: { $in: ['hotel', 'grooming', 'clinic'] }
           });
 
           await Service.insertMany(bookings);
 
           console.log(`${bookings.length} services imported successfully`);
           process.exit(0);
+
         } catch (error) {
           console.error('Insert error:', error);
           process.exit(1);

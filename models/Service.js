@@ -36,8 +36,8 @@ const serviceSchema = new mongoose.Schema({
   category: {
   type: String,
   enum: [
-    'salons',
-    'hotels',
+    'grooming',
+    'hotel',
     'clinic'
   ],
   required: [true, 'Service category is required']
@@ -74,6 +74,11 @@ durationText: {
     type: String,
     enum: ['per-session', 'per-hour', 'per-day', 'per-night'],
     default: 'per-session'
+  },
+
+  image: {
+    type: String,
+    trim: true
   },
 
   images: [{
@@ -197,5 +202,10 @@ serviceSchema.index({ category: 1, petType: 1, isActive: 1 });
 serviceSchema.index({ 'location.city': 1 });
 serviceSchema.index({ price: 1 });
 serviceSchema.index({ rating: -1 });
+
+serviceSchema.index(
+  { nameEn: 1, category: 1 },
+  { unique: true }
+);
 
 module.exports = mongoose.model('Service', serviceSchema);

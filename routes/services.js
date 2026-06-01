@@ -6,16 +6,16 @@ const router = express.Router();
 // GET ALL SERVICES
 router.get('/', async (req, res) => {
   try {
+    const filter = { isActive: true };
 
-    const services = await Service.find({
-      isActive: true
-    })
-    .sort({
-      _id: 1
-    });
+    if (req.query.category) {
+      filter.category = req.query.category;
+    }
+
+    const services = await Service.find(filter).sort({ _id: 1 });
 
     const formattedServices = services.map((service) => ({
-      id: service._id,
+      id: service._id.toString(),
 
       name: service.name,
       nameEn: service.nameEn || '',
@@ -29,11 +29,12 @@ router.get('/', async (req, res) => {
 
       price: service.price,
 
-      duration: `${service.duration} min`,
+      duration: service.duration || service.durationText || '',
 
       rating: service.rating || 0,
 
       image:
+        service.image ||
         service.images?.[0] ||
         'https://via.placeholder.com/300'
     }));
@@ -45,10 +46,10 @@ router.get('/', async (req, res) => {
     });
 
   } catch (error) {
-
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching services'
+      message: 'Server error while fetching services',
+      error: error.message
     });
   }
 });
@@ -57,6 +58,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const service = await Service.findById(req.params.id);
+
     if (!service) {
       return res.status(404).json({
         success: false,
@@ -66,8 +68,28 @@ router.get('/:id', async (req, res) => {
 
     res.json({
       success: true,
-      service
+      service: {
+        id: service._id.toString(),
+        name: service.name,
+        nameEn: service.nameEn || '',
+        nameJa: service.nameJa || '',
+        description: service.description,
+        descriptionEn: service.descriptionEn || '',
+        descriptionJa: service.descriptionJa || '',
+        category: service.category,
+        price: service.price,
+        duration: service.duration || service.durationText || '',
+        rating: service.rating || 0,
+        image:
+          service.image ||
+          service.images?.[0] ||
+          'https://via.placeholder.com/300',
+        checkIn: service.checkIn || '',
+        checkOut: service.checkOut || '',
+        location: service.location
+      }
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
