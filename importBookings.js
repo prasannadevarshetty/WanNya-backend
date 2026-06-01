@@ -15,7 +15,6 @@ async function importBookings() {
     fs.createReadStream('./data/bookings.csv')
       .pipe(csv())
       .on('data', (row) => {
-        // Skip rows with missing required fields
         if (!row.nameEn || !row.descriptionEn || !row.category) {
           return;
         }
@@ -32,14 +31,16 @@ async function importBookings() {
           category: row.category,
           petType: 'dog',
 
-          duration: 1440,
+          duration: row.duration || '',
           durationText: row.duration,
 
-          price: row.price && !isNaN(Number(row.price.trim())) ? Number(row.price.trim()) : 0,
+          price: row.price ? Number(row.price.trim().replace('~', '')) || 0 : 0,
 
           pricingType:
             row.duration === '1 night'
               ? 'per-night'
+              : row.duration === '1 session'
+              ? 'per-session'
               : 'per-day',
 
           images: [row.image],
@@ -67,13 +68,13 @@ async function importBookings() {
       .on('end', async () => {
         try {
           await Service.deleteMany({
-            category: { $in: ['hotel', 'grooming'] }
+            category: { $in: ['hotel', 'grooming', 'clinic'] }
           });
 
           await Service.insertMany(bookings);
 
           console.log(
-            `${bookings.length} hotel bookings imported successfully`
+            `${bookings.length} bookings imported successfully`
           );
 
           process.exit(0);
