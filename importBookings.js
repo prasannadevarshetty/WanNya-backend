@@ -7,6 +7,27 @@ const Service = require('./models/Service');
 const bookings = [];
 const allowedCategories = ['hotel', 'grooming', 'clinic'];
 
+function convertDurationToMinutes(duration) {
+  if (!duration) return 60; // Default to 60 minutes
+  
+  const durationLower = duration.toLowerCase();
+  
+  if (durationLower.includes('day')) {
+    return 24 * 60; // 1 day = 1440 minutes
+  } else if (durationLower.includes('night')) {
+    return 12 * 60; // 1 night = 720 minutes
+  } else if (durationLower.includes('session')) {
+    return 60; // 1 session = 60 minutes
+  } else if (durationLower.includes('hour')) {
+    const hours = parseInt(durationLower) || 1;
+    return hours * 60;
+  } else if (durationLower.includes('minute')) {
+    return parseInt(durationLower) || 60;
+  }
+  
+  return 60; // Default to 60 minutes
+}
+
 async function importBookings() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
@@ -16,7 +37,10 @@ async function importBookings() {
     console.log('Collection:', Service.collection.name);
 
     fs.createReadStream('./data/bookings.csv')
-      .pipe(csv())
+      .pipe(csv({
+        skipEmptyLines: true,
+        mapHeaders: ({ header, index }) => header.trim()
+      }))
       .on('data', (row) => {
         if (!row.nameEn || !row.descriptionEn || !row.category) {
           return;
@@ -38,7 +62,7 @@ async function importBookings() {
           category: row.category,
           petType: 'dog',
 
-          duration: row.duration || '',
+          duration: convertDurationToMinutes(row.duration),
           durationText: row.duration || '',
 
           price: row.price
