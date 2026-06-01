@@ -2,17 +2,44 @@ const express = require('express');
 const router = express.Router();
 
 const Booking = require('../models/Booking');
+const Service = require('../models/Service');
 const { authenticate } = require('../middleware/auth');
 
 router.use(authenticate);
 
+const allowedCategories = ['grooming', 'hotel', 'clinic'];
+
 // CREATE BOOKING
 router.post('/', async (req, res) => {
   try {
+    const service = await Service.findById(req.body.service);
+
+    if (!service) {
+      return res.status(404).json({
+        success: false,
+        message: 'Service not found'
+      });
+    }
+
+    if (!allowedCategories.includes(service.category)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Only grooming, hotel, and clinic services can be booked'
+      });
+    }
+
     const booking = await Booking.create({
-      ...req.body,
-      user: req.user._id
+      user: req.user._id,
+      service: req.body.service,
+      pet: req.body.pet,
+      location: req.body.location,
+      bookingDate: req.body.bookingDate,
+      bookingTime: req.body.bookingTime,
+      notes: req.body.notes,
+      totalAmount: service.price
     });
+
+    await booking.populate('service');
 
     res.status(201).json({
       success: true,
@@ -58,6 +85,20 @@ router.get('/', async (req, res) => {
 // UPDATE BOOKING STATUS
 router.patch('/:id/status', async (req, res) => {
   try {
+    const allowedStatus = [
+      'pending',
+      'confirmed',
+      'completed',
+      'cancelled'
+    ];
+
+    if (!allowedStatus.includes(req.body.status)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid booking status'
+      });
+    }
+
     const booking = await Booking.findOneAndUpdate(
       {
         _id: req.params.id,
@@ -70,7 +111,10 @@ router.patch('/:id/status', async (req, res) => {
         new: true,
         runValidators: true
       }
-    );
+    )
+      .populate('service')
+      .populate('location')
+      .populate('pet');
 
     if (!booking) {
       return res.status(404).json({
@@ -108,7 +152,10 @@ router.patch('/:id/cancel', async (req, res) => {
       {
         new: true
       }
-    );
+    )
+      .populate('service')
+      .populate('location')
+      .populate('pet');
 
     if (!booking) {
       return res.status(404).json({
