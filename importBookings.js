@@ -5,17 +5,24 @@ const csv = require('csv-parser');
 const Service = require('./models/Service');
 
 const bookings = [];
+const allowedCategories = ['hotel', 'grooming', 'clinic'];
 
 async function importBookings() {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
 
     console.log('MongoDB connected');
+    console.log('DB:', mongoose.connection.name);
+    console.log('Collection:', Service.collection.name);
 
     fs.createReadStream('./data/bookings.csv')
       .pipe(csv())
       .on('data', (row) => {
         if (!row.nameEn || !row.descriptionEn || !row.category) {
+          return;
+        }
+
+        if (!allowedCategories.includes(row.category)) {
           return;
         }
 
@@ -32,9 +39,11 @@ async function importBookings() {
           petType: 'dog',
 
           duration: row.duration || '',
-          durationText: row.duration,
+          durationText: row.duration || '',
 
-          price: row.price ? Number(row.price.trim().replace('~', '')) || 0 : 0,
+          price: row.price
+            ? Number(row.price.trim().replace('~', '')) || 0
+            : 0,
 
           pricingType:
             row.duration === '1 night'
@@ -43,20 +52,24 @@ async function importBookings() {
               ? 'per-session'
               : 'per-day',
 
-          images: [row.image],
+          images: row.image ? [row.image] : [],
 
-          rating: row.rating && !isNaN(Number(row.rating.trim())) ? Number(row.rating.trim()) : 0,
+          rating:
+            row.rating && !isNaN(Number(row.rating.trim()))
+              ? Number(row.rating.trim())
+              : 0,
 
           location: {
-            address: row.location,
-            city: row.location.includes('Shinjuku')
-              ? 'Shinjuku'
-              : 'Tokyo',
+            address: row.location || '',
+            city:
+              row.location && row.location.includes('Shinjuku')
+                ? 'Shinjuku'
+                : 'Tokyo',
             country: 'Japan'
           },
 
-          checkIn: row.checkIn,
-          checkOut: row.checkOut,
+          checkIn: row.checkIn || '',
+          checkOut: row.checkOut || '',
 
           isActive: true,
           featured: false,
@@ -68,30 +81,21 @@ async function importBookings() {
       .on('end', async () => {
         try {
           await Service.deleteMany({
-            category: { $in: ['hotel', 'grooming', 'clinic'] }
+            category: { $in: allowedCategories }
           });
 
           await Service.insertMany(bookings);
 
-          console.log(
-            `${bookings.length} bookings imported successfully`
-          );
-
+          console.log(`${bookings.length} services imported successfully`);
           process.exit(0);
         } catch (error) {
-          console.error(
-            'Insert error:',
-            error
-          );
+          console.error('Insert error:', error);
           process.exit(1);
         }
       });
 
   } catch (error) {
-    console.error(
-      'Import error:',
-      error
-    );
+    console.error('Import error:', error);
     process.exit(1);
   }
 }
