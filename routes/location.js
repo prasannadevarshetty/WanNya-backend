@@ -228,4 +228,26 @@ router.get('/google/search', authenticate, catchAsync(async (req, res) => {
   });
 }));
 
+// GOOGLE REVERSE GEOCODE
+router.get('/google/reverse', authenticate, catchAsync(async (req, res) => {
+  const { lat, lng } = req.query;
+
+  if (!lat || !lng) {
+    return res.status(400).json({
+      message: 'Latitude and longitude are required'
+    });
+  }
+
+  const response = await fetch(
+    `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${process.env.GOOGLE_MAPS_API_KEY}`
+  );
+
+  const data = await response.json();
+
+  res.json({
+    success: true,
+    result: data.results?.[0] || null
+  });
+}));
+
 module.exports = router;
