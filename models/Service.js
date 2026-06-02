@@ -109,6 +109,8 @@ durationText: {
 
   location: {
     address: String,
+    addressEn: String,
+    addressJa: String,
     city: String,
     state: String,
     country: String,

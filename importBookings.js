@@ -59,9 +59,11 @@ async function importBookings() {
               : 0,
 
           location: {
-            address: row.location || '',
+            address: row.locationEn || '',
+            addressEn: row.locationEn || '',
+            addressJa: row.locationJa || '',
             city:
-              row.location && row.location.includes('Shinjuku')
+              row.locationEn && row.locationEn.includes('Shinjuku')
                 ? 'Shinjuku'
                 : 'Tokyo',
             country: 'Japan'

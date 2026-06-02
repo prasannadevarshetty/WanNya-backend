@@ -36,7 +36,9 @@ router.get('/', async (req, res) => {
       image:
         service.image ||
         service.images?.[0] ||
-        'https://via.placeholder.com/300'
+        'https://via.placeholder.com/300',
+
+      location: service.location || null
     }));
 
     res.json({
