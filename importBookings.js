@@ -15,6 +15,8 @@ async function importBookings() {
     console.log('DB:', mongoose.connection.name);
     console.log('Collection:', Service.collection.name);
 
+    const seen = new Set();
+
     fs.createReadStream('./data/bookings.csv')
       .pipe(csv({
         skipEmptyLines: true,
@@ -23,6 +25,10 @@ async function importBookings() {
       .on('data', (row) => {
         if (!row.nameEn || !row.descriptionEn || !row.category) return;
         if (!allowedCategories.includes(row.category)) return;
+
+        const uniqueKey = `${row.nameEn.trim()}#${row.category.trim()}`;
+        if (seen.has(uniqueKey)) return;
+        seen.add(uniqueKey);
 
         bookings.push({
           name: row.nameEn,
