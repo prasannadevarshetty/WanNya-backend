@@ -40,7 +40,7 @@ async function importBookings() {
           durationText: row.duration || '',
 
           price: row.price
-            ? Number(row.price.trim().replace('~', '')) || 0
+            ? Number(row.price.trim().replace(/[^0-9.]/g, '')) || 0
             : 0,
 
           pricingType:
