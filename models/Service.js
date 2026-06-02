@@ -205,9 +205,4 @@ serviceSchema.index({ 'location.city': 1 });
 serviceSchema.index({ price: 1 });
 serviceSchema.index({ rating: -1 });
 
-serviceSchema.index(
-  { nameEn: 1, category: 1 },
-  { unique: true }
-);
-
 module.exports = mongoose.model('Service', serviceSchema);

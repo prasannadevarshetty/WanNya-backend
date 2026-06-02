@@ -15,7 +15,12 @@ async function importBookings() {
     console.log('DB:', mongoose.connection.name);
     console.log('Collection:', Service.collection.name);
 
-    const seen = new Set();
+    try {
+      await Service.collection.dropIndex('nameEn_1_category_1');
+      console.log('Successfully dropped unique index nameEn_1_category_1');
+    } catch (err) {
+      console.log('Unique index nameEn_1_category_1 did not exist or could not be dropped:', err.message);
+    }
 
     fs.createReadStream('./data/bookings.csv')
       .pipe(csv({
@@ -25,10 +30,6 @@ async function importBookings() {
       .on('data', (row) => {
         if (!row.nameEn || !row.descriptionEn || !row.category) return;
         if (!allowedCategories.includes(row.category)) return;
-
-        const uniqueKey = `${row.nameEn.trim()}#${row.category.trim()}`;
-        if (seen.has(uniqueKey)) return;
-        seen.add(uniqueKey);
 
         bookings.push({
           name: row.nameEn,
