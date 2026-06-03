@@ -1,38 +1,42 @@
 const mongoose = require('mongoose');
 
 const bentoSchema = new mongoose.Schema({
-  name: {
+  nameEn: {
     type: String,
     required: true,
     trim: true
   },
-  nameEn: {
-    type: String,
-    trim: true
-  },
+
   nameJa: {
     type: String,
+    required: true,
     trim: true
   },
+
   price: {
     type: Number,
     required: true
   },
-  description: {
+
+  descriptionEn: {
     type: String,
-    required: true
+    required: true,
+    trim: true
   },
+
+  descriptionJa: {
+    type: String,
+    required: true,
+    trim: true
+  },
+
   rating: {
     type: Number,
     default: 0
   },
+
   image: {
     type: String
-  },
-  gender: {
-    type: String,
-    enum: ['male', 'female', 'both'],
-    default: 'both'
   }
 }, {
   timestamps: true
