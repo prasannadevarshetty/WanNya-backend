@@ -28,6 +28,36 @@ router.post('/', async (req, res) => {
       });
     }
 
+    const bookingDateParsed = new Date(req.body.bookingDate);
+    if (isNaN(bookingDateParsed.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid booking date'
+      });
+    }
+
+    const startOfDay = new Date(bookingDateParsed);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(bookingDateParsed);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const existingBooking = await Booking.findOne({
+      service: req.body.service,
+      bookingDate: {
+        $gte: startOfDay,
+        $lte: endOfDay
+      },
+      bookingTime: req.body.bookingTime,
+      status: { $ne: 'cancelled' }
+    });
+
+    if (existingBooking) {
+      return res.status(400).json({
+        success: false,
+        message: 'This time slot is already booked'
+      });
+    }
+
     const booking = await Booking.create({
       user: req.user._id,
       service: req.body.service,
@@ -77,6 +107,56 @@ router.get('/', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Failed to fetch bookings',
+      error: error.message
+    });
+  }
+});
+
+// GET OCCUPIED SLOTS FOR A SERVICE AND DATE
+router.get('/occupied', async (req, res) => {
+  try {
+    const { service, date } = req.query;
+
+    if (!service || !date) {
+      return res.status(400).json({
+        success: false,
+        message: 'Service and date are required'
+      });
+    }
+
+    const bookingDateParsed = new Date(date);
+    if (isNaN(bookingDateParsed.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid date format'
+      });
+    }
+
+    const startOfDay = new Date(bookingDateParsed);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(bookingDateParsed);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const bookings = await Booking.find({
+      service,
+      bookingDate: {
+        $gte: startOfDay,
+        $lte: endOfDay
+      },
+      status: { $ne: 'cancelled' }
+    });
+
+    const occupiedSlots = bookings.map(b => b.bookingTime);
+
+    res.json({
+      success: true,
+      occupiedSlots
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch occupied slots',
       error: error.message
     });
   }
