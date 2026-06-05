@@ -35,8 +35,9 @@ const bentoSchema = new mongoose.Schema({
     default: 0
   },
 
-  image: {
-    type: String
+  images: {
+    type: [String],
+    default: []
   }
 }, {
   timestamps: true

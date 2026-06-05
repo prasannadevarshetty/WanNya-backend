@@ -21,10 +21,12 @@ async function importBentos() {
           price: Number(row.price),
           descriptionEn: row.descriptionEn,
           descriptionJa: row.descriptionJa,
-          rating: Number(row.rating) || 0,
-          image: row.image || ''
-        });
-      })
+            rating: Number(row.rating) || 0,
+            images: row.images
+              ? row.images.split(',').map(img => img.trim()).filter(Boolean)
+              : []
+          });
+        })
       .on('end', async () => {
         await Bento.deleteMany();
         await Bento.insertMany(bentos);
