@@ -20,4 +20,27 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET bento by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const bento = await Bento.findById(req.params.id);
+    if (!bento) {
+      return res.status(404).json({
+        success: false,
+        message: 'Bento not found'
+      });
+    }
+    res.json({
+      success: true,
+      data: bento
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch bento',
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
