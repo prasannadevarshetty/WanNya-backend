@@ -8,6 +8,13 @@ const { authenticate } = require('../middleware/auth');
 router.use(authenticate);
 
 const allowedCategories = ['grooming', 'hotel', 'clinic'];
+const SLOT_CAPACITY = 4;
+
+const getSlotSymbol = (availableSeats) => {
+  if (availableSeats <= 0) return 'cross';
+  if (availableSeats < SLOT_CAPACITY) return 'triangle';
+  return 'circle';
+};
 
 // CREATE BOOKING
 router.post('/', async (req, res) => {
@@ -38,10 +45,11 @@ router.post('/', async (req, res) => {
 
     const startOfDay = new Date(bookingDateParsed);
     startOfDay.setHours(0, 0, 0, 0);
+
     const endOfDay = new Date(bookingDateParsed);
     endOfDay.setHours(23, 59, 59, 999);
 
-    const existingBooking = await Booking.findOne({
+    const bookedSeats = await Booking.countDocuments({
       service: req.body.service,
       bookingDate: {
         $gte: startOfDay,
@@ -51,10 +59,10 @@ router.post('/', async (req, res) => {
       status: { $ne: 'cancelled' }
     });
 
-    if (existingBooking) {
+    if (bookedSeats >= SLOT_CAPACITY) {
       return res.status(400).json({
         success: false,
-        message: 'This time slot is already booked'
+        message: 'This time slot is fully booked'
       });
     }
 
@@ -112,7 +120,143 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET OCCUPIED SLOTS FOR A SERVICE AND DATE
+// GET SLOT AVAILABILITY
+router.get('/availability', async (req, res) => {
+  try {
+    const { service, date } = req.query;
+
+    if (!service || !date) {
+      return res.status(400).json({
+        success: false,
+        message: 'Service and date are required'
+      });
+    }
+
+    const serviceData = await Service.findById(service);
+
+    if (!serviceData) {
+      return res.status(404).json({
+        success: false,
+        message: 'Service not found'
+      });
+    }
+
+    const bookingDateParsed = new Date(date);
+    if (isNaN(bookingDateParsed.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid date format'
+      });
+    }
+
+    const startOfDay = new Date(bookingDateParsed);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(bookingDateParsed);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const bookings = await Booking.find({
+      service,
+      bookingDate: {
+        $gte: startOfDay,
+        $lte: endOfDay
+      },
+      status: { $ne: 'cancelled' }
+    });
+
+    const bookedMap = {};
+
+    bookings.forEach((booking) => {
+      bookedMap[booking.bookingTime] =
+        (bookedMap[booking.bookingTime] || 0) + 1;
+    });
+
+    const generateSlots = () => {
+      const slots = [];
+
+      let startHour = 9;
+      let startMin = 0;
+      let endHour = 18;
+      let endMin = 0;
+
+      if (serviceData.checkIn) {
+        const parts = serviceData.checkIn.split(':');
+        startHour = parseInt(parts[0], 10);
+        startMin = parseInt(parts[1], 10);
+      }
+
+      if (serviceData.checkOut) {
+        const parts = serviceData.checkOut.split(':');
+        endHour = parseInt(parts[0], 10);
+        endMin = parseInt(parts[1], 10);
+      }
+
+      let currentHour = startHour;
+      let currentMin = startMin;
+
+      while (
+        currentHour < endHour ||
+        (currentHour === endHour && currentMin <= endMin)
+      ) {
+        const time = `${currentHour}:${String(currentMin).padStart(2, '0')}`;
+        slots.push(time);
+
+        currentMin += 15;
+        if (currentMin >= 60) {
+          currentMin = 0;
+          currentHour += 1;
+        }
+      }
+
+      return slots;
+    };
+
+    const allSlots = generateSlots();
+
+    const slotAvailability = allSlots.map((time) => {
+      const bookedSeats = bookedMap[time] || 0;
+      const availableSeats = Math.max(SLOT_CAPACITY - bookedSeats, 0);
+
+      let status = 'available';
+      let symbol = 'circle';
+      let displaySymbol = '○';
+
+      if (availableSeats === 0) {
+        status = 'booked';
+        symbol = 'cross';
+        displaySymbol = '×';
+      } else if (availableSeats < SLOT_CAPACITY) {
+        status = 'few_left';
+        symbol = 'triangle';
+        displaySymbol = '△';
+      }
+
+      return {
+        time,
+        status,
+        symbol,
+        displaySymbol,
+        totalSeats: SLOT_CAPACITY,
+        bookedSeats,
+        availableSeats
+      };
+    });
+
+    res.json({
+      success: true,
+      slotCapacity: SLOT_CAPACITY,
+      slotAvailability
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch slot availability',
+      error: error.message
+    });
+  }
+});
+// Now it returns only fully booked slots
 router.get('/occupied', async (req, res) => {
   try {
     const { service, date } = req.query;
@@ -134,6 +278,7 @@ router.get('/occupied', async (req, res) => {
 
     const startOfDay = new Date(bookingDateParsed);
     startOfDay.setHours(0, 0, 0, 0);
+
     const endOfDay = new Date(bookingDateParsed);
     endOfDay.setHours(23, 59, 59, 999);
 
@@ -146,7 +291,16 @@ router.get('/occupied', async (req, res) => {
       status: { $ne: 'cancelled' }
     });
 
-    const occupiedSlots = bookings.map(b => b.bookingTime);
+    const slotMap = {};
+
+    bookings.forEach((booking) => {
+      slotMap[booking.bookingTime] =
+        (slotMap[booking.bookingTime] || 0) + 1;
+    });
+
+    const occupiedSlots = Object.keys(slotMap).filter(
+      (time) => slotMap[time] >= SLOT_CAPACITY
+    );
 
     res.json({
       success: true,
