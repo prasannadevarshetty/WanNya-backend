@@ -3,6 +3,7 @@ const router = express.Router();
 
 const Booking = require('../models/Booking');
 const Service = require('../models/Service');
+const SlotReservation = require('../models/SlotReservation');
 const { authenticate } = require('../middleware/auth');
 
 router.use(authenticate);
@@ -59,31 +60,65 @@ router.post('/', async (req, res) => {
       status: { $ne: 'cancelled' }
     });
 
-    if (bookedSeats >= SLOT_CAPACITY) {
-      return res.status(400).json({
-        success: false,
-        message: 'This time slot is fully booked'
-      });
-    }
+    const availableSeats = SLOT_CAPACITY - bookedSeats;
+
+      if (availableSeats <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: 'This time slot is fully booked'
+        });
+      }
+
+      if (availableSeats === 1) {
+        const now = new Date();
+
+        const reservation = await SlotReservation.findOne({
+          user: req.user._id,
+          service: req.body.service,
+          bookingDate: {
+            $gte: startOfDay,
+            $lte: endOfDay
+          },
+          bookingTime: req.body.bookingTime,
+          expiresAt: { $gt: now }
+        });
+
+        if (!reservation) {
+          return res.status(400).json({
+            success: false,
+            message: 'Last seat reservation required or expired. Please select the slot again.'
+          });
+        }
+      }
 
     const booking = await Booking.create({
-      user: req.user._id,
-      service: req.body.service,
-      pet: req.body.pet,
-      location: req.body.location,
-      bookingDate: req.body.bookingDate,
-      bookingTime: req.body.bookingTime,
-      notes: req.body.notes,
-      totalAmount: service.price
-    });
+        user: req.user._id,
+        service: req.body.service,
+        pet: req.body.pet,
+        location: req.body.location,
+        bookingDate: req.body.bookingDate,
+        bookingTime: req.body.bookingTime,
+        notes: req.body.notes,
+        totalAmount: service.price
+      });
 
-    await booking.populate('service');
+      await booking.populate('service');
 
-    res.status(201).json({
-      success: true,
-      message: 'Booking created successfully',
-      booking
-    });
+      await SlotReservation.deleteOne({
+        user: req.user._id,
+        service: req.body.service,
+        bookingDate: {
+          $gte: startOfDay,
+          $lte: endOfDay
+        },
+        bookingTime: req.body.bookingTime
+      });
+
+      res.status(201).json({
+        success: true,
+        message: 'Booking created successfully',
+        booking
+      });
 
   } catch (error) {
     res.status(400).json({
@@ -315,6 +350,117 @@ router.get('/occupied', async (req, res) => {
     });
   }
 });
+
+
+
+// RESERVE LAST SEAT FOR 15 MINUTES
+router.post('/reserve-last-seat', async (req, res) => {
+  try {
+    const { service, bookingDate, bookingTime } = req.body;
+
+    if (!service || !bookingDate || !bookingTime) {
+      return res.status(400).json({
+        success: false,
+        message: 'Service, booking date, and booking time are required'
+      });
+    }
+
+    const bookingDateParsed = new Date(bookingDate);
+    if (isNaN(bookingDateParsed.getTime())) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid booking date'
+      });
+    }
+
+    const startOfDay = new Date(bookingDateParsed);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date(bookingDateParsed);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const bookedSeats = await Booking.countDocuments({
+      service,
+      bookingDate: {
+        $gte: startOfDay,
+        $lte: endOfDay
+      },
+      bookingTime,
+      status: { $ne: 'cancelled' }
+    });
+
+    const availableSeats = SLOT_CAPACITY - bookedSeats;
+
+    if (availableSeats > 1) {
+      return res.json({
+        success: true,
+        reservationRequired: false,
+        message: 'Reservation not required. More than one seat is available.'
+      });
+    }
+
+    if (availableSeats <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'This time slot is fully booked'
+      });
+    }
+
+    const now = new Date();
+
+    const existingReservation = await SlotReservation.findOne({
+      service,
+      bookingDate: {
+        $gte: startOfDay,
+        $lte: endOfDay
+      },
+      bookingTime,
+      expiresAt: { $gt: now }
+    });
+
+    if (existingReservation) {
+      if (existingReservation.user.toString() === req.user._id.toString()) {
+        return res.json({
+          success: true,
+          reservationRequired: true,
+          message: 'You already have this seat reserved',
+          expiresAt: existingReservation.expiresAt
+        });
+      }
+
+      return res.status(400).json({
+        success: false,
+        message: 'Last seat is currently reserved by another user'
+      });
+    }
+
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000);
+
+    const reservation = await SlotReservation.create({
+      user: req.user._id,
+      service,
+      bookingDate,
+      bookingTime,
+      expiresAt
+    });
+
+    res.status(201).json({
+      success: true,
+      reservationRequired: true,
+      message: 'Last seat reserved for 15 minutes',
+      reservation,
+      expiresAt
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to reserve last seat',
+      error: error.message
+    });
+  }
+});
+
 
 // UPDATE BOOKING STATUS
 router.patch('/:id/status', async (req, res) => {
