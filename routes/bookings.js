@@ -65,7 +65,7 @@ router.post('/', async (req, res) => {
       if (availableSeats <= 0) {
         return res.status(400).json({
           success: false,
-          message: 'This time slot is fully booked'
+          message: 'This slot is no longer available. Please select another slot and try again.'
         });
       }
 
@@ -99,7 +99,8 @@ router.post('/', async (req, res) => {
         bookingDate: req.body.bookingDate,
         bookingTime: req.body.bookingTime,
         notes: req.body.notes,
-        totalAmount: service.price
+        totalAmount: service.price,
+        status: 'confirmed'
       });
 
       await booking.populate('service');
@@ -402,7 +403,7 @@ router.post('/reserve-last-seat', async (req, res) => {
     if (availableSeats <= 0) {
       return res.status(400).json({
         success: false,
-        message: 'This time slot is fully booked'
+        message: 'This slot is no longer available. Please select another slot and try again.'
       });
     }
 
@@ -466,7 +467,6 @@ router.post('/reserve-last-seat', async (req, res) => {
 router.patch('/:id/status', async (req, res) => {
   try {
     const allowedStatus = [
-      'pending',
       'confirmed',
       'completed',
       'cancelled'
