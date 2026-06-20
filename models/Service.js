@@ -189,6 +189,11 @@ durationText: {
     default: 'any'
   },
 
+  petSize: {
+    type: String,
+    trim: true
+  },
+
   maxPets: {
     type: Number,
     default: 1,

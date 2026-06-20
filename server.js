@@ -22,6 +22,9 @@ const notificationRoutes = require('./routes/notifications');
 const adminUsersRoutes = require('./routes/adminUsers');
 const locationRoutes = require('./routes/location');
 const bookingRoutes = require('./routes/bookings');
+const salonRoutes = require('./routes/salons');
+const hotelRoutes = require('./routes/hotels');
+const clinicRoutes = require('./routes/clinics');
 
 const app = express();
 
@@ -129,6 +132,9 @@ app.use('/api/admin', adminUsersRoutes);
 app.use('/api/bentos', require('./routes/bentos'));
 app.use('/api/locations', locationRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/salons', salonRoutes);
+app.use('/api/hotels', hotelRoutes);
+app.use('/api/clinics', clinicRoutes);
 
 
 // ======================
