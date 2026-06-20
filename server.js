@@ -133,7 +133,7 @@ app.use('/api/locations', locationRoutes);
 app.use('/api/salons', salonRoutes);
 app.use('/api/hotels', hotelRoutes);
 app.use('/api/clinics', clinicRoutes);
-
+app.use('/api/hotel-bookings', require('./routes/hotelBookings'));
 
 // ======================
 // 🔥 HEALTH CHECK
