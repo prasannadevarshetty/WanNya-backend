@@ -25,6 +25,7 @@ const salonRoutes = require('./routes/salons');
 const hotelRoutes = require('./routes/hotels');
 const clinicRoutes = require('./routes/clinics');
 const salonBookingRoutes = require('./routes/salonBookings');
+const clinicBookingRoutes = require('./routes/clinicBookings');
 
 const app = express();
 
@@ -136,6 +137,7 @@ app.use('/api/clinics', clinicRoutes);
 app.use('/api/bentos', require('./routes/bentos'));
 app.use('/api/hotel-bookings', require('./routes/hotelBookings'));
 app.use('/api/salon-bookings', salonBookingRoutes);
+app.use('/api/clinic-bookings', clinicBookingRoutes);
 
 // ======================
 // 🔥 HEALTH CHECK
