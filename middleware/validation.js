@@ -88,6 +88,7 @@ const validateOtpVerify = [
   body('otp')
     .trim()
     .isLength({ min: 4, max: 10 })
+    .withMessage('otpNumeric')
     .isNumeric()
     .withMessage('otpNumeric'),
 
@@ -104,6 +105,7 @@ const validateResetPassword = [
   body('otp')
     .trim()
     .isLength({ min: 4, max: 10 })
+    .withMessage('otpNumeric')
     .isNumeric()
     .withMessage('otpNumeric'),
 

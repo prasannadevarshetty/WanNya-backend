@@ -80,8 +80,8 @@ const logToConsole = (level, message, meta = {}) => {
 const logger = (level, message, meta = {}) => {
   // Only log if the level is enabled (based on environment)
   const currentLogLevel = process.env.LOG_LEVEL || 'info';
-  const currentPriority = logLevels[currentLogLevel]?.priority || 2;
-  const messagePriority = logLevels[level]?.priority || 2;
+  const currentPriority = logLevels[currentLogLevel]?.priority ?? 2;
+  const messagePriority = logLevels[level]?.priority ?? 2;
   
   if (messagePriority <= currentPriority) {
     logToConsole(level, message, meta);
@@ -126,11 +126,11 @@ const requestLogger = (req, res, next) => {
 };
 
 // Error logger
-const logError = (error, req = null) => {
+const logError = (err, req = null) => {
   const errorMeta = {
-    name: error.name,
-    message: error.message,
-    stack: error.stack
+    name: err.name,
+    message: err.message,
+    stack: err.stack
   };
   
   if (req) {
@@ -192,8 +192,8 @@ const cleanOldLogs = () => {
         info(`Cleaned old log file: ${file}`);
       }
     });
-  } catch (error) {
-    error('Failed to clean old logs', { error: error.message });
+  } catch (err) {
+    error('Failed to clean old logs', { error: err.message });
   }
 };
 
