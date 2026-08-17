@@ -4,8 +4,12 @@ const router = express.Router();
 const HotelBooking = require('../models/HotelBooking');
 const Hotel = require('../models/Hotel');
 const { authenticate } = require('../middleware/auth');
+const { sendSuccess, sendError } = require('../utils/apiResponse');
+const { parseDate, isBeforeToday } = require('../utils/dateUtils');
 
 router.use(authenticate);
+
+const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
 
 // CREATE HOTEL BOOKING
 router.post('/', async (req, res) => {
@@ -13,58 +17,33 @@ router.post('/', async (req, res) => {
     const hotel = await Hotel.findById(req.body.hotel);
 
     if (!hotel) {
-      return res.status(404).json({
-        success: false,
-        message: 'Hotel service not found'
-      });
+      return sendError(res, 404, 'Hotel service not found');
     }
 
     if (!req.body.termsAccepted || !req.body.vaccinationConfirmed) {
-      return res.status(400).json({
-        success: false,
-        message: 'Terms and vaccination confirmation are required'
-      });
+      return sendError(res, 400, 'Terms and vaccination confirmation are required');
     }
 
-    const checkInDate = new Date(req.body.checkInDate);
-    const checkOutDate = new Date(req.body.checkOutDate);
+    const checkInDate = parseDate(req.body.checkInDate);
+    const checkOutDate = parseDate(req.body.checkOutDate);
 
-    if (
-    isNaN(checkInDate.getTime()) ||
-    isNaN(checkOutDate.getTime())
-    ) {
-    return res.status(400).json({
-        success: false,
-        message: 'Invalid booking dates'
-    });
+    if (!checkInDate || !checkOutDate) {
+      return sendError(res, 400, 'Invalid booking dates');
     }
 
     if (checkOutDate <= checkInDate) {
-    return res.status(400).json({
-        success: false,
-        message: 'Check-out date must be after check-in date'
-    });
+      return sendError(res, 400, 'Check-out date must be after check-in date');
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (checkInDate < today) {
-      return res.status(400).json({
-        success: false,
-        message: 'Check-in date cannot be in the past'
-      });
+    if (isBeforeToday(checkInDate)) {
+      return sendError(res, 400, 'Check-in date cannot be in the past');
     }
-
-    const millisecondsPerDay = 1000 * 60 * 60 * 24;
 
     const numberOfDays = Math.ceil(
-    (checkOutDate - checkInDate) / millisecondsPerDay
+      (checkOutDate - checkInDate) / MILLISECONDS_PER_DAY
     );
 
     const servicePrice = hotel.price * numberOfDays;
-
-    const totalAmount = servicePrice;
 
     const booking = await HotelBooking.create({
       user: req.user._id,
@@ -76,7 +55,7 @@ router.post('/', async (req, res) => {
       checkInTime: req.body.checkInTime,
       instructions: req.body.instructions,
       servicePrice,
-      totalAmount,
+      totalAmount: servicePrice,
       termsAccepted: req.body.termsAccepted,
       vaccinationConfirmed: req.body.vaccinationConfirmed
     });
@@ -84,18 +63,13 @@ router.post('/', async (req, res) => {
     await booking.populate('hotel');
     await booking.populate('pet');
 
-    res.status(201).json({
-      success: true,
+    sendSuccess(res, {
       message: 'Hotel booking created successfully',
       booking
-    });
+    }, 201);
 
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: 'Failed to create hotel booking',
-      error: error.message
-    });
+    sendError(res, 400, 'Failed to create hotel booking', error);
   }
 });
 
@@ -109,18 +83,13 @@ router.get('/', async (req, res) => {
       .populate('pet')
       .sort({ createdAt: -1 });
 
-    res.json({
-      success: true,
+    sendSuccess(res, {
       count: bookings.length,
       bookings
     });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch hotel bookings',
-      error: error.message
-    });
+    sendError(res, 500, 'Failed to fetch hotel bookings', error);
   }
 });
 
@@ -135,23 +104,13 @@ router.get('/:id', async (req, res) => {
       .populate('pet');
 
     if (!booking) {
-      return res.status(404).json({
-        success: false,
-        message: 'Hotel booking not found'
-      });
+      return sendError(res, 404, 'Hotel booking not found');
     }
 
-    res.json({
-      success: true,
-      booking
-    });
+    sendSuccess(res, { booking });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch hotel booking',
-      error: error.message
-    });
+    sendError(res, 500, 'Failed to fetch hotel booking', error);
   }
 });
 
@@ -174,26 +133,17 @@ router.patch('/:id/cancel', async (req, res) => {
       .populate('pet');
 
     if (!booking) {
-      return res.status(404).json({
-        success: false,
-        message: 'Hotel booking not found'
-      });
+      return sendError(res, 404, 'Hotel booking not found');
     }
 
-    res.json({
-      success: true,
+    sendSuccess(res, {
       message: 'Hotel booking cancelled successfully',
       booking
     });
 
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: 'Failed to cancel hotel booking',
-      error: error.message
-    });
+    sendError(res, 400, 'Failed to cancel hotel booking', error);
   }
 });
-
 
 module.exports = router;

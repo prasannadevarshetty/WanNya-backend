@@ -4,10 +4,17 @@ const router = express.Router();
 const ClinicBooking = require('../models/ClinicBooking');
 const Clinic = require('../models/Clinic');
 const { authenticate } = require('../middleware/auth');
+const { sendSuccess, sendError } = require('../utils/apiResponse');
+const { parseDate, isBeforeToday } = require('../utils/dateUtils');
+const {
+  SLOT_CAPACITY,
+  countBookedSeats,
+  findDayBookings,
+  buildSlotMap,
+  buildSlotAvailability
+} = require('../utils/slotAvailability');
 
 router.use(authenticate);
-
-const SLOT_CAPACITY = 4;
 
 // CREATE CLINIC BOOKING
 router.post('/', async (req, res) => {
@@ -15,58 +22,32 @@ router.post('/', async (req, res) => {
     const clinic = await Clinic.findById(req.body.clinic);
 
     if (!clinic) {
-      return res.status(404).json({
-        success: false,
-        message: 'Clinic service not found'
-      });
+      return sendError(res, 404, 'Clinic service not found');
     }
 
     if (!req.body.termsAccepted || !req.body.vaccinationConfirmed) {
-      return res.status(400).json({
-        success: false,
-        message: 'Terms and vaccination confirmation are required'
-      });
+      return sendError(res, 400, 'Terms and vaccination confirmation are required');
     }
 
-    const bookingDate = new Date(req.body.bookingDate);
+    const bookingDate = parseDate(req.body.bookingDate);
 
-    if (isNaN(bookingDate.getTime())) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid booking date'
-      });
+    if (!bookingDate) {
+      return sendError(res, 400, 'Invalid booking date');
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (bookingDate < today) {
-      return res.status(400).json({
-        success: false,
-        message: 'Booking date cannot be in the past'
-      });
+    if (isBeforeToday(bookingDate)) {
+      return sendError(res, 400, 'Booking date cannot be in the past');
     }
 
-    const startOfDay = new Date(bookingDate);
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(bookingDate);
-    endOfDay.setHours(23, 59, 59, 999);
-
-    const bookedSeats = await ClinicBooking.countDocuments({
-      clinic: req.body.clinic,
-      bookingDate: { $gte: startOfDay, $lte: endOfDay },
-      bookingTime: req.body.bookingTime,
-      status: { $ne: 'cancelled' }
+    const bookedSeats = await countBookedSeats(ClinicBooking, {
+      serviceField: 'clinic',
+      serviceId: req.body.clinic,
+      date: bookingDate,
+      bookingTime: req.body.bookingTime
     });
 
-    const availableSeats = SLOT_CAPACITY - bookedSeats;
-
-    if (availableSeats <= 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'This slot is no longer available. Please select another slot.'
-      });
+    if (SLOT_CAPACITY - bookedSeats <= 0) {
+      return sendError(res, 400, 'This slot is no longer available. Please select another slot.');
     }
 
     const booking = await ClinicBooking.create({
@@ -86,18 +67,13 @@ router.post('/', async (req, res) => {
     await booking.populate('clinic');
     await booking.populate('pet');
 
-    res.status(201).json({
-      success: true,
+    sendSuccess(res, {
       message: 'Clinic booking created successfully',
       booking
-    });
+    }, 201);
 
   } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: 'Failed to create clinic booking',
-      error: error.message
-    });
+    sendError(res, 400, 'Failed to create clinic booking', error);
   }
 });
 
@@ -111,18 +87,13 @@ router.get('/', async (req, res) => {
       .populate('pet')
       .sort({ createdAt: -1 });
 
-    res.json({
-      success: true,
+    sendSuccess(res, {
       count: bookings.length,
       bookings
     });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch clinic bookings',
-      error: error.message
-    });
+    sendError(res, 500, 'Failed to fetch clinic bookings', error);
   }
 });
 
@@ -132,91 +103,38 @@ router.get('/availability', async (req, res) => {
     const { clinic, date } = req.query;
 
     if (!clinic || !date) {
-      return res.status(400).json({
-        success: false,
-        message: 'Clinic and date are required'
-      });
+      return sendError(res, 400, 'Clinic and date are required');
     }
 
     const clinicData = await Clinic.findById(clinic);
 
     if (!clinicData) {
-      return res.status(404).json({
-        success: false,
-        message: 'Clinic service not found'
-      });
+      return sendError(res, 404, 'Clinic service not found');
     }
 
-    const bookingDate = new Date(date);
+    const bookingDate = parseDate(date);
 
-    if (isNaN(bookingDate.getTime())) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid date'
-      });
+    if (!bookingDate) {
+      return sendError(res, 400, 'Invalid date');
     }
 
-    const startOfDay = new Date(bookingDate);
-    startOfDay.setHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(bookingDate);
-    endOfDay.setHours(23, 59, 59, 999);
-
-    const bookings = await ClinicBooking.find({
-      clinic,
-      bookingDate: { $gte: startOfDay, $lte: endOfDay },
-      status: { $ne: 'cancelled' }
+    const bookings = await findDayBookings(ClinicBooking, {
+      serviceField: 'clinic',
+      serviceId: clinic,
+      date: bookingDate
     });
 
-    const slotMap = {};
+    const slotMap = buildSlotMap(bookings);
 
-    bookings.forEach((booking) => {
-      slotMap[booking.bookingTime] = (slotMap[booking.bookingTime] || 0) + 1;
-    });
-
-    const slotAvailability = Object.keys(slotMap).map((time) => {
-      const bookedSeats = slotMap[time];
-      const availableSeats = Math.max(SLOT_CAPACITY - bookedSeats, 0);
-
-      let status = 'available';
-      let symbol = 'circle';
-      let displaySymbol = '○';
-
-      if (availableSeats === 0) {
-        status = 'booked';
-        symbol = 'cross';
-        displaySymbol = '×';
-      } else if (availableSeats < SLOT_CAPACITY) {
-        status = 'few_left';
-        symbol = 'triangle';
-        displaySymbol = '△';
-      }
-
-      return {
-        time,
-        status,
-        symbol,
-        displaySymbol,
-        totalSeats: SLOT_CAPACITY,
-        bookedSeats,
-        availableSeats
-      };
-    });
-
-    res.json({
-      success: true,
+    sendSuccess(res, {
       slotCapacity: SLOT_CAPACITY,
       duration: clinicData.duration,
       bookedSlots: slotMap,
-      slotAvailability
+      slotAvailability: buildSlotAvailability(slotMap)
     });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch slot availability',
-      error: error.message
-    });
+    sendError(res, 500, 'Failed to fetch slot availability', error);
   }
 });
 
@@ -229,40 +147,24 @@ router.patch('/:id/cancel', async (req, res) => {
     });
 
     if (!booking) {
-      return res.status(404).json({
-        success: false,
-        message: 'Clinic booking not found'
-      });
+      return sendError(res, 404, 'Clinic booking not found');
     }
 
     if (booking.status === 'cancelled') {
-      return res.status(400).json({
-        success: false,
-        message: 'Booking is already cancelled'
-      });
+      return sendError(res, 400, 'Booking is already cancelled');
     }
 
     if (booking.status === 'completed') {
-      return res.status(400).json({
-        success: false,
-        message: 'Completed booking cannot be cancelled'
-      });
+      return sendError(res, 400, 'Completed booking cannot be cancelled');
     }
 
     booking.status = 'cancelled';
     await booking.save();
 
-    res.json({
-      success: true,
-      message: 'Clinic booking cancelled successfully'
-    });
+    sendSuccess(res, { message: 'Clinic booking cancelled successfully' });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to cancel clinic booking',
-      error: error.message
-    });
+    sendError(res, 500, 'Failed to cancel clinic booking', error);
   }
 });
 
@@ -277,23 +179,13 @@ router.get('/:id', async (req, res) => {
       .populate('pet');
 
     if (!booking) {
-      return res.status(404).json({
-        success: false,
-        message: 'Clinic booking not found'
-      });
+      return sendError(res, 404, 'Clinic booking not found');
     }
 
-    res.json({
-      success: true,
-      booking
-    });
+    sendSuccess(res, { booking });
 
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch clinic booking',
-      error: error.message
-    });
+    sendError(res, 500, 'Failed to fetch clinic booking', error);
   }
 });
 
