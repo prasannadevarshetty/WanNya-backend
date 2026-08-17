@@ -11,6 +11,9 @@ node_modules/
 logs/
 *.log
 
+# test coverage
+coverage/
+
 # OS files
 .DS_Store
 Thumbs.db
