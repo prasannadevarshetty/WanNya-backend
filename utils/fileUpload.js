@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const { warn, error: logErrorMessage } = require('./logger');
 
 // Configure Cloudinary
 console.log('🔧 Configuring Cloudinary...');
@@ -16,14 +17,24 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Test Cloudinary connection
-cloudinary.api.ping((error, result) => {
-  if (error) {
-    console.error('❌ Cloudinary connection failed:', error);
-  } else {
-    console.log('✅ Cloudinary connection successful:', result);
-  }
-});
+// Test Cloudinary connection. ping() throws synchronously when the credentials
+// are missing, which would otherwise crash the process while loading this
+// module instead of reporting a misconfiguration.
+try {
+  cloudinary.api.ping((error, result) => {
+    if (error) {
+      logErrorMessage('Cloudinary connection failed', {
+        error: error.message || String(error)
+      });
+    } else {
+      console.log('✅ Cloudinary connection successful:', result);
+    }
+  });
+} catch (err) {
+  logErrorMessage('Cloudinary is not configured, uploads will fail', {
+    error: err?.message || String(err)
+  });
+}
 
 // Ensure upload directories exist (Kept for backward compatibility)
 const ensureDirectoryExists = (dirPath) => {
@@ -185,7 +196,14 @@ const deleteFile = async (identifier, folder = 'images') => {
       return false;
     }
   } catch (error) {
-    console.error('Error deleting file:', error);
+    // Deletion is best effort (callers keep going), but the failure is logged
+    // with the identifier so orphaned files can be traced.
+    warn('Failed to delete file', {
+      identifier,
+      folder,
+      error: error.message
+    });
+
     return false;
   }
 };
@@ -201,7 +219,15 @@ const deleteFiles = async (identifiers, folder = 'images') => {
       deletedCount++;
     }
   }
-  
+
+  if (deletedCount < identifiers.length) {
+    warn('Some files could not be deleted', {
+      folder,
+      requested: identifiers.length,
+      deleted: deletedCount
+    });
+  }
+
   return deletedCount;
 };
 
@@ -222,7 +248,7 @@ const handleUploadError = (error, req, res, next) => {
   if (error.message && error.message.includes('Invalid file type')) {
     return res.status(400).json({ message: error.message });
   }
-  
+
   next(error);
 };
 

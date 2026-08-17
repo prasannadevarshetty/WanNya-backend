@@ -1,4 +1,5 @@
 const SibApiV3Sdk = require('sib-api-v3-sdk');
+const { info, error: logErrorMessage } = require('./logger');
 
 const client = SibApiV3Sdk.ApiClient.instance;
 
@@ -8,8 +9,11 @@ apiKey.apiKey = process.env.BREVO_API_KEY;
 const tranEmailApi = new SibApiV3Sdk.TransactionalEmailsApi();
 
 const sendOtpEmail = async (email, otp) => {
-  try {
+  if (!process.env.BREVO_API_KEY) {
+    throw new Error('BREVO_API_KEY is not configured, cannot send OTP email');
+  }
 
+  try {
     await tranEmailApi.sendTransacEmail({
       sender: {
         email: process.env.BREVO_SENDER_EMAIL,
@@ -37,12 +41,19 @@ const sendOtpEmail = async (email, otp) => {
       `,
     });
 
-    console.log("✅ OTP sent:", email);
+    info('OTP email sent', { email });
     return true;
 
   } catch (err) {
-    console.error("❌ Email error:", err);
-    return false;
+    // Reject instead of returning false: callers must be able to react to a
+    // failed delivery (e.g. by invalidating the OTP they just stored).
+    logErrorMessage('OTP email failed', {
+      email,
+      error: err.message,
+      status: err.status || err.response?.status
+    });
+
+    throw err;
   }
 };
 

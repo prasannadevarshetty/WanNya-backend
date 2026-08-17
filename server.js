@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const { connectDB } = require('./config/db');
 const { globalErrorHandler, notFound } = require('./middleware/errorHandler');
-const { requestLogger } = require('./utils/logger');
+const { requestLogger, logError, error: logErrorMessage } = require('./utils/logger');
 
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
@@ -37,11 +37,10 @@ app.set('trust proxy', 1);
 // ======================
 // 🔥 CONNECT DB
 // ======================
-connectDB();
-
-mongoose.connection.once('open', () => {
-  console.log("CONNECTED DB:", mongoose.connection.name);
-  console.log("CONNECTED HOST:", mongoose.connection.host);
+// The initial connection is retried in the background, so a failure here is
+// logged rather than fatal, but it must never become an unhandled rejection.
+connectDB().catch((err) => {
+  logError(err);
 });
 
 // ======================
@@ -143,9 +142,12 @@ app.use('/api/clinic-bookings', clinicBookingRoutes);
 // 🔥 HEALTH CHECK
 // ======================
 app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
+  const dbConnected = mongoose.connection.readyState === 1;
+
+  res.status(dbConnected ? 200 : 503).json({
+    status: dbConnected ? 'OK' : 'DEGRADED',
     message: 'WanNya Backend API is running',
+    database: dbConnected ? 'connected' : 'disconnected',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || 'development'
@@ -163,10 +165,34 @@ app.use(globalErrorHandler);
 // ======================
 const PORT = process.env.PORT || 5001;
 
+let server;
+
 if (!process.env.VERCEL) {
-  app.listen(PORT, () => {
+  server = app.listen(PORT, () => {
     console.log(`🚀 WanNya Backend Server running on port ${PORT}`);
   });
 }
+
+// ======================
+// 🔥 PROCESS LEVEL SAFETY NETS
+// ======================
+// Without these, a rejected promise or a throw outside a request handler is
+// swallowed (or kills the process with no log at all).
+process.on('unhandledRejection', (reason) => {
+  const err = reason instanceof Error ? reason : new Error(`Unhandled rejection: ${reason}`);
+  logError(err);
+});
+
+process.on('uncaughtException', (err) => {
+  logError(err);
+  logErrorMessage('Uncaught exception, shutting down');
+
+  if (server) {
+    server.close(() => process.exit(1));
+    setTimeout(() => process.exit(1), 5000).unref();
+  } else {
+    process.exit(1);
+  }
+});
 
 module.exports = app;

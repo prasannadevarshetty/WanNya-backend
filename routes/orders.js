@@ -17,6 +17,7 @@ const CancelledProduct = require('../models/CancelledProduct');
 const Notification = require('../models/Notifications');
 
 const { authenticate } = require('../middleware/auth');
+const { error: logErrorMessage } = require('../utils/logger');
 
 const parseNumber = (value) => {
   if (typeof value === 'string') {
@@ -27,7 +28,7 @@ const parseNumber = (value) => {
 };
 
 // @route POST /api/orders/create
-router.post('/create', authenticate, async (req, res) => {
+router.post('/create', authenticate, async (req, res, next) => {
   try {
     console.log('Create order API called at:', new Date().toISOString());
 
@@ -96,7 +97,14 @@ router.post('/create', authenticate, async (req, res) => {
 
       console.log('Notification created:', notification._id);
     } catch (notificationError) {
-      console.error('Notification creation failed:', notificationError);
+      // Non fatal: the order exists either way, but the failure must be
+      // recorded with enough context to reconcile the missing notification.
+      logErrorMessage('Order notification creation failed', {
+        orderId: order._id?.toString(),
+        userId: req.user._id?.toString(),
+        key: 'orderPlaced',
+        error: notificationError.message
+      });
     }
 
     res.status(201).json({
@@ -111,16 +119,12 @@ router.post('/create', authenticate, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Create order error:', error);
-
-    res.status(500).json({
-      message: 'Server error while creating order'
-    });
+    next(error);
   }
 });
 
 // @route GET /api/orders/my-orders
-router.get('/my-orders', authenticate, async (req, res) => {
+router.get('/my-orders', authenticate, async (req, res, next) => {
   try {
 
     const orders = await Order.find({
@@ -134,16 +138,12 @@ router.get('/my-orders', authenticate, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Fetch orders error:', error);
-
-    res.status(500).json({
-      message: 'Server error while fetching orders'
-    });
+    next(error);
   }
 });
 
 // @route PUT /api/orders/:orderId/status
-router.put('/:orderId/status', authenticate, async (req, res) => {
+router.put('/:orderId/status', authenticate, async (req, res, next) => {
 
   console.log("STATUS API HIT");
 
@@ -218,17 +218,13 @@ router.put('/:orderId/status', authenticate, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Update order status error:', error);
-
-    res.status(500).json({
-      message: 'Server error while updating order status'
-    });
+    next(error);
   }
 });
 
 // @route   POST /api/orders/cancel/:orderId
 // @desc    Cancel order
-router.post('/cancel/:orderId', authenticate, async (req, res) => {
+router.post('/cancel/:orderId', authenticate, async (req, res, next) => {
   try {
     const { orderId } = req.params;
     const { cancellationReason } = req.body;
@@ -265,7 +261,11 @@ router.post('/cancel/:orderId', authenticate, async (req, res) => {
         cancelledAt: order.cancelledAt
       });
     } catch (cancelProdErr) {
-      console.error('Failed to create CancelledProduct entry:', cancelProdErr);
+      logErrorMessage('Failed to create CancelledProduct entry', {
+        orderId: order._id?.toString(),
+        userId: req.user._id?.toString(),
+        error: cancelProdErr.message
+      });
     }
 
     // Create notification
@@ -281,7 +281,12 @@ router.post('/cancel/:orderId', authenticate, async (req, res) => {
         isRead: false
       });
     } catch (notifErr) {
-      console.error('Failed to create order cancellation notification:', notifErr);
+      logErrorMessage('Failed to create order cancellation notification', {
+        orderId: order._id?.toString(),
+        userId: req.user._id?.toString(),
+        key: 'orderCancelled',
+        error: notifErr.message
+      });
     }
 
     res.json({
@@ -291,10 +296,7 @@ router.post('/cancel/:orderId', authenticate, async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Cancel order error:', error);
-    res.status(500).json({
-      message: 'Server error while cancelling order'
-    });
+    next(error);
   }
 });
 

@@ -1,10 +1,18 @@
 const fs = require('fs');
 const path = require('path');
 
-// Create logs directory if it doesn't exist
+// Create logs directory if it doesn't exist. File logging is disabled (console
+// only) when the filesystem is read-only, e.g. on serverless platforms.
 const logsDir = path.join(__dirname, '..', 'logs');
-if (!fs.existsSync(logsDir)) {
-  fs.mkdirSync(logsDir, { recursive: true });
+let fileLoggingEnabled = true;
+
+try {
+  if (!fs.existsSync(logsDir)) {
+    fs.mkdirSync(logsDir, { recursive: true });
+  }
+} catch (err) {
+  fileLoggingEnabled = false;
+  console.error(`Log directory ${logsDir} unavailable, logging to console only:`, err.message);
 }
 
 // Log levels with colors
@@ -42,6 +50,8 @@ const getTimestamp = () => {
 
 // Write to log file
 const writeToFile = (level, message, meta = {}) => {
+  if (!fileLoggingEnabled) return;
+
   const date = getDateString();
   const logFile = path.join(logsDir, `${date}.log`);
   
@@ -56,8 +66,11 @@ const writeToFile = (level, message, meta = {}) => {
   
   try {
     fs.appendFileSync(logFile, logLine);
-  } catch (error) {
-    console.error('Failed to write to log file:', error);
+  } catch (err) {
+    // Stop retrying on every log call once the sink is known to be unusable,
+    // otherwise a read-only filesystem floods stderr on every request.
+    fileLoggingEnabled = false;
+    console.error('Failed to write to log file, logging to console only:', err.message);
   }
 };
 
@@ -126,13 +139,17 @@ const requestLogger = (req, res, next) => {
 };
 
 // Error logger
-const logError = (error, req = null) => {
+const logError = (err, req = null) => {
   const errorMeta = {
-    name: error.name,
-    message: error.message,
-    stack: error.stack
+    name: err?.name,
+    message: err?.message,
+    stack: err?.stack
   };
-  
+
+  if (err?.statusCode) {
+    errorMeta.statusCode = err.statusCode;
+  }
+
   if (req) {
     errorMeta.request = {
       method: req.method,
@@ -141,8 +158,8 @@ const logError = (error, req = null) => {
       userId: req.user?.id
     };
   }
-  
-  error('Application Error', errorMeta);
+
+  logger('error', 'Application Error', errorMeta);
 };
 
 // Database operation logger
@@ -189,16 +206,16 @@ const cleanOldLogs = () => {
       
       if (stats.mtime < sevenDaysAgo) {
         fs.unlinkSync(filePath);
-        info(`Cleaned old log file: ${file}`);
+        logger('info', `Cleaned old log file: ${file}`);
       }
     });
-  } catch (error) {
-    error('Failed to clean old logs', { error: error.message });
+  } catch (err) {
+    logger('error', 'Failed to clean old logs', { error: err.message });
   }
 };
 
 // Schedule log cleanup (run daily at midnight)
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && fileLoggingEnabled) {
   // Run cleanup immediately and then schedule daily
   cleanOldLogs();
   setInterval(cleanOldLogs, 24 * 60 * 60 * 1000); // 24 hours
