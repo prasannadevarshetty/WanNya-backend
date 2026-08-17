@@ -6,7 +6,8 @@ const { validatePetCreation } = require('../middleware/validation');
 const {
   uploadSingleImageField,
   getFileUrl,
-  deleteFile
+  deleteFile,
+  handleUploadError
 } = require('../utils/fileUpload');
 const router = express.Router();
 
@@ -389,7 +390,9 @@ router.delete('/:id', async (req, res) => {
 // @route   POST /api/pets/:id/photo
 // @desc    Upload pet photo
 // @access  Private
-router.post('/:id/photo', uploadSingleImageField('pets', 'photo'), async (req, res) => {
+// handleUploadError runs between multer and the handler: multer failures happen
+// in middleware and would otherwise surface as a generic 500.
+router.post('/:id/photo', uploadSingleImageField('pets', 'photo'), handleUploadError, async (req, res, next) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'No photo uploaded. Use field name "photo".' });
@@ -403,14 +406,14 @@ router.post('/:id/photo', uploadSingleImageField('pets', 'photo'), async (req, r
 
     if (!pet) {
       // cleanup uploaded file if pet was not found
-      deleteFile(req.file.filename, 'pets');
+      await deleteFile(req.file.filename, 'pets');
       return res.status(404).json({ message: 'Pet not found' });
     }
 
     // Remove old photo
     if (pet.photo) {
       // Pass the whole URL to deleteFile, which can handle both local and cloudinary URLs
-      deleteFile(pet.photo, 'pets');
+      await deleteFile(pet.photo, 'pets');
     }
 
     pet.photo = req.file.path;
@@ -422,15 +425,11 @@ router.post('/:id/photo', uploadSingleImageField('pets', 'photo'), async (req, r
       photoUrl: pet.photo
     });
   } catch (error) {
-    console.error('Upload pet photo error:', error);
-
     if (error.name === 'MulterError') {
       return res.status(400).json({ message: error.message });
     }
 
-    res.status(500).json({ 
-      message: 'Server error while uploading pet photo' 
-    });
+    next(error);
   }
 });
 

@@ -1,7 +1,7 @@
 const Notification = require('../models/Notifications');
 const { getTranslations, translate } = require('../utils/translate');
 
-const getNotifications = async (req, res) => {
+const getNotifications = async (req, res, next) => {
   try {
     const lang = req.query.lang || 'en';
     const translations = getTranslations(lang);
@@ -30,11 +30,7 @@ const getNotifications = async (req, res) => {
 
     res.status(200).json(result);
   } catch (error) {
-    console.error('Get notifications error:', error);
-
-    res.status(500).json({
-      message: 'Failed to fetch notifications'
-    });
+    next(error);
   }
 };
 
@@ -77,36 +73,41 @@ const getNotificationCategory = (key) => {
   return 'system';
 };
 
-const deleteNotification = async (req, res) => {
+const deleteNotification = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await Notification.findOneAndDelete({
+
+    const deleted = await Notification.findOneAndDelete({
       _id: id,
       userId: req.user._id || req.user.id
     });
+
+    if (!deleted) {
+      return res.status(404).json({ message: 'Notification not found' });
+    }
+
     res.status(200).json({ message: 'Notification deleted' });
   } catch (error) {
-    console.error('Delete notification error:', error);
-    res.status(500).json({ message: 'Failed to delete notification' });
+    next(error);
   }
 };
 
-const deleteAllNotifications = async (req, res) => {
+const deleteAllNotifications = async (req, res, next) => {
   try {
     await Notification.deleteMany({
       userId: req.user._id || req.user.id
     });
     res.status(200).json({ message: 'All notifications deleted' });
   } catch (error) {
-    console.error('Delete all notifications error:', error);
-    res.status(500).json({ message: 'Failed to delete all notifications' });
+    next(error);
   }
 };
 
-const markAsRead = async (req, res) => {
+const markAsRead = async (req, res, next) => {
   try {
     const { id } = req.params;
-    await Notification.findOneAndUpdate(
+
+    const updated = await Notification.findOneAndUpdate(
       {
         _id: id,
         userId: req.user._id || req.user.id
@@ -114,14 +115,18 @@ const markAsRead = async (req, res) => {
       { $set: { isRead: true } },
       { new: true }
     );
+
+    if (!updated) {
+      return res.status(404).json({ message: 'Notification not found' });
+    }
+
     res.status(200).json({ message: 'Notification marked as read' });
   } catch (error) {
-    console.error('Mark as read error:', error);
-    res.status(500).json({ message: 'Failed to mark notification as read' });
+    next(error);
   }
 };
 
-const markAllAsRead = async (req, res) => {
+const markAllAsRead = async (req, res, next) => {
   try {
     await Notification.updateMany(
       {
@@ -132,8 +137,7 @@ const markAllAsRead = async (req, res) => {
     );
     res.status(200).json({ message: 'All notifications marked as read' });
   } catch (error) {
-    console.error('Mark all as read error:', error);
-    res.status(500).json({ message: 'Failed to mark all notifications as read' });
+    next(error);
   }
 };
 

@@ -44,10 +44,12 @@ const authenticate = async (req, res, next) => {
       });
     }
 
-    res.status(500).json({
-      message: translations.serverErrorDuringAuthentication,
-      key: 'serverErrorDuringAuthentication'
-    });
+    // Unexpected failures (e.g. database errors) are propagated so they are
+    // logged and reported by the global error handler instead of being
+    // flattened into an opaque 500 here.
+    error.statusCode = error.statusCode || 500;
+    error.key = error.key || 'serverErrorDuringAuthentication';
+    next(error);
   }
 };
 
@@ -67,8 +69,13 @@ const optionalAuth = async (req, res, next) => {
 
     next();
   } catch (error) {
-    // Continue without authentication
-    next();
+    // An invalid or expired token just means "not logged in" for optional auth,
+    // but anything else (e.g. a database error) must not be swallowed.
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      return next();
+    }
+
+    next(error);
   }
 };
 
@@ -76,6 +83,13 @@ const optionalAuth = async (req, res, next) => {
 const requireEmailVerification = (req, res, next) => {
   const lang = req.query.lang || 'en';
   const translations = getTranslations(lang);
+
+  if (!req.user) {
+    return res.status(401).json({
+      message: translations.accessDeniedNoToken,
+      key: 'accessDeniedNoToken'
+    });
+  }
 
   if (!req.user.isEmailVerified) {
     return res.status(403).json({

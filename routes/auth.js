@@ -13,19 +13,9 @@ const {
 const { authenticate } = require('../middleware/auth');
 const { sendOtpEmail } = require('../utils/emailService');
 const { catchAsync } = require('../middleware/errorHandler');
-const { logAuth } = require('../utils/logger');
+const { logAuth, logError } = require('../utils/logger');
 const { generateOTP } = require('../utils/otpGenerator');
 const { getTranslations, translate } = require('../utils/translate');
-
-console.log({
-  validateOtpRequest,
-  validateOtpVerify,
-  validateResetPassword,
-  validateUserLogin,
-  validateUserRegistration,
-  authenticate,
-  catchAsync
-});
 
 const router = express.Router();
 
@@ -221,7 +211,7 @@ router.post('/forgot-password', forgotPasswordLimiter, validateOtpRequest, catch
 
   // Send email without blocking API response
   sendOtpEmail(email, otp).catch(async (err) => {
-    console.error('OTP email failed:', err);
+    logError(err);
 
     try {
       await User.findByIdAndUpdate(user._id, {
@@ -231,7 +221,11 @@ router.post('/forgot-password', forgotPasswordLimiter, validateOtpRequest, catch
         }
       });
     } catch (cleanupErr) {
-      console.error('Failed to clear OTP after email failure:', cleanupErr);
+      logError(cleanupErr);
+      logAuth('forgot_password_otp_cleanup_failed', user._id, false, {
+        email,
+        error: cleanupErr.message
+      });
     }
   });
 
