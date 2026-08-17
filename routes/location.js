@@ -5,6 +5,19 @@ const { catchAsync } = require('../middleware/errorHandler');
 
 const router = express.Router();
 
+// Fields a client must never be able to set directly
+const protectedFields = ['user', '_id', 'createdAt', 'updatedAt'];
+
+const sanitizeBody = (body) => {
+  const clean = { ...body };
+
+  protectedFields.forEach((field) => {
+    delete clean[field];
+  });
+
+  return clean;
+};
+
 // ADD LOCATION
 router.post('/', authenticate, catchAsync(async (req, res) => {
   const {
@@ -13,8 +26,8 @@ router.post('/', authenticate, catchAsync(async (req, res) => {
 } = req.body;
 
 const location = await Location.create({
+  ...sanitizeBody(req.body),
   user: req.user._id,
-  ...req.body,
 
   coordinates: {
     type: 'Point',
@@ -42,7 +55,7 @@ router.get('/my-locations', authenticate, catchAsync(async (req, res) => {
 // UPDATE LOCATION
 // UPDATE LOCATION
 router.put('/:id', authenticate, catchAsync(async (req, res) => {
-  const updateData = { ...req.body };
+  const updateData = sanitizeBody(req.body);
 
   if (req.body.latitude && req.body.longitude) {
     updateData.coordinates = {
@@ -128,19 +141,38 @@ router.patch('/:id/default', authenticate, catchAsync(async (req, res) => {
 // NEARBY LOCATIONS
 router.get('/nearby/search', authenticate, catchAsync(async (req, res) => {
 
-  const { longitude, latitude, maxDistance = 5000 } = req.query;
+  const longitude = Number(req.query.longitude);
+  const latitude = Number(req.query.latitude);
+  const maxDistance = Number(req.query.maxDistance ?? 5000);
+
+  if (
+    !Number.isFinite(longitude) ||
+    !Number.isFinite(latitude) ||
+    longitude < -180 ||
+    longitude > 180 ||
+    latitude < -90 ||
+    latitude > 90
+  ) {
+    return res.status(400).json({
+      message: 'Valid latitude and longitude are required'
+    });
+  }
+
+  if (!Number.isFinite(maxDistance) || maxDistance <= 0) {
+    return res.status(400).json({
+      message: 'Valid maxDistance is required'
+    });
+  }
 
   const locations = await Location.find({
+    user: req.user._id,
     coordinates: {
       $near: {
         $geometry: {
           type: 'Point',
-          coordinates: [
-            parseFloat(longitude),
-            parseFloat(latitude)
-          ]
+          coordinates: [longitude, latitude]
         },
-        $maxDistance: parseInt(maxDistance)
+        $maxDistance: Math.min(maxDistance, 50000)
       }
     }
   });
@@ -155,6 +187,17 @@ router.get('/nearby/search', authenticate, catchAsync(async (req, res) => {
 router.post('/calculate-distance', authenticate, catchAsync(async (req, res) => {
 
   const { from, to } = req.body;
+
+  const isCoordinate = (point) =>
+    point &&
+    Number.isFinite(Number(point.latitude)) &&
+    Number.isFinite(Number(point.longitude));
+
+  if (!isCoordinate(from) || !isCoordinate(to)) {
+    return res.status(400).json({
+      message: 'Valid from and to coordinates are required'
+    });
+  }
 
   const toRad = (value) => {
     return (value * Math.PI) / 180;
@@ -230,11 +273,12 @@ router.get('/google/search', authenticate, catchAsync(async (req, res) => {
 
 // GOOGLE REVERSE GEOCODE
 router.get('/google/reverse', authenticate, catchAsync(async (req, res) => {
-  const { lat, lng } = req.query;
+  const lat = Number(req.query.lat);
+  const lng = Number(req.query.lng);
 
-  if (!lat || !lng) {
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
     return res.status(400).json({
-      message: 'Latitude and longitude are required'
+      message: 'Valid latitude and longitude are required'
     });
   }
 

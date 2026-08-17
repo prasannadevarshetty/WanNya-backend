@@ -3,6 +3,7 @@ const router = express.Router();
 
 const HotelBooking = require('../models/HotelBooking');
 const Hotel = require('../models/Hotel');
+const Pet = require('../models/Pet');
 const { authenticate } = require('../middleware/auth');
 
 router.use(authenticate);
@@ -16,6 +17,19 @@ router.post('/', async (req, res) => {
       return res.status(404).json({
         success: false,
         message: 'Hotel service not found'
+      });
+    }
+
+    const pet = await Pet.findOne({
+      _id: req.body.pet,
+      userId: req.user._id,
+      isActive: true
+    });
+
+    if (!pet) {
+      return res.status(404).json({
+        success: false,
+        message: 'Pet not found'
       });
     }
 

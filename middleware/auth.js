@@ -20,7 +20,7 @@ const authenticate = async (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id).select('-password');
 
-    if (!user) {
+    if (!user || user.isDeleted) {
       return res.status(401).json({
         message: translations.invalidTokenUserNotFound,
         key: 'invalidTokenUserNotFound'
@@ -60,7 +60,7 @@ const optionalAuth = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id).select('-password');
 
-      if (user) {
+      if (user && !user.isDeleted) {
         req.user = user;
       }
     }
@@ -70,6 +70,18 @@ const optionalAuth = async (req, res, next) => {
     // Continue without authentication
     next();
   }
+};
+
+// Restrict route to admin users
+const requireAdmin = (req, res, next) => {
+  if (!req.user || req.user.role !== 'admin') {
+    return res.status(403).json({
+      message: 'Admin access only',
+      key: 'adminAccessOnly'
+    });
+  }
+
+  next();
 };
 
 // Check if user is verified
@@ -90,5 +102,6 @@ const requireEmailVerification = (req, res, next) => {
 module.exports = {
   authenticate,
   optionalAuth,
+  requireAdmin,
   requireEmailVerification
 };

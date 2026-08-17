@@ -1,5 +1,6 @@
 const express = require('express');
 const Service = require('../models/Service');
+const { authenticate, requireAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -102,7 +103,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // ADD SERVICE
-router.post('/', async (req, res) => {
+router.post('/', authenticate, requireAdmin, async (req, res) => {
   try {
     const service = await Service.create(req.body);
 
@@ -113,9 +114,11 @@ router.post('/', async (req, res) => {
     });
 
   } catch (error) {
+    console.error('Add service error:', error);
+
     res.status(500).json({
       success: false,
-      message: error.message
+      message: 'Server error while adding service'
     });
   }
 });
