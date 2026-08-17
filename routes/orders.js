@@ -1,13 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-// 🔥 Route logger
-router.use((req, res, next) => {
-  console.log("ORDERS ROUTE HIT:", req.method, req.originalUrl);
-  next();
-});
-
-const axios = require('axios');
+const mongoose = require('mongoose');
 
 const Order = require('../models/Order');
 const User = require('../models/User');
@@ -16,7 +10,7 @@ const Service = require('../models/Service');
 const CancelledProduct = require('../models/CancelledProduct');
 const Notification = require('../models/Notifications');
 
-const { authenticate } = require('../middleware/auth');
+const { authenticate, requireAdmin } = require('../middleware/auth');
 
 const parseNumber = (value) => {
   if (typeof value === 'string') {
@@ -29,8 +23,6 @@ const parseNumber = (value) => {
 // @route POST /api/orders/create
 router.post('/create', authenticate, async (req, res) => {
   try {
-    console.log('Create order API called at:', new Date().toISOString());
-
     const { items, shippingAddress } = req.body;
 
     const rawTotal =
@@ -52,16 +44,66 @@ router.post('/create', authenticate, async (req, res) => {
       });
     }
 
-    const orderItems = items.map((item) => ({
-      product: item.id || item.productId,
-      quantity: item.quantity,
-      price: parseNumber(item.price),
-      customization: {
-        name: item.name || item.title,
-        image: item.image,
-        category: item.category
+    const productIds = items.map((item) => item.id || item.productId);
+
+    if (productIds.some((id) => !mongoose.Types.ObjectId.isValid(id))) {
+      return res.status(400).json({
+        message: 'Invalid product in order items'
+      });
+    }
+
+    const products = await Product.find({
+      _id: { $in: productIds },
+      isActive: true
+    }).select('_id price');
+
+    const productPrices = new Map(
+      products.map((p) => [p._id.toString(), p.price])
+    );
+
+    const orderItems = [];
+
+    for (const item of items) {
+      const productId = String(item.id || item.productId);
+      const quantity = Number(item.quantity);
+
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > 1000) {
+        return res.status(400).json({
+          message: 'Invalid quantity in order items'
+        });
       }
-    }));
+
+      // Never trust a client supplied price
+      const price = productPrices.get(productId);
+
+      if (price === undefined) {
+        return res.status(400).json({
+          message: 'One or more products are unavailable'
+        });
+      }
+
+      orderItems.push({
+        product: productId,
+        quantity,
+        price,
+        customization: {
+          name: item.name || item.title,
+          image: item.image,
+          category: item.category
+        }
+      });
+    }
+
+    const itemsTotal = orderItems.reduce((sum, item) => {
+      return sum + item.price * item.quantity;
+    }, 0);
+
+    // Extra charges (delivery, etc.) may raise the total, never lower it
+    if (totalAmount < itemsTotal) {
+      return res.status(400).json({
+        message: 'Total amount does not match the ordered items'
+      });
+    }
 
     const order = new Order({
       userId: req.user._id,
@@ -143,7 +185,7 @@ router.get('/my-orders', authenticate, async (req, res) => {
 });
 
 // @route PUT /api/orders/:orderId/status
-router.put('/:orderId/status', authenticate, async (req, res) => {
+router.put('/:orderId/status', authenticate, requireAdmin, async (req, res) => {
 
   console.log("STATUS API HIT");
 
@@ -180,7 +222,7 @@ router.put('/:orderId/status', authenticate, async (req, res) => {
     order.status = status;
 
     // 🔥 Add points when delivered
-    if (status === "delivered") {
+    if (status === "delivered" && !order.pointsAdded) {
 
       console.log("Points logic triggered");
       console.log("Order Points:", order.pointsEarned);

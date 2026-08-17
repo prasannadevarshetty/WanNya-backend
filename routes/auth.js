@@ -17,16 +17,6 @@ const { logAuth } = require('../utils/logger');
 const { generateOTP } = require('../utils/otpGenerator');
 const { getTranslations, translate } = require('../utils/translate');
 
-console.log({
-  validateOtpRequest,
-  validateOtpVerify,
-  validateResetPassword,
-  validateUserLogin,
-  validateUserRegistration,
-  authenticate,
-  catchAsync
-});
-
 const router = express.Router();
 
 // RATE LIMITERS
@@ -139,7 +129,7 @@ router.post('/login', loginLimiter, validateUserLogin, catchAsync(async (req, re
 
   const user = await User.findOne({ email });
 
-  if (!user || !user.password) {
+  if (!user || !user.password || user.isDeleted) {
     return res.status(401).json({
       message: translations.invalidEmailOrPassword,
       key: 'invalidEmailOrPassword'

@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const Cart = require('../models/Cart');
 const Product = require('../models/Product');
+const Service = require('../models/Service');
 const { authenticate } = require('../middleware/auth');
 
 const router = express.Router();
@@ -178,9 +179,6 @@ router.post('/', async (req, res) => {
     const quantity =
       Number(req.body.quantity || 1);
 
-    const price =
-      Number(req.body.price || 0);
-
     const bookingDetails =
       req.body.bookingDetails;
 
@@ -207,6 +205,7 @@ router.post('/', async (req, res) => {
     }
 
     let product = null;
+    let service = null;
 
     if (productId) {
 
@@ -218,6 +217,20 @@ router.post('/', async (req, res) => {
       if (!product) {
         return res.status(404).json({
           message: 'Product not found'
+        });
+      }
+    }
+
+    if (serviceId) {
+
+      service = await Service.findOne({
+        _id: serviceId,
+        isActive: true
+      });
+
+      if (!service) {
+        return res.status(404).json({
+          message: 'Service not found'
         });
       }
     }
@@ -279,8 +292,7 @@ router.post('/', async (req, res) => {
               productId,
               serviceId,
               quantity,
-              price:
-                price || product?.price || 0,
+              price: product?.price ?? service?.price ?? 0,
               bookingDetails
             }
           }

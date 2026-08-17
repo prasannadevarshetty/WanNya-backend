@@ -154,8 +154,11 @@ router.get('/:id', async (req, res) => {
 // @access  Private
 router.post('/', validatePetCreation, async (req, res) => {
   try {
+    const { _id, id, userId, isActive, createdAt, updatedAt, ...petFields } =
+      req.body;
+
     const petData = {
-      ...req.body,
+      ...petFields,
       userId: req.user._id
     };
 
@@ -198,11 +201,6 @@ router.post('/', validatePetCreation, async (req, res) => {
 // @desc    Update pet information
 // @access  Private
 router.put('/:id', async (req, res) => {
-  console.log('🔧 PUT /api/pets/:id called');
-  console.log('📝 Request params:', req.params);
-  console.log('📝 Request body:', req.body);
-  console.log('👤 User from auth middleware:', req.user?._id);
-  
   try {
     const pet = await Pet.findOne({ 
       _id: req.params.id, 
@@ -210,10 +208,7 @@ router.put('/:id', async (req, res) => {
       isActive: true 
     });
 
-    console.log('🐾 Found pet:', pet ? 'YES' : 'NO');
-
     if (!pet) {
-      console.log('❌ Pet not found');
       return res.status(404).json({ 
         message: 'Pet not found' 
       });
@@ -222,8 +217,7 @@ router.put('/:id', async (req, res) => {
     // Handle DOB conversion if provided
     if (req.body.dob && typeof req.body.dob === 'object') {
       const { date, month, year } = req.body.dob;
-      console.log('📅 Processing DOB:', { date, month, year });
-      
+
       if (date && month && year) {
         try {
           // Convert month name to number if needed
@@ -258,15 +252,12 @@ router.put('/:id', async (req, res) => {
           }
           
           req.body.dob = dobDate;
-          console.log('✅ Successfully converted DOB object to Date:', dobDate);
         } catch (error) {
           console.error('❌ DOB conversion error:', error.message);
           return res.status(400).json({ 
             message: `Invalid date format: ${error.message}` 
           });
         }
-      } else {
-        console.log('⚠️ DOB object missing required fields');
       }
     }
 
@@ -277,17 +268,13 @@ router.put('/:id', async (req, res) => {
       'microchipId', 'vetInfo'
     ];
 
-    console.log('🔄 Applying updates...');
     allowedUpdates.forEach(field => {
       if (req.body[field] !== undefined) {
-        console.log(`  - ${field}: ${pet[field]} → ${req.body[field]}`);
         pet[field] = req.body[field];
       }
     });
 
-    console.log('💾 Saving pet...');
     await pet.save();
-    console.log('✅ Pet saved successfully');
 
     // Format the response to match frontend expectations
     // Use toObject() to preserve Date instances (toJSON may serialize Dates to strings)

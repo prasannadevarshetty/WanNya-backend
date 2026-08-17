@@ -9,6 +9,19 @@ const { connectDB } = require('./config/db');
 const { globalErrorHandler, notFound } = require('./middleware/errorHandler');
 const { requestLogger } = require('./utils/logger');
 
+// ======================
+// 🔥 REQUIRED CONFIG
+// ======================
+const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET'];
+const missingEnvVars = requiredEnvVars.filter((name) => !process.env[name]);
+
+if (missingEnvVars.length > 0) {
+  console.error(
+    `❌ Missing required environment variables: ${missingEnvVars.join(', ')}`
+  );
+  process.exit(1);
+}
+
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
@@ -73,8 +86,11 @@ app.use(
     origin: function (origin, callback) {
       if (!origin) return callback(null, true);
 
-      // Allow any port on localhost or 127.0.0.1 for local development
-      const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+      // Allow any port on localhost or 127.0.0.1 outside production only
+      const isLocal =
+        process.env.NODE_ENV !== 'production' &&
+        /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+
       if (allowedOrigins.includes(origin) || isLocal) {
         return callback(null, true);
       }

@@ -1,17 +1,10 @@
 const express = require('express');
 const User = require('../models/User');
-const { authenticate } = require('../middleware/auth');
+const { authenticate, requireAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
-const isAdmin = (req, res, next) => {
-  if (!req.user || req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Admin access only' });
-  }
-  next();
-};
-
-router.get('/users', authenticate, isAdmin, async (req, res) => {
+router.get('/users', authenticate, requireAdmin, async (req, res) => {
   try {
     const users = await User.find()
       .select('-password -otp -passwordResetToken -emailVerificationToken')
@@ -23,7 +16,7 @@ router.get('/users', authenticate, isAdmin, async (req, res) => {
   }
 });
 
-router.get('/users/deleted', authenticate, isAdmin, async (req, res) => {
+router.get('/users/deleted', authenticate, requireAdmin, async (req, res) => {
   try {
     const users = await User.find({ isDeleted: true })
       .select('-password -otp -passwordResetToken -emailVerificationToken')
@@ -35,7 +28,7 @@ router.get('/users/deleted', authenticate, isAdmin, async (req, res) => {
   }
 });
 
-router.delete('/users/:id', authenticate, isAdmin, async (req, res) => {
+router.delete('/users/:id', authenticate, requireAdmin, async (req, res) => {
   try {
     const { reason } = req.body;
 
